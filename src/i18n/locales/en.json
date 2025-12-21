@@ -192,8 +192,8 @@
     "focusShieldDesc": "Block distracting sites during sessions",
     "shieldEnabled": "Focus Shield enabled",
     "shieldDisabled": "Focus Shield disabled",
-    "autoStartNext": "Auto-Start Next",
-    "autoStartNextDesc": "Automatically start the next session",
+    "chainSessions": "Chain Sessions",
+    "chainSessionsDesc": "Auto-start next focus after break",
     "ambientSounds": "Ambient Sounds",
     "ambientSoundsDesc": "Background audio during focus",
     "sounds": {
@@ -201,6 +201,16 @@
       "rain": "Rain",
       "cafe": "Café",
       "lofi": "Lo-fi"
+    },
+    "loggedToJournal": "Session logged to journal!",
+    "recap": {
+      "greatJob": "Great job!",
+      "breakComplete": "Break complete!",
+      "focusedFor": "You focused for {{minutes}} minutes",
+      "restedFor": "You rested for {{minutes}} minutes",
+      "startBreak": "Start Break",
+      "startFocus": "Start Focus",
+      "logToJournal": "Log to Journal"
     }
   },
   "calendar": {

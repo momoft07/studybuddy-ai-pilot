@@ -215,8 +215,8 @@
     "focusShieldDesc": "Bloquer les sites distrayants pendant les sessions",
     "shieldEnabled": "Bouclier Focus activé",
     "shieldDisabled": "Bouclier Focus désactivé",
-    "autoStartNext": "Démarrage auto suivant",
-    "autoStartNextDesc": "Démarrer automatiquement la session suivante",
+    "chainSessions": "Enchaîner les sessions",
+    "chainSessionsDesc": "Démarrer auto la prochaine focus après pause",
     "ambientSounds": "Sons ambiants",
     "ambientSoundsDesc": "Audio de fond pendant le focus",
     "sounds": {
@@ -224,6 +224,16 @@
       "rain": "Pluie",
       "cafe": "Café",
       "lofi": "Lo-fi"
+    },
+    "loggedToJournal": "Session enregistrée dans le journal !",
+    "recap": {
+      "greatJob": "Excellent travail !",
+      "breakComplete": "Pause terminée !",
+      "focusedFor": "Vous vous êtes concentré pendant {{minutes}} minutes",
+      "restedFor": "Vous vous êtes reposé pendant {{minutes}} minutes",
+      "startBreak": "Démarrer la pause",
+      "startFocus": "Démarrer le focus",
+      "logToJournal": "Enregistrer dans le journal"
     }
   },
   "auth": {

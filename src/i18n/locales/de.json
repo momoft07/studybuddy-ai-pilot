@@ -215,8 +215,8 @@
     "focusShieldDesc": "Ablenkende Seiten während Sitzungen blockieren",
     "shieldEnabled": "Fokus-Schild aktiviert",
     "shieldDisabled": "Fokus-Schild deaktiviert",
-    "autoStartNext": "Auto-Start Nächste",
-    "autoStartNextDesc": "Nächste Sitzung automatisch starten",
+    "chainSessions": "Sitzungen verketten",
+    "chainSessionsDesc": "Auto-Start der nächsten Fokussitzung nach Pause",
     "ambientSounds": "Umgebungsgeräusche",
     "ambientSoundsDesc": "Hintergrundaudio beim Fokussieren",
     "sounds": {
@@ -224,6 +224,16 @@
       "rain": "Regen",
       "cafe": "Café",
       "lofi": "Lo-fi"
+    },
+    "loggedToJournal": "Sitzung im Tagebuch gespeichert!",
+    "recap": {
+      "greatJob": "Gut gemacht!",
+      "breakComplete": "Pause abgeschlossen!",
+      "focusedFor": "Du hast {{minutes}} Minuten fokussiert",
+      "restedFor": "Du hast {{minutes}} Minuten geruht",
+      "startBreak": "Pause starten",
+      "startFocus": "Fokus starten",
+      "logToJournal": "Im Tagebuch speichern"
     }
   },
   "auth": {

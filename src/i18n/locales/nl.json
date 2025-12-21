@@ -256,8 +256,8 @@
     "focusShieldDesc": "Blokkeer afleidende sites tijdens sessies",
     "shieldEnabled": "Focus Schild ingeschakeld",
     "shieldDisabled": "Focus Schild uitgeschakeld",
-    "autoStartNext": "Auto-Start Volgende",
-    "autoStartNextDesc": "Start automatisch de volgende sessie",
+    "chainSessions": "Sessies Koppelen",
+    "chainSessionsDesc": "Auto-start volgende focus na pauze",
     "ambientSounds": "Omgevingsgeluiden",
     "ambientSoundsDesc": "Achtergrondgeluid tijdens focus",
     "sounds": {
@@ -265,6 +265,16 @@
       "rain": "Regen",
       "cafe": "Café",
       "lofi": "Lo-fi"
+    },
+    "loggedToJournal": "Sessie opgeslagen in dagboek!",
+    "recap": {
+      "greatJob": "Goed gedaan!",
+      "breakComplete": "Pauze voltooid!",
+      "focusedFor": "Je hebt {{minutes}} minuten gefocust",
+      "restedFor": "Je hebt {{minutes}} minuten gerust",
+      "startBreak": "Start Pauze",
+      "startFocus": "Start Focus",
+      "logToJournal": "Log naar Dagboek"
     }
   },
   "calendar": {
