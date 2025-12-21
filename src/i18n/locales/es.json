@@ -215,8 +215,8 @@
     "focusShieldDesc": "Bloquear sitios que distraen durante las sesiones",
     "shieldEnabled": "Escudo de Enfoque activado",
     "shieldDisabled": "Escudo de Enfoque desactivado",
-    "autoStartNext": "Auto-iniciar siguiente",
-    "autoStartNextDesc": "Iniciar automáticamente la siguiente sesión",
+    "chainSessions": "Encadenar sesiones",
+    "chainSessionsDesc": "Auto-iniciar siguiente enfoque tras descanso",
     "ambientSounds": "Sonidos ambientales",
     "ambientSoundsDesc": "Audio de fondo durante el enfoque",
     "sounds": {
@@ -224,6 +224,16 @@
       "rain": "Lluvia",
       "cafe": "Café",
       "lofi": "Lo-fi"
+    },
+    "loggedToJournal": "¡Sesión guardada en el diario!",
+    "recap": {
+      "greatJob": "¡Excelente trabajo!",
+      "breakComplete": "¡Descanso completado!",
+      "focusedFor": "Te enfocaste durante {{minutes}} minutos",
+      "restedFor": "Descansaste durante {{minutes}} minutos",
+      "startBreak": "Iniciar descanso",
+      "startFocus": "Iniciar enfoque",
+      "logToJournal": "Guardar en diario"
     }
   },
   "auth": {

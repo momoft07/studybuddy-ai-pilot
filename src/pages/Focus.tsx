@@ -1,15 +1,15 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { GlassCard } from "@/components/ui/glass-card";
 import { GradientButton } from "@/components/ui/gradient-button";
-import { ProgressRing } from "@/components/ui/progress-ring";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { 
   Play, Pause, RotateCcw, Coffee, Timer, Flame, Clock, 
-  Settings2, Shield, Volume2, SkipForward, Zap, Brain, GraduationCap
+  Settings2, Shield, Volume2, SkipForward, Zap, Brain, GraduationCap,
+  Link2, PartyPopper, BookOpen
 } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
@@ -26,9 +26,11 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
+  DialogDescription,
 } from "@/components/ui/dialog";
 import { Slider } from "@/components/ui/slider";
 import { Button } from "@/components/ui/button";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface TimerPreset {
   id: string;
@@ -54,6 +56,8 @@ export default function FocusPage() {
   const [isRunning, setIsRunning] = useState(false);
   const [mode, setMode] = useState<"focus" | "break">("focus");
   const sessionIdRef = useRef<string | null>(null);
+  const lastTickRef = useRef<number>(Date.now());
+  const workerRef = useRef<Worker | null>(null);
   
   // Stats state
   const [sessionsToday, setSessionsToday] = useState(0);
@@ -63,10 +67,15 @@ export default function FocusPage() {
   // Settings state
   const [focusDuration, setFocusDuration] = useState(25);
   const [breakDuration, setBreakDuration] = useState(5);
-  const [autoStartNext, setAutoStartNext] = useState(false);
+  const [chainSessions, setChainSessions] = useState(false);
   const [focusShieldEnabled, setFocusShieldEnabled] = useState(false);
   const [ambientSound, setAmbientSound] = useState("silence");
   const [settingsOpen, setSettingsOpen] = useState(false);
+  
+  // Session recap state
+  const [showRecap, setShowRecap] = useState(false);
+  const [completedSessionDuration, setCompletedSessionDuration] = useState(0);
+  const [completedSessionMode, setCompletedSessionMode] = useState<"focus" | "break">("focus");
   
   // Audio ref
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -78,6 +87,49 @@ export default function FocusPage() {
     { id: "examMode", name: t("focus.presets.examMode"), focusMinutes: 90, breakMinutes: 15, icon: <GraduationCap className="h-4 w-4" /> },
   ];
 
+  // Background timer using visibility API and time drift correction
+  useEffect(() => {
+    if (!isRunning) return;
+    
+    lastTickRef.current = Date.now();
+    
+    const tick = () => {
+      const now = Date.now();
+      const elapsed = Math.floor((now - lastTickRef.current) / 1000);
+      
+      if (elapsed >= 1) {
+        lastTickRef.current = now;
+        setTimeLeft((prev) => {
+          const newTime = Math.max(0, prev - elapsed);
+          return newTime;
+        });
+      }
+    };
+    
+    const interval = setInterval(tick, 1000);
+    
+    // Handle visibility change for background tabs
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        tick(); // Immediately sync time when tab becomes visible
+      }
+    };
+    
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    
+    return () => {
+      clearInterval(interval);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, [isRunning]);
+
+  // Check for session complete
+  useEffect(() => {
+    if (timeLeft === 0 && isRunning) {
+      handleSessionComplete();
+    }
+  }, [timeLeft, isRunning]);
+
   useEffect(() => {
     if (user) {
       fetchTodayStats();
@@ -85,21 +137,10 @@ export default function FocusPage() {
     }
   }, [user]);
 
-  useEffect(() => {
-    let interval: NodeJS.Timeout;
-    if (isRunning && timeLeft > 0) {
-      interval = setInterval(() => setTimeLeft((t) => t - 1), 1000);
-    } else if (timeLeft === 0 && isRunning) {
-      handleSessionComplete();
-    }
-    return () => clearInterval(interval);
-  }, [isRunning, timeLeft]);
-
   // Handle ambient sound
   useEffect(() => {
     if (ambientSound !== "silence" && isRunning) {
       // In a real app, you'd load actual audio files
-      // For now, we'll just show the UI
     }
     return () => {
       if (audioRef.current) {
@@ -107,6 +148,18 @@ export default function FocusPage() {
       }
     };
   }, [ambientSound, isRunning]);
+
+  // Update document title with timer
+  useEffect(() => {
+    if (isRunning) {
+      document.title = `${formatTime(timeLeft)} - ${mode === "focus" ? t("nav.focus") : t("focus.breakTime")}`;
+    } else {
+      document.title = "StudyPilot";
+    }
+    return () => {
+      document.title = "StudyPilot";
+    };
+  }, [timeLeft, isRunning, mode, t]);
 
   const fetchTodayStats = async () => {
     const today = new Date();
@@ -126,7 +179,6 @@ export default function FocusPage() {
   };
 
   const fetchWeeklyStreak = async () => {
-    // Calculate streak by checking consecutive days with completed sessions
     const today = new Date();
     let streak = 0;
     
@@ -171,6 +223,7 @@ export default function FocusPage() {
         sessionIdRef.current = data.id;
       }
     }
+    lastTickRef.current = Date.now();
     setIsRunning(true);
   };
 
@@ -180,6 +233,10 @@ export default function FocusPage() {
 
   const handleSessionComplete = async () => {
     setIsRunning(false);
+    
+    // Store completed session info for recap
+    setCompletedSessionDuration(mode === "focus" ? focusDuration : breakDuration);
+    setCompletedSessionMode(mode);
     
     if (mode === "focus" && sessionIdRef.current) {
       await supabase
@@ -191,19 +248,35 @@ export default function FocusPage() {
         .eq("id", sessionIdRef.current);
       
       sessionIdRef.current = null;
-      toast.success(t("focus.focusSessionComplete"));
       fetchTodayStats();
       fetchWeeklyStreak();
-    } else {
-      toast.success(t("focus.breakOver"));
     }
     
-    const nextMode = mode === "focus" ? "break" : "focus";
+    // Show recap dialog
+    setShowRecap(true);
+    
+    // Play notification sound
+    try {
+      const audio = new Audio('/notification.mp3');
+      audio.volume = 0.5;
+      audio.play().catch(() => {}); // Ignore errors if no audio file
+    } catch {}
+  };
+
+  const handleRecapAction = (action: "break" | "focus" | "journal") => {
+    setShowRecap(false);
+    
+    if (action === "journal") {
+      toast.success(t("focus.loggedToJournal"));
+      return;
+    }
+    
+    const nextMode = action === "break" ? "break" : "focus";
     setMode(nextMode);
     setTimeLeft(nextMode === "focus" ? focusDuration * 60 : breakDuration * 60);
     
-    if (autoStartNext) {
-      setTimeout(() => startSession(), 1000);
+    if (chainSessions) {
+      setTimeout(() => startSession(), 500);
     }
   };
 
@@ -231,6 +304,11 @@ export default function FocusPage() {
 
   const currentDuration = mode === "focus" ? focusDuration * 60 : breakDuration * 60;
   const progress = ((currentDuration - timeLeft) / currentDuration) * 100;
+  const isLowTime = timeLeft <= 5 && timeLeft > 0 && isRunning;
+
+  // Progress ring component with pulse animation
+  const circumference = 2 * Math.PI * 88; // radius = 88
+  const strokeDashoffset = circumference - (progress / 100) * circumference;
 
   return (
     <AppLayout>
@@ -360,27 +438,70 @@ export default function FocusPage() {
           </div>
           
           <GlassCard variant="neon" className="p-8 text-center w-full max-w-sm">
-            <ProgressRing
-              value={progress}
-              size={200}
-              strokeWidth={12}
-              showValue={false}
-            >
-              <span className="text-4xl font-display font-bold">
-                {formatTime(timeLeft)}
-              </span>
-              <span className="text-sm text-muted-foreground flex items-center gap-1 mt-1">
-                {mode === "focus" ? (
-                  <>
-                    <Timer className="h-4 w-4" /> {t("focus.focusTime")}
-                  </>
-                ) : (
-                  <>
-                    <Coffee className="h-4 w-4" /> {t("focus.breakTime")}
-                  </>
-                )}
-              </span>
-            </ProgressRing>
+            {/* Custom Progress Ring with Pulse Animation */}
+            <div className="relative inline-flex items-center justify-center">
+              <motion.svg
+                width={200}
+                height={200}
+                className="transform -rotate-90"
+                animate={isLowTime ? { scale: [1, 1.02, 1] } : {}}
+                transition={isLowTime ? { duration: 0.5, repeat: Infinity } : {}}
+              >
+                {/* Background circle */}
+                <circle
+                  cx={100}
+                  cy={100}
+                  r={88}
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth={12}
+                  className="text-muted/20"
+                />
+                {/* Progress circle */}
+                <motion.circle
+                  cx={100}
+                  cy={100}
+                  r={88}
+                  fill="none"
+                  stroke="url(#gradient)"
+                  strokeWidth={12}
+                  strokeLinecap="round"
+                  strokeDasharray={circumference}
+                  strokeDashoffset={strokeDashoffset}
+                  className={isLowTime ? "drop-shadow-[0_0_10px_hsl(var(--primary))]" : ""}
+                  animate={isLowTime ? { 
+                    filter: ["drop-shadow(0 0 8px hsl(var(--primary)))", "drop-shadow(0 0 20px hsl(var(--primary)))", "drop-shadow(0 0 8px hsl(var(--primary)))"]
+                  } : {}}
+                  transition={isLowTime ? { duration: 0.5, repeat: Infinity } : {}}
+                />
+                <defs>
+                  <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stopColor="hsl(var(--primary))" />
+                    <stop offset="100%" stopColor="hsl(var(--accent))" />
+                  </linearGradient>
+                </defs>
+              </motion.svg>
+              <div className="absolute inset-0 flex flex-col items-center justify-center">
+                <motion.span 
+                  className={`text-4xl font-display font-bold ${isLowTime ? "text-destructive" : ""}`}
+                  animate={isLowTime ? { scale: [1, 1.05, 1] } : {}}
+                  transition={isLowTime ? { duration: 0.5, repeat: Infinity } : {}}
+                >
+                  {formatTime(timeLeft)}
+                </motion.span>
+                <span className="text-sm text-muted-foreground flex items-center gap-1 mt-1">
+                  {mode === "focus" ? (
+                    <>
+                      <Timer className="h-4 w-4" /> {t("focus.focusTime")}
+                    </>
+                  ) : (
+                    <>
+                      <Coffee className="h-4 w-4" /> {t("focus.breakTime")}
+                    </>
+                  )}
+                </span>
+              </div>
+            </div>
             <div className="flex gap-4 mt-8 justify-center">
               <GradientButton
                 size="lg"
@@ -407,6 +528,25 @@ export default function FocusPage() {
 
         {/* Settings Cards */}
         <div className="grid gap-4 md:grid-cols-2">
+          {/* Chain Sessions */}
+          <GlassCard className="p-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="rounded-lg bg-green-500/20 p-2">
+                  <Link2 className="h-5 w-5 text-green-500" />
+                </div>
+                <div>
+                  <p className="font-medium">{t("focus.chainSessions")}</p>
+                  <p className="text-xs text-muted-foreground">{t("focus.chainSessionsDesc")}</p>
+                </div>
+              </div>
+              <Switch
+                checked={chainSessions}
+                onCheckedChange={setChainSessions}
+              />
+            </div>
+          </GlassCard>
+
           {/* Focus Shield */}
           <GlassCard className="p-4">
             <div className="flex items-center justify-between">
@@ -425,25 +565,6 @@ export default function FocusPage() {
                   setFocusShieldEnabled(checked);
                   toast.success(checked ? t("focus.shieldEnabled") : t("focus.shieldDisabled"));
                 }}
-              />
-            </div>
-          </GlassCard>
-
-          {/* Auto-Start Next */}
-          <GlassCard className="p-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="rounded-lg bg-green-500/20 p-2">
-                  <SkipForward className="h-5 w-5 text-green-500" />
-                </div>
-                <div>
-                  <p className="font-medium">{t("focus.autoStartNext")}</p>
-                  <p className="text-xs text-muted-foreground">{t("focus.autoStartNextDesc")}</p>
-                </div>
-              </div>
-              <Switch
-                checked={autoStartNext}
-                onCheckedChange={setAutoStartNext}
               />
             </div>
           </GlassCard>
@@ -476,6 +597,73 @@ export default function FocusPage() {
           </div>
         </GlassCard>
       </div>
+
+      {/* Session Recap Dialog */}
+      <Dialog open={showRecap} onOpenChange={setShowRecap}>
+        <DialogContent className="sm:max-w-md text-center">
+          <DialogHeader>
+            <div className="flex justify-center mb-4">
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ type: "spring", duration: 0.5 }}
+                className="rounded-full bg-green-500/20 p-4"
+              >
+                <PartyPopper className="h-10 w-10 text-green-500" />
+              </motion.div>
+            </div>
+            <DialogTitle className="text-2xl">
+              {completedSessionMode === "focus" 
+                ? t("focus.recap.greatJob") 
+                : t("focus.recap.breakComplete")}
+            </DialogTitle>
+            <DialogDescription className="text-lg">
+              {completedSessionMode === "focus"
+                ? t("focus.recap.focusedFor", { minutes: completedSessionDuration })
+                : t("focus.recap.restedFor", { minutes: completedSessionDuration })}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex flex-col gap-3 mt-6">
+            {completedSessionMode === "focus" ? (
+              <>
+                <Button
+                  onClick={() => handleRecapAction("break")}
+                  className="w-full gap-2"
+                  size="lg"
+                >
+                  <Coffee className="h-5 w-5" />
+                  {t("focus.recap.startBreak")}
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => handleRecapAction("journal")}
+                  className="w-full gap-2"
+                  size="lg"
+                >
+                  <BookOpen className="h-5 w-5" />
+                  {t("focus.recap.logToJournal")}
+                </Button>
+              </>
+            ) : (
+              <Button
+                onClick={() => handleRecapAction("focus")}
+                className="w-full gap-2"
+                size="lg"
+              >
+                <Play className="h-5 w-5" />
+                {t("focus.recap.startFocus")}
+              </Button>
+            )}
+            <Button
+              variant="ghost"
+              onClick={() => setShowRecap(false)}
+              className="w-full"
+            >
+              {t("common.close")}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </AppLayout>
   );
 }
