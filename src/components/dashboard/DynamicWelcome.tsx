@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { Flame, AlertTriangle, Sparkles, PartyPopper, Trophy, Clock } from "lucide-react";
 import { format } from "date-fns";
+import { useTranslation } from "react-i18next";
 
 interface DynamicWelcomeProps {
   firstName: string;
@@ -21,6 +22,7 @@ export function DynamicWelcome({
   completedTasksToday,
   totalTasksToday,
 }: DynamicWelcomeProps) {
+  const { t } = useTranslation();
   const hoursRemaining = Math.max(0, weeklyHoursTarget - weeklyHoursCompleted);
   const weekProgress = weeklyHoursTarget > 0 ? (weeklyHoursCompleted / weeklyHoursTarget) * 100 : 0;
   const allTasksDone = totalTasksToday > 0 && completedTasksToday === totalTasksToday;
@@ -34,17 +36,17 @@ export function DynamicWelcome({
   
   const getGreeting = () => {
     const hour = new Date().getHours();
-    if (hour < 12) return "Good morning";
-    if (hour < 18) return "Good afternoon";
-    return "Good evening";
+    if (hour < 12) return t("dashboard.goodMorning");
+    if (hour < 18) return t("dashboard.goodAfternoon");
+    return t("dashboard.goodEvening");
   };
 
   const getStreakMessage = () => {
-    if (streakCount === 0) return "Start your streak today!";
-    if (streakCount === 1) return "1 day streak — great start!";
-    if (streakCount < 7) return `${streakCount} days into your streak — keep going!`;
-    if (streakCount < 30) return `🔥 ${streakCount}-day streak — you're on fire!`;
-    return `🏆 ${streakCount}-day streak — legendary!`;
+    if (streakCount === 0) return t("dashboard.startStreak");
+    if (streakCount === 1) return t("dashboard.oneDayStreak");
+    if (streakCount < 7) return `${streakCount} ${t("dashboard.daysStreak")}`;
+    if (streakCount < 30) return `🔥 ${streakCount}${t("dashboard.onFire")}`;
+    return `🏆 ${streakCount}${t("dashboard.legendary")}`;
   };
 
   const getContextMessage = () => {
@@ -53,7 +55,7 @@ export function DynamicWelcome({
       return {
         type: "success" as const,
         icon: PartyPopper,
-        message: `Amazing! All ${totalTasksToday} tasks completed today! 🎉 ${weekProgress >= 100 ? "Weekly goal crushed too!" : ""}`,
+        message: `${t("dashboard.allTasksCompleted", { count: totalTasksToday })} 🎉 ${weekProgress >= 100 ? t("dashboard.weeklyGoalCrushed") : ""}`,
       };
     }
 
@@ -62,7 +64,7 @@ export function DynamicWelcome({
       return {
         type: "success" as const,
         icon: Trophy,
-        message: "🏆 Weekly study goal achieved! You're crushing it!",
+        message: `🏆 ${t("dashboard.weeklyGoalAchieved")}`,
       };
     }
 
@@ -72,8 +74,8 @@ export function DynamicWelcome({
         type: "info" as const,
         icon: Sparkles,
         message: topTask 
-          ? `You're on track! Next up: "${topTask.title}" (${topTask.priority} priority)`
-          : `You're ahead of schedule — ${weeklyHoursCompleted.toFixed(1)}h done this week!`,
+          ? `${t("dashboard.onTrack")} ${t("dashboard.nextUp")} "${topTask.title}" (${topTask.priority} ${t("dashboard.priority")})`
+          : `${t("dashboard.aheadOfSchedule")} ${weeklyHoursCompleted.toFixed(1)}h ${t("dashboard.doneThisWeek")}`,
       };
     }
 
@@ -82,7 +84,7 @@ export function DynamicWelcome({
       return {
         type: "warning" as const,
         icon: Clock,
-        message: `Just ${hoursRemaining.toFixed(1)}h left to hit your weekly goal — you got this! 💪`,
+        message: `${t("dashboard.hoursLeftGoal", { hours: hoursRemaining.toFixed(1) })} 💪`,
       };
     }
 
@@ -91,7 +93,7 @@ export function DynamicWelcome({
       return {
         type: "warning" as const,
         icon: AlertTriangle,
-        message: `${hoursRemaining.toFixed(1)}h left this week — even 20 minutes counts! Jump in now.`,
+        message: t("dashboard.hoursLeftWeek", { hours: hoursRemaining.toFixed(1) }),
       };
     }
 
@@ -100,7 +102,7 @@ export function DynamicWelcome({
       return {
         type: "info" as const,
         icon: Sparkles,
-        message: `Today's focus: "${topTask.title}" (${topTask.priority} priority)`,
+        message: `${t("dashboard.todaysFocusTask")} "${topTask.title}" (${topTask.priority} ${t("dashboard.priority")})`,
       };
     }
 
@@ -109,7 +111,7 @@ export function DynamicWelcome({
       return {
         type: "info" as const,
         icon: Sparkles,
-        message: "No tasks scheduled today. Add some or enjoy your break!",
+        message: t("dashboard.noTasksScheduled"),
       };
     }
 

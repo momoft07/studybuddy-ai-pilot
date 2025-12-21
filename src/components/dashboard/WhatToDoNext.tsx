@@ -3,6 +3,7 @@ import { GlassCard } from "@/components/ui/glass-card";
 import { GradientButton } from "@/components/ui/gradient-button";
 import { Brain, Clock, BookOpen, Sparkles, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 interface WhatToDoNextProps {
   topTask?: { id: string; title: string; priority: string } | null;
@@ -11,13 +12,15 @@ interface WhatToDoNextProps {
 }
 
 export function WhatToDoNext({ topTask, flashcardsToReview, hasStudyPlan }: WhatToDoNextProps) {
+  const { t } = useTranslation();
+
   const suggestions = [
     ...(topTask
       ? [
           {
             icon: BookOpen,
-            title: `Work on "${topTask.title}"`,
-            subtitle: `${topTask.priority} priority task`,
+            title: `${t("dashboard.workOn")} "${topTask.title}"`,
+            subtitle: `${topTask.priority} ${t("dashboard.priorityTask")}`,
             action: "/tasks",
             gradient: "gradient-primary",
           },
@@ -27,8 +30,8 @@ export function WhatToDoNext({ topTask, flashcardsToReview, hasStudyPlan }: What
       ? [
           {
             icon: Brain,
-            title: `Review ${flashcardsToReview} flashcards`,
-            subtitle: "Boost your retention",
+            title: t("dashboard.reviewFlashcards", { count: flashcardsToReview }),
+            subtitle: t("dashboard.boostRetention"),
             action: "/flashcards",
             gradient: "gradient-accent",
           },
@@ -36,8 +39,8 @@ export function WhatToDoNext({ topTask, flashcardsToReview, hasStudyPlan }: What
       : []),
     {
       icon: Clock,
-      title: "Start a focus session",
-      subtitle: "25 min Pomodoro",
+      title: t("dashboard.startFocusSession"),
+      subtitle: t("dashboard.pomodoroMin"),
       action: "/focus",
       gradient: "bg-success",
     },
@@ -45,8 +48,8 @@ export function WhatToDoNext({ topTask, flashcardsToReview, hasStudyPlan }: What
       ? [
           {
             icon: Sparkles,
-            title: "Generate AI study plan",
-            subtitle: "Get personalized schedule",
+            title: t("dashboard.generateAIPlan"),
+            subtitle: t("dashboard.getPersonalized"),
             action: "/study-plan",
             gradient: "gradient-teal",
           },
@@ -58,7 +61,7 @@ export function WhatToDoNext({ topTask, flashcardsToReview, hasStudyPlan }: What
     <GlassCard className="h-full">
       <div className="flex items-center gap-2 mb-4">
         <Sparkles className="h-5 w-5 text-accent" />
-        <h2 className="text-lg font-semibold">What to Do Next</h2>
+        <h2 className="text-lg font-semibold">{t("dashboard.whatToDoNext")}</h2>
       </div>
 
       <div className="space-y-3">
@@ -87,8 +90,8 @@ export function WhatToDoNext({ topTask, flashcardsToReview, hasStudyPlan }: What
 
       {suggestions.length === 0 && (
         <div className="text-center py-4 text-muted-foreground text-sm">
-          <p>You're all caught up! 🎉</p>
-          <p className="mt-1">Enjoy your break or explore new features.</p>
+          <p>{t("dashboard.allCaughtUp")} 🎉</p>
+          <p className="mt-1">{t("dashboard.enjoyBreak")}</p>
         </div>
       )}
     </GlassCard>

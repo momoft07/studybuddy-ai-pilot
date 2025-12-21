@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { startOfWeek, addDays, format, isSameDay } from "date-fns";
 import { TrendingUp, TrendingDown } from "lucide-react";
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 
 interface DayData {
   day: string;
@@ -13,6 +14,7 @@ interface DayData {
 
 export function StudyHoursChart() {
   const { user } = useAuth();
+  const { t } = useTranslation();
   const [weekData, setWeekData] = useState<DayData[]>([]);
   const [trend, setTrend] = useState<number>(0);
 
@@ -73,7 +75,7 @@ export function StudyHoursChart() {
   return (
     <GlassCard>
       <div className="flex items-center justify-between mb-4">
-        <h3 className="font-semibold">Study Hours This Week</h3>
+        <h3 className="font-semibold">{t("dashboard.studyHoursThisWeek")}</h3>
         <div className={`flex items-center gap-1 text-sm ${trend >= 0 ? "text-success" : "text-destructive"}`}>
           {trend >= 0 ? <TrendingUp className="h-4 w-4" /> : <TrendingDown className="h-4 w-4" />}
           <span>{trend >= 0 ? "+" : ""}{trend}%</span>

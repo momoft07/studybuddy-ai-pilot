@@ -4,6 +4,7 @@ import { ProgressRing } from "@/components/ui/progress-ring";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { startOfWeek, endOfWeek } from "date-fns";
+import { useTranslation } from "react-i18next";
 
 interface WeeklyGoalProgressProps {
   weeklyGoalHours?: number;
@@ -11,6 +12,7 @@ interface WeeklyGoalProgressProps {
 
 export function WeeklyGoalProgress({ weeklyGoalHours = 20 }: WeeklyGoalProgressProps) {
   const { user } = useAuth();
+  const { t } = useTranslation();
   const [hoursCompleted, setHoursCompleted] = useState(0);
 
   useEffect(() => {
@@ -49,9 +51,9 @@ export function WeeklyGoalProgress({ weeklyGoalHours = 20 }: WeeklyGoalProgressP
         variant="teal"
       />
       <div>
-        <h3 className="font-semibold">Weekly Goal Progress</h3>
+        <h3 className="font-semibold">{t("dashboard.weeklyGoalProgress")}</h3>
         <p className="text-sm text-muted-foreground">
-          {hoursCompleted} / {weeklyGoalHours} hours completed
+          {hoursCompleted} / {weeklyGoalHours} {t("dashboard.hoursCompleted")}
         </p>
       </div>
     </GlassCard>

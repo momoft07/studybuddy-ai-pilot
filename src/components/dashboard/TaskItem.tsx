@@ -4,6 +4,7 @@ import { CheckCircle2, Circle, Clock, Flame } from "lucide-react";
 import { format, isToday, isBefore, parseISO } from "date-fns";
 import confetti from "canvas-confetti";
 import { toast } from "@/hooks/use-toast";
+import { useTranslation } from "react-i18next";
 
 interface TaskItemProps {
   id: string;
@@ -24,6 +25,7 @@ export function TaskItem({
   streakDays = 0,
   onToggle,
 }: TaskItemProps) {
+  const { t } = useTranslation();
   const [isAnimating, setIsAnimating] = useState(false);
   const isCompleted = status === "completed";
 
@@ -31,12 +33,12 @@ export function TaskItem({
     if (!dueDate) return null;
     const date = parseISO(dueDate);
     if (isToday(date)) {
-      return `Due today at ${format(date, "h:mm a")}`;
+      return `${t("common.dueToday")} ${format(date, "h:mm a")}`;
     }
     if (isBefore(date, new Date()) && !isCompleted) {
-      return `Overdue: ${format(date, "MMM d")}`;
+      return `${t("common.overdue")}: ${format(date, "MMM d")}`;
     }
-    return `Due ${format(date, "MMM d")}`;
+    return `${t("common.due")} ${format(date, "MMM d")}`;
   };
 
   const handleToggle = async () => {
@@ -53,8 +55,8 @@ export function TaskItem({
       });
       
       toast({
-        title: "🎉 Nice job!",
-        description: `"${title}" completed`,
+        title: `🎉 ${t("common.niceJob")}`,
+        description: `"${title}" ${t("common.completed")}`,
       });
     }
 
@@ -66,6 +68,12 @@ export function TaskItem({
     high: "bg-destructive/20 text-destructive border-destructive/30",
     medium: "bg-warning/20 text-warning border-warning/30",
     low: "bg-muted text-muted-foreground border-border",
+  };
+
+  const priorityLabels = {
+    high: t("common.high"),
+    medium: t("common.medium"),
+    low: t("common.low"),
   };
 
   const dueLabel = getDueLabel();
@@ -142,7 +150,7 @@ export function TaskItem({
             priorityStyles[priority as keyof typeof priorityStyles] || priorityStyles.low
           }`}
         >
-          {priority}
+          {priorityLabels[priority as keyof typeof priorityLabels] || priority}
         </span>
       </div>
     </motion.div>
