@@ -1,0 +1,195 @@
+{
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "close": "Close",
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "confirm": "Confirm",
+    "back": "Back",
+    "next": "Next",
+    "search": "Search",
+    "create": "Create",
+    "update": "Update",
+    "comingSoon": "Coming soon"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "notes": "Notes",
+    "flashcards": "Flashcards",
+    "tasks": "Tasks",
+    "focus": "Focus",
+    "calendar": "Calendar",
+    "studyPlan": "Study Plan",
+    "aiTutor": "AI Tutor",
+    "settings": "Settings",
+    "premium": "Premium"
+  },
+  "settings": {
+    "title": "Settings",
+    "subtitle": "Manage your account and preferences",
+    "profile": {
+      "title": "Profile",
+      "displayName": "Display Name",
+      "email": "Email",
+      "status": "Status",
+      "active": "Active",
+      "memberSince": "Member since",
+      "notSet": "Not set",
+      "updated": "Profile updated",
+      "updatedDesc": "Your display name has been saved."
+    },
+    "studyPreferences": {
+      "title": "Study Preferences",
+      "subtitle": "Customize your learning experience",
+      "weeklyGoal": "Weekly Study Goal",
+      "hoursPerWeek": "hrs/week",
+      "studyStyle": "Study Style",
+      "intensive": "Intensive",
+      "intensiveDesc": "Long focused sessions",
+      "balanced": "Balanced",
+      "balancedDesc": "Mix of focus & breaks",
+      "relaxed": "Relaxed",
+      "relaxedDesc": "Short sessions, more breaks",
+      "saved": "Preferences saved",
+      "savedDesc": "Your study preferences have been updated."
+    },
+    "appearance": {
+      "title": "Appearance",
+      "darkMode": "Dark Mode",
+      "darkModeDesc": "Use dark theme across the app",
+      "light": "Light",
+      "dark": "Dark"
+    },
+    "locale": {
+      "title": "Region & Language",
+      "timezone": "Timezone",
+      "timezoneDesc": "Used for calendar events and study reminders",
+      "language": "Language",
+      "languageDesc": "App interface language"
+    },
+    "notifications": {
+      "title": "Notifications",
+      "push": "Push Notifications",
+      "pushDesc": "Get notified about study reminders",
+      "emailDigest": "Email Digest",
+      "emailDigestDesc": "Weekly summary of your progress",
+      "saved": "Settings saved"
+    },
+    "security": {
+      "title": "Security",
+      "password": "Password",
+      "passwordDesc": "Change your account password",
+      "change": "Change",
+      "changePassword": "Change Password",
+      "newPassword": "New Password",
+      "confirmPassword": "Confirm Password",
+      "passwordUpdated": "Password updated",
+      "passwordUpdatedDesc": "Your password has been changed successfully.",
+      "twoFactor": "Two-Factor Authentication",
+      "twoFactorDesc": "Add an extra layer of security",
+      "enable": "Enable",
+      "disable": "Disable",
+      "activeSessions": "Active Sessions",
+      "activeSessionsDesc": "Manage your logged-in devices",
+      "currentSession": "Current session",
+      "lastActive": "Last active"
+    },
+    "accessibility": {
+      "title": "Accessibility",
+      "subtitle": "Customize your experience",
+      "fontSize": "Font Size",
+      "small": "Small",
+      "medium": "Medium",
+      "large": "Large",
+      "extraLarge": "Extra Large",
+      "reducedMotion": "Reduced Motion",
+      "reducedMotionDesc": "Minimize animations for motion sensitivity",
+      "highContrast": "High Contrast",
+      "highContrastDesc": "Increase contrast for better visibility"
+    },
+    "integrations": {
+      "title": "Integrations",
+      "subtitle": "Connect external services",
+      "googleCalendar": "Google Calendar",
+      "googleCalendarDesc": "Sync study sessions with Google Calendar",
+      "connect": "Connect",
+      "disconnect": "Disconnect",
+      "connected": "Connected",
+      "notConnected": "Not connected"
+    },
+    "dataExport": {
+      "title": "Data Export",
+      "subtitle": "Download all your data (GDPR compliant)",
+      "description": "Export includes: notes, flashcards, tasks, study plans, courses, and session history.",
+      "exportJson": "Export JSON",
+      "exportCsv": "Export CSV",
+      "complete": "Export complete",
+      "completeDesc": "Your data has been exported."
+    },
+    "shortcuts": {
+      "title": "Keyboard Shortcuts",
+      "subtitle": "Quick reference for power users",
+      "navigation": "Navigation",
+      "actions": "Actions",
+      "focusMode": "Focus Mode",
+      "flashcards": "Flashcards"
+    },
+    "premium": {
+      "title": "Upgrade to Premium",
+      "subtitle": "Unlock all features & AI tools",
+      "price": "€5/mo"
+    },
+    "signOut": {
+      "button": "Sign Out",
+      "title": "Sign out of StudyPilot?",
+      "description": "You'll need to sign in again to access your account. Any unsaved changes will be lost.",
+      "success": "Signed out",
+      "successDesc": "You have been signed out successfully."
+    },
+    "dangerZone": {
+      "title": "Danger Zone",
+      "deleteAccount": "Delete Account",
+      "deleteAccountDesc": "Permanently delete your account and all data",
+      "deleteTitle": "Delete Account",
+      "deleteWarning": "This action is permanent and irreversible. All your data will be deleted, including:",
+      "deleteList": {
+        "notes": "All notes and flashcards",
+        "plans": "Study plans and progress",
+        "tasks": "Tasks and reminders",
+        "settings": "Account settings and preferences"
+      },
+      "accountToDelete": "Account to be deleted:",
+      "typeToConfirm": "Type {{text}} to confirm:",
+      "deleteButton": "Delete My Account"
+    },
+    "footer": {
+      "privacy": "Privacy Policy",
+      "terms": "Terms of Service",
+      "help": "Help Center"
+    }
+  },
+  "dashboard": {
+    "welcome": "Welcome back",
+    "todaysFocus": "Today's Focus",
+    "weeklyProgress": "Weekly Progress",
+    "studyHours": "Study Hours",
+    "tasksCompleted": "Tasks Completed",
+    "cardsReviewed": "Cards Reviewed",
+    "streak": "Day Streak"
+  },
+  "auth": {
+    "signIn": "Sign In",
+    "signUp": "Sign Up",
+    "email": "Email",
+    "password": "Password",
+    "forgotPassword": "Forgot password?",
+    "noAccount": "Don't have an account?",
+    "hasAccount": "Already have an account?",
+    "welcomeBack": "Welcome back",
+    "signInSubtitle": "Sign in to continue your studies"
+  }
+}

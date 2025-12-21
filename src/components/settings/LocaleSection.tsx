@@ -10,14 +10,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-
-const LOCALE_KEY = "studypilot-locale";
+import { useTranslation } from "react-i18next";
 
 const timezones = [
   { value: "UTC", label: "UTC (Coordinated Universal Time)" },
   { value: "Europe/London", label: "London (GMT/BST)" },
   { value: "Europe/Paris", label: "Paris (CET/CEST)" },
   { value: "Europe/Berlin", label: "Berlin (CET/CEST)" },
+  { value: "Europe/Amsterdam", label: "Amsterdam (CET/CEST)" },
   { value: "America/New_York", label: "New York (EST/EDT)" },
   { value: "America/Chicago", label: "Chicago (CST/CDT)" },
   { value: "America/Los_Angeles", label: "Los Angeles (PST/PDT)" },
@@ -30,47 +30,36 @@ const timezones = [
 const languages = [
   { value: "en", label: "English", flag: "🇬🇧" },
   { value: "de", label: "Deutsch", flag: "🇩🇪" },
+  { value: "nl", label: "Nederlands", flag: "🇳🇱" },
   { value: "fr", label: "Français", flag: "🇫🇷" },
   { value: "es", label: "Español", flag: "🇪🇸" },
-  { value: "it", label: "Italiano", flag: "🇮🇹" },
-  { value: "pt", label: "Português", flag: "🇵🇹" },
-  { value: "zh", label: "中文", flag: "🇨🇳" },
-  { value: "ja", label: "日本語", flag: "🇯🇵" },
 ];
 
-interface LocaleSettings {
-  timezone: string;
-  language: string;
-}
-
 export function LocaleSection() {
-  const [settings, setSettings] = useState<LocaleSettings>({
-    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC",
-    language: "en",
-  });
+  const { t, i18n } = useTranslation();
+  const [timezone, setTimezone] = useState(
+    () => localStorage.getItem("studypilot-timezone") || 
+    Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC"
+  );
   const { toast } = useToast();
 
-  useEffect(() => {
-    const stored = localStorage.getItem(LOCALE_KEY);
-    if (stored) {
-      try {
-        setSettings(JSON.parse(stored));
-      } catch {
-        // ignore
-      }
-    }
-  }, []);
+  const currentLanguage = i18n.language?.split("-")[0] || "en";
 
-  const updateSetting = (key: keyof LocaleSettings, value: string) => {
-    const newSettings = { ...settings, [key]: value };
-    setSettings(newSettings);
-    localStorage.setItem(LOCALE_KEY, JSON.stringify(newSettings));
-
+  const handleTimezoneChange = (value: string) => {
+    setTimezone(value);
+    localStorage.setItem("studypilot-timezone", value);
     toast({
-      title: "Settings saved",
-      description: key === "timezone" 
-        ? "Timezone updated. Times will reflect your selection."
-        : "Language preference saved.",
+      title: t("settings.notifications.saved"),
+      description: t("settings.locale.timezoneDesc"),
+    });
+  };
+
+  const handleLanguageChange = (value: string) => {
+    i18n.changeLanguage(value);
+    localStorage.setItem("studypilot-language", value);
+    toast({
+      title: t("settings.notifications.saved"),
+      description: `Language changed to ${languages.find(l => l.value === value)?.label}`,
     });
   };
 
@@ -80,7 +69,7 @@ export function LocaleSection() {
         <div className="rounded-lg bg-secondary p-2">
           <Globe className="h-5 w-5 text-secondary-foreground" />
         </div>
-        <h2 className="text-lg font-semibold">Region & Language</h2>
+        <h2 className="text-lg font-semibold">{t("settings.locale.title")}</h2>
       </div>
 
       <div className="space-y-5">
@@ -88,12 +77,9 @@ export function LocaleSection() {
         <div className="space-y-2">
           <Label className="text-sm font-medium flex items-center gap-2">
             <Globe className="h-4 w-4 text-muted-foreground" />
-            Timezone
+            {t("settings.locale.timezone")}
           </Label>
-          <Select
-            value={settings.timezone}
-            onValueChange={(value) => updateSetting("timezone", value)}
-          >
+          <Select value={timezone} onValueChange={handleTimezoneChange}>
             <SelectTrigger className="w-full">
               <SelectValue placeholder="Select timezone" />
             </SelectTrigger>
@@ -106,7 +92,7 @@ export function LocaleSection() {
             </SelectContent>
           </Select>
           <p className="text-xs text-muted-foreground">
-            Used for calendar events and study reminders
+            {t("settings.locale.timezoneDesc")}
           </p>
         </div>
 
@@ -114,12 +100,9 @@ export function LocaleSection() {
         <div className="space-y-2">
           <Label className="text-sm font-medium flex items-center gap-2">
             <Languages className="h-4 w-4 text-muted-foreground" />
-            Language
+            {t("settings.locale.language")}
           </Label>
-          <Select
-            value={settings.language}
-            onValueChange={(value) => updateSetting("language", value)}
-          >
+          <Select value={currentLanguage} onValueChange={handleLanguageChange}>
             <SelectTrigger className="w-full">
               <SelectValue placeholder="Select language" />
             </SelectTrigger>
@@ -135,7 +118,7 @@ export function LocaleSection() {
             </SelectContent>
           </Select>
           <p className="text-xs text-muted-foreground">
-            App interface language (coming soon)
+            {t("settings.locale.languageDesc")}
           </p>
         </div>
       </div>

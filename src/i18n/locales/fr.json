@@ -1,0 +1,195 @@
+{
+  "common": {
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "close": "Fermer",
+    "loading": "Chargement...",
+    "error": "Erreur",
+    "success": "Succès",
+    "confirm": "Confirmer",
+    "back": "Retour",
+    "next": "Suivant",
+    "search": "Rechercher",
+    "create": "Créer",
+    "update": "Mettre à jour",
+    "comingSoon": "Bientôt disponible"
+  },
+  "nav": {
+    "dashboard": "Tableau de bord",
+    "notes": "Notes",
+    "flashcards": "Flashcards",
+    "tasks": "Tâches",
+    "focus": "Focus",
+    "calendar": "Calendrier",
+    "studyPlan": "Plan d'étude",
+    "aiTutor": "Tuteur IA",
+    "settings": "Paramètres",
+    "premium": "Premium"
+  },
+  "settings": {
+    "title": "Paramètres",
+    "subtitle": "Gérez votre compte et vos préférences",
+    "profile": {
+      "title": "Profil",
+      "displayName": "Nom d'affichage",
+      "email": "E-mail",
+      "status": "Statut",
+      "active": "Actif",
+      "memberSince": "Membre depuis",
+      "notSet": "Non défini",
+      "updated": "Profil mis à jour",
+      "updatedDesc": "Votre nom d'affichage a été enregistré."
+    },
+    "studyPreferences": {
+      "title": "Préférences d'étude",
+      "subtitle": "Personnalisez votre expérience d'apprentissage",
+      "weeklyGoal": "Objectif d'étude hebdomadaire",
+      "hoursPerWeek": "h/semaine",
+      "studyStyle": "Style d'étude",
+      "intensive": "Intensif",
+      "intensiveDesc": "Longues sessions concentrées",
+      "balanced": "Équilibré",
+      "balancedDesc": "Mix de focus & pauses",
+      "relaxed": "Détendu",
+      "relaxedDesc": "Sessions courtes, plus de pauses",
+      "saved": "Préférences enregistrées",
+      "savedDesc": "Vos préférences d'étude ont été mises à jour."
+    },
+    "appearance": {
+      "title": "Apparence",
+      "darkMode": "Mode sombre",
+      "darkModeDesc": "Utiliser le thème sombre dans toute l'application",
+      "light": "Clair",
+      "dark": "Sombre"
+    },
+    "locale": {
+      "title": "Région & Langue",
+      "timezone": "Fuseau horaire",
+      "timezoneDesc": "Pour les événements du calendrier et les rappels d'étude",
+      "language": "Langue",
+      "languageDesc": "Langue de l'interface de l'application"
+    },
+    "notifications": {
+      "title": "Notifications",
+      "push": "Notifications push",
+      "pushDesc": "Recevoir des rappels pour étudier",
+      "emailDigest": "Résumé par e-mail",
+      "emailDigestDesc": "Résumé hebdomadaire de vos progrès",
+      "saved": "Paramètres enregistrés"
+    },
+    "security": {
+      "title": "Sécurité",
+      "password": "Mot de passe",
+      "passwordDesc": "Modifier le mot de passe de votre compte",
+      "change": "Modifier",
+      "changePassword": "Changer le mot de passe",
+      "newPassword": "Nouveau mot de passe",
+      "confirmPassword": "Confirmer le mot de passe",
+      "passwordUpdated": "Mot de passe mis à jour",
+      "passwordUpdatedDesc": "Votre mot de passe a été modifié avec succès.",
+      "twoFactor": "Authentification à deux facteurs",
+      "twoFactorDesc": "Ajouter une couche de sécurité supplémentaire",
+      "enable": "Activer",
+      "disable": "Désactiver",
+      "activeSessions": "Sessions actives",
+      "activeSessionsDesc": "Gérer vos appareils connectés",
+      "currentSession": "Session actuelle",
+      "lastActive": "Dernière activité"
+    },
+    "accessibility": {
+      "title": "Accessibilité",
+      "subtitle": "Personnalisez votre expérience",
+      "fontSize": "Taille de police",
+      "small": "Petit",
+      "medium": "Moyen",
+      "large": "Grand",
+      "extraLarge": "Très grand",
+      "reducedMotion": "Mouvement réduit",
+      "reducedMotionDesc": "Minimiser les animations pour la sensibilité au mouvement",
+      "highContrast": "Contraste élevé",
+      "highContrastDesc": "Augmenter le contraste pour une meilleure visibilité"
+    },
+    "integrations": {
+      "title": "Intégrations",
+      "subtitle": "Connecter des services externes",
+      "googleCalendar": "Google Agenda",
+      "googleCalendarDesc": "Synchroniser les sessions d'étude avec Google Agenda",
+      "connect": "Connecter",
+      "disconnect": "Déconnecter",
+      "connected": "Connecté",
+      "notConnected": "Non connecté"
+    },
+    "dataExport": {
+      "title": "Export de données",
+      "subtitle": "Télécharger toutes vos données (conforme RGPD)",
+      "description": "L'export inclut : notes, flashcards, tâches, plans d'étude, cours et historique des sessions.",
+      "exportJson": "Exporter JSON",
+      "exportCsv": "Exporter CSV",
+      "complete": "Export terminé",
+      "completeDesc": "Vos données ont été exportées."
+    },
+    "shortcuts": {
+      "title": "Raccourcis clavier",
+      "subtitle": "Référence rapide pour les utilisateurs avancés",
+      "navigation": "Navigation",
+      "actions": "Actions",
+      "focusMode": "Mode focus",
+      "flashcards": "Flashcards"
+    },
+    "premium": {
+      "title": "Passer à Premium",
+      "subtitle": "Débloquer toutes les fonctionnalités & outils IA",
+      "price": "5€/mois"
+    },
+    "signOut": {
+      "button": "Se déconnecter",
+      "title": "Se déconnecter de StudyPilot ?",
+      "description": "Vous devrez vous reconnecter pour accéder à votre compte. Les modifications non enregistrées seront perdues.",
+      "success": "Déconnecté",
+      "successDesc": "Vous avez été déconnecté avec succès."
+    },
+    "dangerZone": {
+      "title": "Zone de danger",
+      "deleteAccount": "Supprimer le compte",
+      "deleteAccountDesc": "Supprimer définitivement votre compte et toutes vos données",
+      "deleteTitle": "Supprimer le compte",
+      "deleteWarning": "Cette action est permanente et irréversible. Toutes vos données seront supprimées, y compris :",
+      "deleteList": {
+        "notes": "Toutes les notes et flashcards",
+        "plans": "Plans d'étude et progrès",
+        "tasks": "Tâches et rappels",
+        "settings": "Paramètres et préférences du compte"
+      },
+      "accountToDelete": "Compte à supprimer :",
+      "typeToConfirm": "Tapez {{text}} pour confirmer :",
+      "deleteButton": "Supprimer mon compte"
+    },
+    "footer": {
+      "privacy": "Politique de confidentialité",
+      "terms": "Conditions d'utilisation",
+      "help": "Centre d'aide"
+    }
+  },
+  "dashboard": {
+    "welcome": "Bon retour",
+    "todaysFocus": "Focus du jour",
+    "weeklyProgress": "Progrès hebdomadaire",
+    "studyHours": "Heures d'étude",
+    "tasksCompleted": "Tâches terminées",
+    "cardsReviewed": "Cartes révisées",
+    "streak": "Jours consécutifs"
+  },
+  "auth": {
+    "signIn": "Se connecter",
+    "signUp": "S'inscrire",
+    "email": "E-mail",
+    "password": "Mot de passe",
+    "forgotPassword": "Mot de passe oublié ?",
+    "noAccount": "Pas encore de compte ?",
+    "hasAccount": "Déjà un compte ?",
+    "welcomeBack": "Bon retour",
+    "signInSubtitle": "Connectez-vous pour continuer vos études"
+  }
+}

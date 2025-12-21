@@ -1,0 +1,195 @@
+{
+  "common": {
+    "save": "Opslaan",
+    "cancel": "Annuleren",
+    "delete": "Verwijderen",
+    "edit": "Bewerken",
+    "close": "Sluiten",
+    "loading": "Laden...",
+    "error": "Fout",
+    "success": "Succes",
+    "confirm": "Bevestigen",
+    "back": "Terug",
+    "next": "Volgende",
+    "search": "Zoeken",
+    "create": "Aanmaken",
+    "update": "Bijwerken",
+    "comingSoon": "Binnenkort"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "notes": "Notities",
+    "flashcards": "Flashcards",
+    "tasks": "Taken",
+    "focus": "Focus",
+    "calendar": "Kalender",
+    "studyPlan": "Studieplan",
+    "aiTutor": "AI-Tutor",
+    "settings": "Instellingen",
+    "premium": "Premium"
+  },
+  "settings": {
+    "title": "Instellingen",
+    "subtitle": "Beheer je account en voorkeuren",
+    "profile": {
+      "title": "Profiel",
+      "displayName": "Weergavenaam",
+      "email": "E-mail",
+      "status": "Status",
+      "active": "Actief",
+      "memberSince": "Lid sinds",
+      "notSet": "Niet ingesteld",
+      "updated": "Profiel bijgewerkt",
+      "updatedDesc": "Je weergavenaam is opgeslagen."
+    },
+    "studyPreferences": {
+      "title": "Studievoorkeuren",
+      "subtitle": "Personaliseer je leerervaring",
+      "weeklyGoal": "Wekelijks Studiedoel",
+      "hoursPerWeek": "uur/week",
+      "studyStyle": "Studiestijl",
+      "intensive": "Intensief",
+      "intensiveDesc": "Lange focus-sessies",
+      "balanced": "Gebalanceerd",
+      "balancedDesc": "Mix van focus & pauzes",
+      "relaxed": "Ontspannen",
+      "relaxedDesc": "Korte sessies, meer pauzes",
+      "saved": "Voorkeuren opgeslagen",
+      "savedDesc": "Je studievoorkeuren zijn bijgewerkt."
+    },
+    "appearance": {
+      "title": "Uiterlijk",
+      "darkMode": "Donkere modus",
+      "darkModeDesc": "Gebruik donker thema in de hele app",
+      "light": "Licht",
+      "dark": "Donker"
+    },
+    "locale": {
+      "title": "Regio & Taal",
+      "timezone": "Tijdzone",
+      "timezoneDesc": "Voor agenda-afspraken en studie-herinneringen",
+      "language": "Taal",
+      "languageDesc": "Taal van de app-interface"
+    },
+    "notifications": {
+      "title": "Meldingen",
+      "push": "Pushmeldingen",
+      "pushDesc": "Ontvang herinneringen om te studeren",
+      "emailDigest": "E-mail samenvatting",
+      "emailDigestDesc": "Wekelijkse samenvatting van je voortgang",
+      "saved": "Instellingen opgeslagen"
+    },
+    "security": {
+      "title": "Beveiliging",
+      "password": "Wachtwoord",
+      "passwordDesc": "Wijzig je accountwachtwoord",
+      "change": "Wijzigen",
+      "changePassword": "Wachtwoord wijzigen",
+      "newPassword": "Nieuw wachtwoord",
+      "confirmPassword": "Wachtwoord bevestigen",
+      "passwordUpdated": "Wachtwoord bijgewerkt",
+      "passwordUpdatedDesc": "Je wachtwoord is succesvol gewijzigd.",
+      "twoFactor": "Tweefactorauthenticatie",
+      "twoFactorDesc": "Voeg een extra beveiligingslaag toe",
+      "enable": "Inschakelen",
+      "disable": "Uitschakelen",
+      "activeSessions": "Actieve sessies",
+      "activeSessionsDesc": "Beheer je ingelogde apparaten",
+      "currentSession": "Huidige sessie",
+      "lastActive": "Laatst actief"
+    },
+    "accessibility": {
+      "title": "Toegankelijkheid",
+      "subtitle": "Pas je ervaring aan",
+      "fontSize": "Lettergrootte",
+      "small": "Klein",
+      "medium": "Gemiddeld",
+      "large": "Groot",
+      "extraLarge": "Extra groot",
+      "reducedMotion": "Verminderde beweging",
+      "reducedMotionDesc": "Minimaliseer animaties voor bewegingsgevoeligheid",
+      "highContrast": "Hoog contrast",
+      "highContrastDesc": "Verhoog contrast voor betere zichtbaarheid"
+    },
+    "integrations": {
+      "title": "Integraties",
+      "subtitle": "Verbind externe diensten",
+      "googleCalendar": "Google Agenda",
+      "googleCalendarDesc": "Synchroniseer studiesessies met Google Agenda",
+      "connect": "Verbinden",
+      "disconnect": "Loskoppelen",
+      "connected": "Verbonden",
+      "notConnected": "Niet verbonden"
+    },
+    "dataExport": {
+      "title": "Gegevensexport",
+      "subtitle": "Download al je gegevens (AVG-conform)",
+      "description": "Export bevat: notities, flashcards, taken, studieplannen, cursussen en sessiegeschiedenis.",
+      "exportJson": "Exporteer JSON",
+      "exportCsv": "Exporteer CSV",
+      "complete": "Export voltooid",
+      "completeDesc": "Je gegevens zijn geëxporteerd."
+    },
+    "shortcuts": {
+      "title": "Sneltoetsen",
+      "subtitle": "Snelle referentie voor powergebruikers",
+      "navigation": "Navigatie",
+      "actions": "Acties",
+      "focusMode": "Focusmodus",
+      "flashcards": "Flashcards"
+    },
+    "premium": {
+      "title": "Upgrade naar Premium",
+      "subtitle": "Ontgrendel alle functies & AI-tools",
+      "price": "€5/maand"
+    },
+    "signOut": {
+      "button": "Uitloggen",
+      "title": "Uitloggen bij StudyPilot?",
+      "description": "Je moet opnieuw inloggen om toegang te krijgen tot je account. Niet-opgeslagen wijzigingen gaan verloren.",
+      "success": "Uitgelogd",
+      "successDesc": "Je bent succesvol uitgelogd."
+    },
+    "dangerZone": {
+      "title": "Gevarenzone",
+      "deleteAccount": "Account verwijderen",
+      "deleteAccountDesc": "Verwijder je account en alle gegevens permanent",
+      "deleteTitle": "Account verwijderen",
+      "deleteWarning": "Deze actie is permanent en onomkeerbaar. Al je gegevens worden verwijderd, inclusief:",
+      "deleteList": {
+        "notes": "Alle notities en flashcards",
+        "plans": "Studieplannen en voortgang",
+        "tasks": "Taken en herinneringen",
+        "settings": "Accountinstellingen en voorkeuren"
+      },
+      "accountToDelete": "Te verwijderen account:",
+      "typeToConfirm": "Typ {{text}} om te bevestigen:",
+      "deleteButton": "Verwijder mijn account"
+    },
+    "footer": {
+      "privacy": "Privacybeleid",
+      "terms": "Gebruiksvoorwaarden",
+      "help": "Helpcentrum"
+    }
+  },
+  "dashboard": {
+    "welcome": "Welkom terug",
+    "todaysFocus": "Vandaag's focus",
+    "weeklyProgress": "Wekelijkse voortgang",
+    "studyHours": "Studie-uren",
+    "tasksCompleted": "Taken voltooid",
+    "cardsReviewed": "Kaarten bekeken",
+    "streak": "Dagen reeks"
+  },
+  "auth": {
+    "signIn": "Inloggen",
+    "signUp": "Registreren",
+    "email": "E-mail",
+    "password": "Wachtwoord",
+    "forgotPassword": "Wachtwoord vergeten?",
+    "noAccount": "Nog geen account?",
+    "hasAccount": "Al een account?",
+    "welcomeBack": "Welkom terug",
+    "signInSubtitle": "Log in om verder te studeren"
+  }
+}
