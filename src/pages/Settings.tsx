@@ -9,6 +9,9 @@ import { AppearanceSection } from "@/components/settings/AppearanceSection";
 import { NotificationsSection } from "@/components/settings/NotificationsSection";
 import { SecuritySection } from "@/components/settings/SecuritySection";
 import { StudyPreferencesSection } from "@/components/settings/StudyPreferencesSection";
+import { LocaleSection } from "@/components/settings/LocaleSection";
+import { DataExportSection } from "@/components/settings/DataExportSection";
+import { KeyboardShortcutsSection } from "@/components/settings/KeyboardShortcutsSection";
 import { PremiumCard } from "@/components/settings/PremiumCard";
 import { DangerZoneSection } from "@/components/settings/DangerZoneSection";
 import { SignOutButton } from "@/components/settings/SignOutButton";
@@ -57,15 +60,25 @@ export default function SettingsPage() {
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.08,
+        staggerChildren: 0.06,
       },
     },
   };
 
   const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
+    hidden: { opacity: 0, y: 16 },
     visible: { opacity: 1, y: 0 },
   };
+
+  const SectionSkeleton = () => (
+    <div className="glass rounded-2xl p-6 space-y-4">
+      <div className="flex items-center gap-3">
+        <Skeleton className="h-10 w-10 rounded-lg" />
+        <Skeleton className="h-5 w-32" />
+      </div>
+      <Skeleton className="h-12 w-full" />
+    </div>
+  );
 
   return (
     <AppLayout>
@@ -116,11 +129,7 @@ export default function SettingsPage() {
         {/* Study Preferences Section */}
         <motion.div variants={itemVariants}>
           {isLoading ? (
-            <div className="glass rounded-2xl p-6 space-y-4">
-              <Skeleton className="h-10 w-48" />
-              <Skeleton className="h-8 w-full" />
-              <Skeleton className="h-24 w-full" />
-            </div>
+            <SectionSkeleton />
           ) : user ? (
             <StudyPreferencesSection
               userId={user.id}
@@ -140,6 +149,13 @@ export default function SettingsPage() {
 
         <Separator className="bg-border/50" />
 
+        {/* Region & Language Section */}
+        <motion.div variants={itemVariants}>
+          <LocaleSection />
+        </motion.div>
+
+        <Separator className="bg-border/50" />
+
         {/* Notifications Section */}
         <motion.div variants={itemVariants}>
           <NotificationsSection />
@@ -150,6 +166,20 @@ export default function SettingsPage() {
         {/* Security Section */}
         <motion.div variants={itemVariants}>
           <SecuritySection />
+        </motion.div>
+
+        <Separator className="bg-border/50" />
+
+        {/* Data Export Section */}
+        <motion.div variants={itemVariants}>
+          {user && <DataExportSection userId={user.id} />}
+        </motion.div>
+
+        <Separator className="bg-border/50" />
+
+        {/* Keyboard Shortcuts Section */}
+        <motion.div variants={itemVariants}>
+          <KeyboardShortcutsSection />
         </motion.div>
 
         <Separator className="bg-border/50" />
