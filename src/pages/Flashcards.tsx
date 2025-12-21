@@ -32,6 +32,7 @@ import { StudyModeDialog, StudyMode } from "@/components/flashcards/StudyModeDia
 import { DeckPreviewDialog } from "@/components/flashcards/DeckPreviewDialog";
 import { DeckStatsDialog } from "@/components/flashcards/DeckStatsDialog";
 import { SessionResults } from "@/components/flashcards/SessionResults";
+import { AIGeneratorDialog } from "@/components/flashcards/AIGeneratorDialog";
 
 interface FlashcardDeck {
   id: string;
@@ -98,6 +99,10 @@ export default function FlashcardsPage() {
   }>({ show: false, correctCount: 0, incorrectCount: 0 });
   const [sessionCorrectCount, setSessionCorrectCount] = useState(0);
   const [sessionIncorrectCount, setSessionIncorrectCount] = useState(0);
+  const [aiGeneratorDialog, setAIGeneratorDialog] = useState<{ isOpen: boolean; deck: FlashcardDeck | null }>({
+    isOpen: false,
+    deck: null,
+  });
 
   useEffect(() => {
     if (user) {
@@ -682,6 +687,7 @@ export default function FlashcardsPage() {
                   }}
                   onEdit={() => toast.info("Edit feature coming soon!")}
                   onDuplicate={() => handleDuplicateDeck(deck)}
+                  onGenerateAI={() => setAIGeneratorDialog({ isOpen: true, deck })}
                   onDelete={() => setDeleteDialog({ isOpen: true, deck })}
                   onPreview={() => setPreviewDialog({ isOpen: true, deck })}
                   onViewStats={() => setStatsDialog({ isOpen: true, deck })}
@@ -760,6 +766,18 @@ export default function FlashcardsPage() {
             stats={deckStats[statsDialog.deck.id] || { dueToday: 0, mastered: 0, learning: 0, masteryPercent: 0 }}
             createdAt={statsDialog.deck.created_at}
             lastStudied={statsDialog.deck.updated_at}
+          />
+        )}
+
+        {/* AI Generator Dialog */}
+        {aiGeneratorDialog.deck && user && (
+          <AIGeneratorDialog
+            open={aiGeneratorDialog.isOpen}
+            onOpenChange={(open) => !open && setAIGeneratorDialog({ isOpen: false, deck: null })}
+            deckId={aiGeneratorDialog.deck.id}
+            deckName={aiGeneratorDialog.deck.name}
+            userId={user.id}
+            onCardsAdded={fetchDecks}
           />
         )}
       </div>
