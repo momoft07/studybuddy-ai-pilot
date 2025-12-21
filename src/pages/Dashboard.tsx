@@ -5,6 +5,8 @@ import { StatCard } from "@/components/ui/stat-card";
 import { ProgressRing } from "@/components/ui/progress-ring";
 import { GradientButton } from "@/components/ui/gradient-button";
 import { CalendarWidget } from "@/components/dashboard/CalendarWidget";
+import { WeeklyGoalProgress } from "@/components/dashboard/WeeklyGoalProgress";
+import { StudyHoursChart } from "@/components/dashboard/StudyHoursChart";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import {
@@ -20,7 +22,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { Link } from "react-router-dom";
-import { format } from "date-fns";
+import { format, startOfWeek, endOfWeek } from "date-fns";
 
 interface Task {
   id: string;
@@ -34,6 +36,7 @@ interface Profile {
   full_name: string | null;
   streak_count: number;
   progress_score: number;
+  weekly_study_hours: number;
 }
 
 export default function Dashboard() {
@@ -41,6 +44,8 @@ export default function Dashboard() {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [todaysTasks, setTodaysTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
+  const [weeklyStats, setWeeklyStats] = useState({ hours: 0, sessions: 0, goalsHit: 0 });
+  const [flashcardsReviewed, setFlashcardsReviewed] = useState(0);
 
   useEffect(() => {
     if (user) {
@@ -53,12 +58,51 @@ export default function Dashboard() {
       // Fetch profile
       const { data: profileData } = await supabase
         .from("profiles")
-        .select("full_name, streak_count, progress_score")
+        .select("full_name, streak_count, progress_score, weekly_study_hours")
         .eq("user_id", user?.id)
         .maybeSingle();
 
       if (profileData) {
         setProfile(profileData);
+      }
+
+      // Fetch weekly study stats
+      const weekStart = startOfWeek(new Date(), { weekStartsOn: 1 }).toISOString();
+      const weekEnd = endOfWeek(new Date(), { weekStartsOn: 1 }).toISOString();
+      
+      const { data: sessionsData } = await supabase
+        .from("pomodoro_sessions")
+        .select("duration_minutes, completed")
+        .eq("user_id", user?.id)
+        .gte("started_at", weekStart)
+        .lte("started_at", weekEnd);
+      
+      if (sessionsData) {
+        const completedSessions = sessionsData.filter(s => s.completed);
+        const totalMinutes = completedSessions.reduce((acc, s) => acc + s.duration_minutes, 0);
+        const targetHours = profileData?.weekly_study_hours || 20;
+        const goalsHitPercentage = Math.min(Math.round((totalMinutes / 60 / targetHours) * 100), 100);
+        
+        setWeeklyStats({
+          hours: Number((totalMinutes / 60).toFixed(1)),
+          sessions: completedSessions.length,
+          goalsHit: goalsHitPercentage,
+        });
+      }
+
+      // Fetch flashcards reviewed today
+      const todayStart = new Date();
+      todayStart.setHours(0, 0, 0, 0);
+      
+      const { data: flashcardsData } = await supabase
+        .from("flashcards")
+        .select("review_count")
+        .eq("user_id", user?.id)
+        .gte("updated_at", todayStart.toISOString());
+      
+      if (flashcardsData) {
+        const total = flashcardsData.reduce((acc, f) => acc + (f.review_count || 0), 0);
+        setFlashcardsReviewed(total);
       }
 
       // Fetch today's tasks
@@ -141,29 +185,37 @@ export default function Dashboard() {
         {/* Stats Grid */}
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           <StatCard
-            title="Current Streak"
+            title="Study Streak"
             value={`${profile?.streak_count || 0} days`}
             icon={Flame}
             trend={{ value: 12, isPositive: true }}
           />
           <StatCard
-            title="Progress Score"
-            value={profile?.progress_score || 0}
-            subtitle="out of 100"
-            icon={Target}
-          />
-          <StatCard
-            title="Study Sessions"
-            value="0"
-            subtitle="this week"
+            title="This Week"
+            value={`${weeklyStats.hours} hrs`}
+            subtitle={`${weeklyStats.sessions} sessions`}
             icon={Clock}
           />
           <StatCard
+            title="Goals Hit"
+            value={`${weeklyStats.goalsHit}%`}
+            subtitle="weekly target"
+            icon={Target}
+          />
+          <StatCard
             title="Cards Reviewed"
-            value="0"
+            value={flashcardsReviewed}
             subtitle="today"
             icon={Brain}
           />
+        </div>
+
+        {/* Study Hours Chart */}
+        <div className="grid gap-6 lg:grid-cols-3">
+          <div className="lg:col-span-2">
+            <StudyHoursChart />
+          </div>
+          <WeeklyGoalProgress weeklyGoalHours={profile?.weekly_study_hours || 20} />
         </div>
 
         {/* Main Content Grid */}
