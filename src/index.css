@@ -86,7 +86,45 @@
     --sidebar-ring: 220 100% 60%;
   }
 
-  /* Same for dark mode (default) */
+  /* Light mode */
+  .light {
+    --background: 220 20% 98%;
+    --foreground: 230 30% 10%;
+    --card: 0 0% 100%;
+    --card-foreground: 230 30% 10%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 230 30% 10%;
+    --primary: 220 100% 50%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 180 80% 40%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 220 15% 92%;
+    --muted-foreground: 220 10% 40%;
+    --accent: 270 80% 55%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 85% 55%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 220 15% 88%;
+    --input: 220 15% 92%;
+    --ring: 220 100% 50%;
+    --success: 160 80% 35%;
+    --success-foreground: 0 0% 100%;
+    --warning: 45 90% 45%;
+    --warning-foreground: 0 0% 100%;
+    --glass-bg: 0 0% 100% / 0.9;
+    --glass-border: 220 15% 85% / 0.8;
+    --glass-highlight: 220 100% 60% / 0.05;
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 230 30% 10%;
+    --sidebar-primary: 220 100% 50%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 220 15% 95%;
+    --sidebar-accent-foreground: 230 30% 10%;
+    --sidebar-border: 220 15% 88%;
+    --sidebar-ring: 220 100% 50%;
+  }
+
+  /* Dark mode (default) */
   .dark {
     --background: 230 30% 6%;
     --foreground: 220 20% 98%;
@@ -253,6 +291,12 @@
     box-shadow: 
       0 0 10px hsl(var(--glow-primary) / 0.4),
       0 0 20px hsl(var(--glow-primary) / 0.2);
+  }
+
+  .glow-accent-sm {
+    box-shadow: 
+      0 0 10px hsl(var(--glow-accent) / 0.4),
+      0 0 20px hsl(var(--glow-accent) / 0.2);
   }
 
   /* Neon border with gradient */
