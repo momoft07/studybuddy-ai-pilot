@@ -16,6 +16,7 @@ import {
   Search,
   MoreVertical,
   Trash2,
+  Crown,
 } from "lucide-react";
 import {
   Dialog,
@@ -30,7 +31,11 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { format } from "date-fns";
+import { VoiceInput } from "@/components/notes/VoiceInput";
+import { PdfUpload } from "@/components/notes/PdfUpload";
+import { Badge } from "@/components/ui/badge";
 
 interface Note {
   id: string;
@@ -47,7 +52,8 @@ export default function NotesPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [newNote, setNewNote] = useState({ title: "", content: "" });
-  const [summarizing, setSummarizing] = useState(false);
+  const [summarizing, setSummarizing] = useState<string | null>(null);
+  const [createTab, setCreateTab] = useState<"write" | "upload">("write");
 
   useEffect(() => {
     if (user) {
@@ -115,12 +121,60 @@ export default function NotesPage() {
     }
   };
 
-  const handleSummarize = async (noteId: string) => {
-    setSummarizing(true);
-    toast.info("AI summarization coming soon! This feature will use Lovable AI.");
-    setTimeout(() => {
-      setSummarizing(false);
-    }, 2000);
+  const handleSummarize = async (noteId: string, content: string | null) => {
+    if (!content) {
+      toast.error("No content to summarize");
+      return;
+    }
+
+    setSummarizing(noteId);
+    
+    try {
+      const response = await supabase.functions.invoke("ai-tutor", {
+        body: {
+          message: `Please summarize the following text concisely, highlighting the key points:\n\n${content.substring(0, 3000)}`,
+        },
+      });
+
+      if (response.error) throw response.error;
+
+      const summary = response.data?.response || "Summary generated successfully.";
+      
+      // Update the note with the summary
+      const { error } = await supabase
+        .from("notes")
+        .update({ summary })
+        .eq("id", noteId);
+
+      if (error) throw error;
+
+      // Update local state
+      setNotes(notes.map(n => 
+        n.id === noteId ? { ...n, summary } : n
+      ));
+      
+      toast.success("Summary generated!");
+    } catch (error) {
+      console.error("Error summarizing:", error);
+      toast.error("Failed to generate summary");
+    } finally {
+      setSummarizing(null);
+    }
+  };
+
+  const handleVoiceTranscript = (text: string) => {
+    setNewNote(prev => ({
+      ...prev,
+      content: prev.content ? `${prev.content} ${text}` : text
+    }));
+  };
+
+  const handlePdfExtracted = (text: string, fileName: string) => {
+    setNewNote({
+      title: fileName.replace(".pdf", ""),
+      content: text
+    });
+    setCreateTab("write");
   };
 
   const filteredNotes = notes.filter(
@@ -149,32 +203,66 @@ export default function NotesPage() {
                 New Note
               </GradientButton>
             </DialogTrigger>
-            <DialogContent className="glass-strong">
+            <DialogContent className="glass-strong max-w-lg">
               <DialogHeader>
-                <DialogTitle>Create New Note</DialogTitle>
+                <DialogTitle className="flex items-center gap-2">
+                  Create New Note
+                  <Badge variant="outline" className="ml-2 text-xs">
+                    <Crown className="h-3 w-3 mr-1" /> Premium
+                  </Badge>
+                </DialogTitle>
               </DialogHeader>
-              <div className="space-y-4 mt-4">
-                <Input
-                  placeholder="Note title"
-                  value={newNote.title}
-                  onChange={(e) =>
-                    setNewNote({ ...newNote, title: e.target.value })
-                  }
-                />
-                <Textarea
-                  placeholder="Write your notes here..."
-                  value={newNote.content}
-                  onChange={(e) =>
-                    setNewNote({ ...newNote, content: e.target.value })
-                  }
-                  rows={8}
-                />
-                <div className="flex gap-2">
-                  <GradientButton onClick={handleCreateNote} className="flex-1">
+              <Tabs value={createTab} onValueChange={(v) => setCreateTab(v as any)} className="mt-4">
+                <TabsList className="grid w-full grid-cols-2">
+                  <TabsTrigger value="write">Write</TabsTrigger>
+                  <TabsTrigger value="upload">Upload PDF</TabsTrigger>
+                </TabsList>
+                <TabsContent value="write" className="space-y-4 mt-4">
+                  <Input
+                    placeholder="Note title"
+                    value={newNote.title}
+                    onChange={(e) =>
+                      setNewNote({ ...newNote, title: e.target.value })
+                    }
+                  />
+                  <div className="relative">
+                    <Textarea
+                      placeholder="Write your notes here... or use voice input"
+                      value={newNote.content}
+                      onChange={(e) =>
+                        setNewNote({ ...newNote, content: e.target.value })
+                      }
+                      rows={8}
+                    />
+                    <div className="absolute bottom-2 right-2">
+                      <VoiceInput onTranscript={handleVoiceTranscript} />
+                    </div>
+                  </div>
+                  <GradientButton onClick={handleCreateNote} className="w-full">
                     Create Note
                   </GradientButton>
-                </div>
-              </div>
+                </TabsContent>
+                <TabsContent value="upload" className="space-y-4 mt-4">
+                  <PdfUpload onExtractedText={handlePdfExtracted} />
+                  {newNote.content && (
+                    <div className="space-y-2">
+                      <Input
+                        placeholder="Note title"
+                        value={newNote.title}
+                        onChange={(e) =>
+                          setNewNote({ ...newNote, title: e.target.value })
+                        }
+                      />
+                      <p className="text-xs text-muted-foreground">
+                        Content extracted! Click "Create Note" to save.
+                      </p>
+                      <GradientButton onClick={handleCreateNote} className="w-full">
+                        Create Note
+                      </GradientButton>
+                    </div>
+                  )}
+                </TabsContent>
+              </Tabs>
             </DialogContent>
           </Dialog>
         </div>
@@ -225,8 +313,15 @@ export default function NotesPage() {
                       </button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                      <DropdownMenuItem onClick={() => handleSummarize(note.id)}>
-                        <Sparkles className="mr-2 h-4 w-4" />
+                      <DropdownMenuItem 
+                        onClick={() => handleSummarize(note.id, note.content)}
+                        disabled={summarizing === note.id}
+                      >
+                        {summarizing === note.id ? (
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        ) : (
+                          <Sparkles className="mr-2 h-4 w-4" />
+                        )}
                         AI Summarize
                       </DropdownMenuItem>
                       <DropdownMenuItem
