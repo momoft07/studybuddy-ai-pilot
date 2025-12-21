@@ -47,11 +47,11 @@ export function DesktopSidebar() {
   };
 
   return (
-    <aside className="hidden md:flex fixed left-0 top-0 z-40 h-screen w-64 flex-col glass-strong border-r border-border/50">
+    <aside className="hidden md:flex fixed left-0 top-0 z-40 h-screen w-64 flex-col glass-strong border-r border-border/30">
       {/* Logo */}
-      <div className="flex h-16 items-center gap-3 px-6 border-b border-border/50">
-        <div className="flex h-9 w-9 items-center justify-center rounded-lg gradient-primary">
-          <Sparkles className="h-5 w-5 text-primary-foreground" />
+      <div className="flex h-18 items-center gap-3 px-6 py-4 border-b border-border/30">
+        <div className="flex h-10 w-10 items-center justify-center rounded-xl gradient-primary shadow-[0_0_20px_hsl(220_100%_60%/0.4)]">
+          <Sparkles className="h-5 w-5 text-white" />
         </div>
         <span className="text-xl font-display font-bold gradient-text">StudyPilot</span>
       </div>
