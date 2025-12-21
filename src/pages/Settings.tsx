@@ -1,107 +1,163 @@
+import { useState, useEffect } from "react";
 import { AppLayout } from "@/components/layout/AppLayout";
-import { GlassCard } from "@/components/ui/glass-card";
-import { GradientButton } from "@/components/ui/gradient-button";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Separator } from "@/components/ui/separator";
 import { useAuth } from "@/hooks/useAuth";
-import { Settings as SettingsIcon, User, Bell, Palette, LogOut, Shield, Sparkles } from "lucide-react";
-import { Switch } from "@/components/ui/switch";
-import { Link } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+import { ProfileSection } from "@/components/settings/ProfileSection";
+import { AppearanceSection } from "@/components/settings/AppearanceSection";
+import { NotificationsSection } from "@/components/settings/NotificationsSection";
+import { SecuritySection } from "@/components/settings/SecuritySection";
+import { PremiumCard } from "@/components/settings/PremiumCard";
+import { SignOutButton } from "@/components/settings/SignOutButton";
+import { motion } from "framer-motion";
+
+interface Profile {
+  full_name: string | null;
+  avatar_url: string | null;
+  is_premium: boolean | null;
+}
 
 export default function SettingsPage() {
   const { user, signOut } = useAuth();
+  const [profile, setProfile] = useState<Profile | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const fetchProfile = async () => {
+    if (!user) return;
+    
+    try {
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("full_name, avatar_url, is_premium")
+        .eq("user_id", user.id)
+        .single();
+
+      if (error && error.code !== "PGRST116") {
+        console.error("Error fetching profile:", error);
+      }
+      setProfile(data);
+    } catch (error) {
+      console.error("Error:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchProfile();
+  }, [user]);
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0 },
+  };
 
   return (
     <AppLayout>
-      <div className="max-w-2xl mx-auto space-y-6 animate-fade-in">
-        <div>
+      <motion.div
+        className="max-w-2xl mx-auto space-y-8 pb-8"
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+      >
+        {/* Header */}
+        <motion.div variants={itemVariants}>
           <h1 className="text-2xl font-display font-bold md:text-3xl">
             <span className="gradient-text">Settings</span>
           </h1>
           <p className="text-muted-foreground mt-1">
             Manage your account and preferences
           </p>
-        </div>
+        </motion.div>
 
-        <GlassCard className="p-6">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="rounded-lg gradient-primary p-2 glow-sm">
-              <User className="h-5 w-5 text-primary-foreground" />
-            </div>
-            <h2 className="text-lg font-semibold">Profile</h2>
-          </div>
-          <div className="space-y-3">
-            <div className="flex items-center justify-between py-2">
-              <span className="text-sm text-muted-foreground">Email</span>
-              <span className="text-sm font-medium">{user?.email}</span>
-            </div>
-            <div className="flex items-center justify-between py-2">
-              <span className="text-sm text-muted-foreground">Account Status</span>
-              <span className="text-xs px-2 py-1 rounded-full bg-success/20 text-success">Active</span>
-            </div>
-          </div>
-        </GlassCard>
-
-        <GlassCard className="p-6">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="rounded-lg gradient-accent p-2 glow-accent-sm">
-              <Palette className="h-5 w-5 text-accent-foreground" />
-            </div>
-            <h2 className="text-lg font-semibold">Appearance</h2>
-          </div>
-          <div className="flex items-center justify-between py-2">
-            <div>
-              <span className="text-sm font-medium">Dark Mode</span>
-              <p className="text-xs text-muted-foreground">Use dark theme across the app</p>
-            </div>
-            <Switch defaultChecked />
-          </div>
-        </GlassCard>
-
-        <GlassCard className="p-6">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="rounded-lg bg-success p-2">
-              <Bell className="h-5 w-5 text-success-foreground" />
-            </div>
-            <h2 className="text-lg font-semibold">Notifications</h2>
-          </div>
-          <div className="space-y-4">
-            <div className="flex items-center justify-between py-2">
-              <div>
-                <span className="text-sm font-medium">Push Notifications</span>
-                <p className="text-xs text-muted-foreground">Get notified about study reminders</p>
-              </div>
-              <Switch />
-            </div>
-            <div className="flex items-center justify-between py-2">
-              <div>
-                <span className="text-sm font-medium">Email Digest</span>
-                <p className="text-xs text-muted-foreground">Weekly summary of your progress</p>
-              </div>
-              <Switch />
-            </div>
-          </div>
-        </GlassCard>
-
-        <Link to="/premium">
-          <GlassCard variant="neon" hover className="p-6">
-            <div className="flex items-center justify-between">
+        {/* Profile Section */}
+        <motion.div variants={itemVariants}>
+          {isLoading ? (
+            <div className="glass rounded-2xl p-6 space-y-4">
               <div className="flex items-center gap-3">
-                <div className="rounded-lg gradient-accent p-2 glow-accent">
-                  <Sparkles className="h-5 w-5 text-accent-foreground" />
-                </div>
-                <div>
-                  <h2 className="text-lg font-semibold">Upgrade to Premium</h2>
-                  <p className="text-sm text-muted-foreground">Unlock all features</p>
+                <Skeleton className="h-10 w-10 rounded-lg" />
+                <Skeleton className="h-5 w-24" />
+              </div>
+              <div className="flex gap-6">
+                <Skeleton className="h-20 w-20 rounded-full" />
+                <div className="flex-1 space-y-3">
+                  <Skeleton className="h-4 w-20" />
+                  <Skeleton className="h-8 w-48" />
+                  <Skeleton className="h-4 w-32" />
                 </div>
               </div>
-              <span className="text-sm font-bold gradient-text">€5/mo</span>
             </div>
-          </GlassCard>
-        </Link>
+          ) : (
+            <ProfileSection
+              user={user}
+              profile={profile}
+              onProfileUpdate={fetchProfile}
+            />
+          )}
+        </motion.div>
 
-        <GradientButton variant="outline" className="w-full" onClick={signOut}>
-          <LogOut className="mr-2 h-4 w-4" /> Sign Out
-        </GradientButton>
-      </div>
+        <Separator className="bg-border/50" />
+
+        {/* Appearance Section */}
+        <motion.div variants={itemVariants}>
+          <AppearanceSection />
+        </motion.div>
+
+        <Separator className="bg-border/50" />
+
+        {/* Notifications Section */}
+        <motion.div variants={itemVariants}>
+          <NotificationsSection />
+        </motion.div>
+
+        <Separator className="bg-border/50" />
+
+        {/* Security Section */}
+        <motion.div variants={itemVariants}>
+          <SecuritySection />
+        </motion.div>
+
+        <Separator className="bg-border/50" />
+
+        {/* Premium Card */}
+        <motion.div variants={itemVariants}>
+          {!profile?.is_premium && <PremiumCard />}
+        </motion.div>
+
+        {/* Sign Out */}
+        <motion.div variants={itemVariants}>
+          <SignOutButton onSignOut={signOut} />
+        </motion.div>
+
+        {/* Footer Links */}
+        <motion.div
+          variants={itemVariants}
+          className="flex justify-center gap-4 pt-4 text-xs text-muted-foreground"
+        >
+          <a href="#" className="hover:text-foreground transition-colors">
+            Privacy Policy
+          </a>
+          <span>•</span>
+          <a href="#" className="hover:text-foreground transition-colors">
+            Terms of Service
+          </a>
+          <span>•</span>
+          <a href="#" className="hover:text-foreground transition-colors">
+            Help Center
+          </a>
+        </motion.div>
+      </motion.div>
     </AppLayout>
   );
 }
