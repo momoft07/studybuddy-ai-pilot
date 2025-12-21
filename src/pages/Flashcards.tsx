@@ -29,6 +29,9 @@ import { FlashcardsErrorState } from "@/components/flashcards/FlashcardsErrorSta
 import { DecksSearch, SortOption } from "@/components/flashcards/DecksSearch";
 import { DeleteDeckDialog } from "@/components/flashcards/DeleteDeckDialog";
 import { StudyModeDialog, StudyMode } from "@/components/flashcards/StudyModeDialog";
+import { DeckPreviewDialog } from "@/components/flashcards/DeckPreviewDialog";
+import { DeckStatsDialog } from "@/components/flashcards/DeckStatsDialog";
+import { SessionResults } from "@/components/flashcards/SessionResults";
 
 interface FlashcardDeck {
   id: string;
@@ -80,6 +83,21 @@ export default function FlashcardsPage() {
     deck: null,
   });
   const [deckStats, setDeckStats] = useState<Record<string, DeckStats>>({});
+  const [previewDialog, setPreviewDialog] = useState<{ isOpen: boolean; deck: FlashcardDeck | null }>({
+    isOpen: false,
+    deck: null,
+  });
+  const [statsDialog, setStatsDialog] = useState<{ isOpen: boolean; deck: FlashcardDeck | null }>({
+    isOpen: false,
+    deck: null,
+  });
+  const [sessionResults, setSessionResults] = useState<{
+    show: boolean;
+    correctCount: number;
+    incorrectCount: number;
+  }>({ show: false, correctCount: 0, incorrectCount: 0 });
+  const [sessionCorrectCount, setSessionCorrectCount] = useState(0);
+  const [sessionIncorrectCount, setSessionIncorrectCount] = useState(0);
 
   useEffect(() => {
     if (user) {
@@ -329,11 +347,21 @@ export default function FlashcardsPage() {
     await fetchCardsForDeck(deck.id);
     setCurrentCardIndex(0);
     setIsFlipped(false);
+    setSessionCorrectCount(0);
+    setSessionIncorrectCount(0);
+    setSessionResults({ show: false, correctCount: 0, incorrectCount: 0 });
     setIsStudyMode(true);
   };
 
   const handleCardResponse = async (correct: boolean) => {
     const currentCard = currentCards[currentCardIndex];
+    
+    // Track session stats
+    if (correct) {
+      setSessionCorrectCount(prev => prev + 1);
+    } else {
+      setSessionIncorrectCount(prev => prev + 1);
+    }
     
     // Update card stats
     try {
@@ -361,13 +389,32 @@ export default function FlashcardsPage() {
       setCurrentCardIndex(currentCardIndex + 1);
       setIsFlipped(false);
     } else {
-      toast.success("Session complete! 🎉", {
-        description: `You reviewed ${currentCards.length} cards.`,
+      // Show session results
+      const finalCorrect = correct ? sessionCorrectCount + 1 : sessionCorrectCount;
+      const finalIncorrect = correct ? sessionIncorrectCount : sessionIncorrectCount + 1;
+      setSessionResults({
+        show: true,
+        correctCount: finalCorrect,
+        incorrectCount: finalIncorrect,
       });
-      setIsStudyMode(false);
-      setSelectedDeck(null);
-      fetchDecks(); // Refresh stats
     }
+  };
+
+  const handleStudyAgain = async () => {
+    if (!selectedDeck) return;
+    await fetchCardsForDeck(selectedDeck.id);
+    setCurrentCardIndex(0);
+    setIsFlipped(false);
+    setSessionCorrectCount(0);
+    setSessionIncorrectCount(0);
+    setSessionResults({ show: false, correctCount: 0, incorrectCount: 0 });
+  };
+
+  const handleExitStudyMode = () => {
+    setIsStudyMode(false);
+    setSelectedDeck(null);
+    setSessionResults({ show: false, correctCount: 0, incorrectCount: 0 });
+    fetchDecks();
   };
 
   // Study mode view
@@ -430,9 +477,27 @@ export default function FlashcardsPage() {
       );
     }
 
+    // Show session results
+    if (sessionResults.show) {
+      return (
+        <AppLayout>
+          <div className="min-h-[60vh] flex flex-col items-center justify-center px-4">
+            <SessionResults
+              deckName={selectedDeck.name}
+              totalCards={currentCards.length}
+              correctCount={sessionResults.correctCount}
+              incorrectCount={sessionResults.incorrectCount}
+              onClose={handleExitStudyMode}
+              onStudyAgain={handleStudyAgain}
+            />
+          </div>
+        </AppLayout>
+      );
+    }
+
     return (
       <AppLayout>
-        <div className="min-h-[60vh] flex flex-col items-center justify-center">
+        <div className="min-h-[60vh] flex flex-col items-center justify-center px-4">
           {/* Progress */}
           <div className="mb-6 text-center">
             <p className="text-sm text-muted-foreground mb-2">{selectedDeck.name}</p>
@@ -618,6 +683,8 @@ export default function FlashcardsPage() {
                   onEdit={() => toast.info("Edit feature coming soon!")}
                   onDuplicate={() => handleDuplicateDeck(deck)}
                   onDelete={() => setDeleteDialog({ isOpen: true, deck })}
+                  onPreview={() => setPreviewDialog({ isOpen: true, deck })}
+                  onViewStats={() => setStatsDialog({ isOpen: true, deck })}
                 />
               ))}
             </AnimatePresence>
@@ -670,6 +737,31 @@ export default function FlashcardsPage() {
           dueCards={deckStats[studyModeDialog.deck?.id || ""]?.dueToday || 0}
           totalCards={studyModeDialog.deck?.card_count || 0}
         />
+
+        {/* Deck Preview Dialog */}
+        {previewDialog.deck && user && (
+          <DeckPreviewDialog
+            isOpen={previewDialog.isOpen}
+            onClose={() => setPreviewDialog({ isOpen: false, deck: null })}
+            deckId={previewDialog.deck.id}
+            deckName={previewDialog.deck.name}
+            userId={user.id}
+            onCardsUpdated={fetchDecks}
+          />
+        )}
+
+        {/* Deck Stats Dialog */}
+        {statsDialog.deck && (
+          <DeckStatsDialog
+            isOpen={statsDialog.isOpen}
+            onClose={() => setStatsDialog({ isOpen: false, deck: null })}
+            deckName={statsDialog.deck.name}
+            cardCount={statsDialog.deck.card_count}
+            stats={deckStats[statsDialog.deck.id] || { dueToday: 0, mastered: 0, learning: 0, masteryPercent: 0 }}
+            createdAt={statsDialog.deck.created_at}
+            lastStudied={statsDialog.deck.updated_at}
+          />
+        )}
       </div>
     </AppLayout>
   );
