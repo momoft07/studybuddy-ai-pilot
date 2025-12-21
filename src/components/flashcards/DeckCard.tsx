@@ -55,6 +55,7 @@ interface DeckCardProps {
   onDelete: () => void;
   onPreview: () => void;
   onViewStats: () => void;
+  onGenerateAI: () => void;
 }
 
 function getRelativeTime(dateString?: string): string {
@@ -73,6 +74,7 @@ export function DeckCard({
   onDelete,
   onPreview,
   onViewStats,
+  onGenerateAI,
 }: DeckCardProps) {
   const lastStudied = getRelativeTime(deck.updated_at);
   const hasDueCards = stats.dueToday > 0;
@@ -144,10 +146,9 @@ export function DeckCard({
                 <Copy className="h-4 w-4" />
                 Duplicate
               </DropdownMenuItem>
-              <DropdownMenuItem className="gap-2" disabled>
+              <DropdownMenuItem onClick={onGenerateAI} className="gap-2">
                 <Sparkles className="h-4 w-4" />
                 Generate with AI
-                <Badge variant="outline" className="ml-auto text-[10px] px-1">Pro</Badge>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem
