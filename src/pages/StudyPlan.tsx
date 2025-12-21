@@ -1,4 +1,5 @@
 import { useState, useRef, useCallback, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
@@ -20,6 +21,7 @@ interface FormErrors {
 }
 
 export default function StudyPlanPage() {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const { formData, updateFormData, resetForm, isLoaded } = useStudyPlanSettings();
   const [loading, setLoading] = useState(false);
@@ -223,10 +225,10 @@ export default function StudyPlanPage() {
         {/* Header */}
         <div>
           <h1 className="text-2xl font-display font-bold md:text-3xl">
-            <span className="gradient-text">AI Study Plan</span> Creator
+            <span className="gradient-text">{t("studyPlan.title")}</span> {t("studyPlan.creator")}
           </h1>
           <p className="text-muted-foreground mt-1">
-            Generate a personalized study plan powered by AI
+            {t("studyPlan.subtitle")}
           </p>
         </div>
 

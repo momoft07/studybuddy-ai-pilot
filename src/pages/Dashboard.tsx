@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { GlassCard } from "@/components/ui/glass-card";
 import { StatCard } from "@/components/ui/stat-card";
@@ -47,6 +48,7 @@ interface Profile {
 }
 
 export default function Dashboard() {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [todaysTasks, setTodaysTasks] = useState<Task[]>([]);
@@ -235,7 +237,7 @@ export default function Dashboard() {
           <Link to="/study-plan">
             <GradientButton>
               <Sparkles className="mr-2 h-4 w-4" />
-              Generate Study Plan
+              {t("dashboard.generatePlan")}
             </GradientButton>
           </Link>
         </div>
@@ -243,8 +245,8 @@ export default function Dashboard() {
         {/* Stats Grid with Trends */}
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           <StatCard
-            title="Study Streak"
-            value={`${profile?.streak_count || 0} days`}
+            title={t("dashboard.studyStreak")}
+            value={`${profile?.streak_count || 0} ${t("dashboard.days")}`}
             icon={Flame}
             trend={{ 
               value: profile?.streak_count && profile.streak_count > 0 ? 12 : 0, 
@@ -253,9 +255,9 @@ export default function Dashboard() {
           />
           <div className="relative">
             <StatCard
-              title="This Week"
-              value={`${weeklyStats.hours} hrs`}
-              subtitle={`${weeklyStats.sessions} sessions`}
+              title={t("dashboard.thisWeek")}
+              value={`${weeklyStats.hours} ${t("dashboard.hrs")}`}
+              subtitle={`${weeklyStats.sessions} ${t("dashboard.sessions")}`}
               icon={Clock}
             />
             <div className="absolute bottom-3 left-5">
@@ -266,15 +268,15 @@ export default function Dashboard() {
             </div>
           </div>
           <StatCard
-            title="Goals Hit"
+            title={t("dashboard.goalsHit")}
             value={`${weeklyStats.goalsHit}%`}
-            subtitle="weekly target"
+            subtitle={t("dashboard.weeklyTarget")}
             icon={Target}
           />
           <StatCard
-            title="Cards Reviewed"
+            title={t("dashboard.cardsReviewed")}
             value={flashcardsReviewed}
-            subtitle="total"
+            subtitle={t("dashboard.total")}
             icon={Brain}
           />
         </div>
@@ -302,10 +304,10 @@ export default function Dashboard() {
           {/* Today's Tasks with Rewards */}
           <GlassCard className="lg:col-span-2">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold">Today's Tasks</h2>
+              <h2 className="text-lg font-semibold">{t("dashboard.todaysTasks")}</h2>
               <Link to="/tasks">
                 <GradientButton variant="ghost" size="sm">
-                  View All
+                  {t("common.viewAll")}
                   <ArrowRight className="ml-1 h-4 w-4" />
                 </GradientButton>
               </Link>
@@ -313,11 +315,11 @@ export default function Dashboard() {
 
             {todaysTasks.length === 0 ? (
               <div className="py-8 text-center">
-                <p className="text-muted-foreground mb-4">No tasks for today</p>
+                <p className="text-muted-foreground mb-4">{t("common.noTasksToday")}</p>
                 <Link to="/tasks">
                   <GradientButton variant="outline" size="sm">
                     <Plus className="mr-2 h-4 w-4" />
-                    Add Task
+                    {t("common.addTask")}
                   </GradientButton>
                 </Link>
               </div>
@@ -370,9 +372,9 @@ export default function Dashboard() {
                 <BookOpen className="h-6 w-6 text-primary-foreground" />
               </div>
               <div>
-                <h3 className="font-semibold">Add Notes</h3>
+                <h3 className="font-semibold">{t("dashboard.addNotes")}</h3>
                 <p className="text-sm text-muted-foreground">
-                  Summarize your study material
+                  {t("dashboard.summarizeMaterial")}
                 </p>
               </div>
             </GlassCard>
@@ -383,11 +385,11 @@ export default function Dashboard() {
                 <Brain className="h-6 w-6 text-accent-foreground" />
               </div>
               <div>
-                <h3 className="font-semibold">Study Flashcards</h3>
+                <h3 className="font-semibold">{t("dashboard.studyFlashcards")}</h3>
                 <p className="text-sm text-muted-foreground">
                   {flashcardsDueForReview > 0
-                    ? `${flashcardsDueForReview} cards due for review`
-                    : "Review with spaced repetition"}
+                    ? `${flashcardsDueForReview} ${t("dashboard.cardsDueReview")}`
+                    : t("dashboard.reviewSpaced")}
                 </p>
               </div>
             </GlassCard>

@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { GradientButton } from "@/components/ui/gradient-button";
 import { Input } from "@/components/ui/input";
@@ -35,6 +36,7 @@ interface Note {
 }
 
 export default function NotesPage() {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const [notes, setNotes] = useState<Note[]>([]);
   const [loading, setLoading] = useState(true);
@@ -208,58 +210,58 @@ export default function NotesPage() {
           <div>
             <h1 className="text-xl font-display font-bold md:text-2xl flex items-center gap-2">
               <FileText className="h-6 w-6 text-primary" aria-hidden="true" />
-              <span className="gradient-text">Notes</span> & Summaries
+              <span className="gradient-text">{t("notes.title")}</span> {t("notes.summaries")}
             </h1>
             <p className="text-muted-foreground text-sm mt-1">
-              Organize, summarize, and review your study material
+              {t("notes.subtitle")}
             </p>
           </div>
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
               <GradientButton className="w-full md:w-auto">
                 <Plus className="mr-2 h-4 w-4" />
-                New Note
+                {t("notes.newNote")}
               </GradientButton>
             </DialogTrigger>
             <DialogContent className="glass-strong max-w-lg">
               <DialogHeader>
                 <DialogTitle className="flex items-center gap-2">
-                  Create New Note
+                  {t("notes.createNote")}
                   <Badge variant="outline" className="ml-2 text-xs">
-                    <Crown className="h-3 w-3 mr-1" /> Premium
+                    <Crown className="h-3 w-3 mr-1" /> {t("notes.premium")}
                   </Badge>
                 </DialogTitle>
               </DialogHeader>
               <Tabs value={createTab} onValueChange={(v) => setCreateTab(v as "write" | "upload")} className="mt-4">
                 <TabsList className="grid w-full grid-cols-2">
-                  <TabsTrigger value="write">Write</TabsTrigger>
-                  <TabsTrigger value="upload">Upload PDF</TabsTrigger>
+                  <TabsTrigger value="write">{t("notes.write")}</TabsTrigger>
+                  <TabsTrigger value="upload">{t("notes.uploadPdf")}</TabsTrigger>
                 </TabsList>
                 <TabsContent value="write" className="space-y-4 mt-4">
                   <Input
-                    placeholder="Note title"
+                    placeholder={t("notes.noteTitle")}
                     value={newNote.title}
                     onChange={(e) => setNewNote({ ...newNote, title: e.target.value })}
-                    aria-label="Note title"
+                    aria-label={t("notes.noteTitle")}
                   />
                   <div className="relative">
                     <Textarea
-                      placeholder="Write your notes here... or use voice input"
+                      placeholder={t("notes.writeNotes")}
                       value={newNote.content}
                       onChange={(e) => setNewNote({ ...newNote, content: e.target.value })}
                       rows={8}
-                      aria-label="Note content"
+                      aria-label={t("notes.writeNotes")}
                     />
                     <div className="absolute bottom-2 right-2">
                       <VoiceInput onTranscript={handleVoiceTranscript} />
                     </div>
                   </div>
                   <div className="flex items-center justify-between text-xs text-muted-foreground">
-                    <span>Auto-saved as draft</span>
-                    <span>{newNote.content.split(/\s+/).filter(Boolean).length} words</span>
+                    <span>{t("notes.autoSaved")}</span>
+                    <span>{newNote.content.split(/\s+/).filter(Boolean).length} {t("notes.words")}</span>
                   </div>
                   <GradientButton onClick={handleCreateNote} className="w-full">
-                    Create Note
+                    {t("notes.createNote")}
                   </GradientButton>
                 </TabsContent>
                 <TabsContent value="upload" className="space-y-4 mt-4">
@@ -267,15 +269,15 @@ export default function NotesPage() {
                   {newNote.content && (
                     <div className="space-y-2">
                       <Input
-                        placeholder="Note title"
+                        placeholder={t("notes.noteTitle")}
                         value={newNote.title}
                         onChange={(e) => setNewNote({ ...newNote, title: e.target.value })}
                       />
                       <p className="text-xs text-muted-foreground">
-                        Content extracted! Click "Create Note" to save.
+                        {t("notes.contentExtracted")}
                       </p>
                       <GradientButton onClick={handleCreateNote} className="w-full">
-                        Create Note
+                        {t("notes.createNote")}
                       </GradientButton>
                     </div>
                   )}

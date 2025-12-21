@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { useTranslation } from "react-i18next";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { GlassCard } from "@/components/ui/glass-card";
 import { GradientButton } from "@/components/ui/gradient-button";
@@ -9,6 +10,7 @@ import { toast } from "sonner";
 import { Play, Pause, RotateCcw, Coffee, Timer, Flame, Clock } from "lucide-react";
 
 export default function FocusPage() {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const [timeLeft, setTimeLeft] = useState(25 * 60);
   const [isRunning, setIsRunning] = useState(false);
@@ -89,10 +91,10 @@ export default function FocusPage() {
         .eq("id", sessionIdRef.current);
       
       sessionIdRef.current = null;
-      toast.success("Focus session completed! Time for a break 🎉");
+      toast.success(t("focus.focusSessionComplete"));
       fetchTodayStats();
     } else {
-      toast.success("Break over! Ready for another focus session? 💪");
+      toast.success(t("focus.breakOver"));
     }
     
     setMode(mode === "focus" ? "break" : "focus");
@@ -127,7 +129,7 @@ export default function FocusPage() {
             </div>
             <div>
               <p className="text-2xl font-bold">{sessionsToday}</p>
-              <p className="text-xs text-muted-foreground">Sessions today</p>
+              <p className="text-xs text-muted-foreground">{t("focus.sessionsToday")}</p>
             </div>
           </GlassCard>
           <GlassCard className="flex items-center gap-3 p-4">
@@ -136,7 +138,7 @@ export default function FocusPage() {
             </div>
             <div>
               <p className="text-2xl font-bold">{totalMinutesToday}</p>
-              <p className="text-xs text-muted-foreground">Minutes focused</p>
+              <p className="text-xs text-muted-foreground">{t("focus.minutesFocused")}</p>
             </div>
           </GlassCard>
         </div>
@@ -145,9 +147,9 @@ export default function FocusPage() {
         <div className="flex flex-col items-center justify-center">
           <h1 className="text-2xl font-display font-bold mb-8">
             <span className="gradient-text">
-              {mode === "focus" ? "Focus" : "Break"}
+              {mode === "focus" ? t("nav.focus") : t("focus.breakTime")}
             </span>{" "}
-            Mode
+            {t("focus.mode")}
           </h1>
           <GlassCard variant="neon" className="p-8 text-center">
             <ProgressRing
@@ -162,11 +164,11 @@ export default function FocusPage() {
               <span className="text-sm text-muted-foreground flex items-center gap-1 mt-1">
                 {mode === "focus" ? (
                   <>
-                    <Timer className="h-4 w-4" /> Focus Time
+                    <Timer className="h-4 w-4" /> {t("focus.focusTime")}
                   </>
                 ) : (
                   <>
-                    <Coffee className="h-4 w-4" /> Break Time
+                    <Coffee className="h-4 w-4" /> {t("focus.breakTime")}
                   </>
                 )}
               </span>
@@ -190,8 +192,8 @@ export default function FocusPage() {
 
           <p className="text-sm text-muted-foreground mt-6 text-center max-w-xs">
             {mode === "focus"
-              ? "Stay focused! Minimize distractions and concentrate on your task."
-              : "Take a short break. Stretch, hydrate, and rest your eyes."}
+              ? t("focus.focusTip")
+              : t("focus.breakTip")}
           </p>
         </div>
       </div>
