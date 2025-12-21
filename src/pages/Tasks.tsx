@@ -157,7 +157,7 @@ export default function TasksPage() {
       case "high":
         return "text-destructive bg-destructive/20";
       case "medium":
-        return "text-warning bg-warning/20";
+        return "text-amber-600 bg-amber-500/20";
       default:
         return "text-muted-foreground bg-muted";
     }
