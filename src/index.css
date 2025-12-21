@@ -562,19 +562,50 @@
   border: 2px solid hsl(0 0% 60%);
 }
 
-/* Accessibility: Font Size Scaling */
-.font-size-small {
+/* Accessibility: Font Size Scaling - using percentage for rem inheritance */
+html {
+  font-size: 16px; /* Base for desktop */
+}
+
+/* Mobile: Smaller base font for phones */
+@media (max-width: 640px) {
+  html {
+    font-size: 14px;
+  }
+}
+
+/* Font size preference classes - these override the base */
+html.font-size-small {
   font-size: 14px;
 }
 
-.font-size-medium {
+html.font-size-medium {
   font-size: 16px;
 }
 
-.font-size-large {
+html.font-size-large {
   font-size: 18px;
 }
 
-.font-size-extra-large {
+html.font-size-extra-large {
   font-size: 20px;
+}
+
+/* Mobile adjustments for font size preferences */
+@media (max-width: 640px) {
+  html.font-size-small {
+    font-size: 12px;
+  }
+
+  html.font-size-medium {
+    font-size: 14px;
+  }
+
+  html.font-size-large {
+    font-size: 16px;
+  }
+
+  html.font-size-extra-large {
+    font-size: 18px;
+  }
 }
