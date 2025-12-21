@@ -1,23 +1,12 @@
 import { useState, useEffect } from "react";
 import { AppLayout } from "@/components/layout/AppLayout";
-import { GlassCard } from "@/components/ui/glass-card";
 import { GradientButton } from "@/components/ui/gradient-button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import {
-  FileText,
-  Plus,
-  Sparkles,
-  Loader2,
-  BookOpen,
-  Search,
-  MoreVertical,
-  Trash2,
-  Crown,
-} from "lucide-react";
+import { Plus, Crown, FileText } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -25,17 +14,17 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { format } from "date-fns";
+import { Badge } from "@/components/ui/badge";
 import { VoiceInput } from "@/components/notes/VoiceInput";
 import { PdfUpload } from "@/components/notes/PdfUpload";
-import { Badge } from "@/components/ui/badge";
+import { NoteCard } from "@/components/notes/NoteCard";
+import { NoteSkeletonGrid } from "@/components/notes/NoteSkeleton";
+import { EmptyNotesState } from "@/components/notes/EmptyNotesState";
+import { ErrorState } from "@/components/notes/ErrorState";
+import { NotesSearch } from "@/components/notes/NotesSearch";
+import { DeleteNoteDialog } from "@/components/notes/DeleteNoteDialog";
+import { AnimatePresence } from "framer-motion";
 
 interface Note {
   id: string;
@@ -49,11 +38,16 @@ export default function NotesPage() {
   const { user } = useAuth();
   const [notes, setNotes] = useState<Note[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [newNote, setNewNote] = useState({ title: "", content: "" });
   const [summarizing, setSummarizing] = useState<string | null>(null);
   const [createTab, setCreateTab] = useState<"write" | "upload">("write");
+  const [deleteDialog, setDeleteDialog] = useState<{ isOpen: boolean; note: Note | null }>({
+    isOpen: false,
+    note: null,
+  });
 
   useEffect(() => {
     if (user) {
@@ -62,6 +56,9 @@ export default function NotesPage() {
   }, [user]);
 
   const fetchNotes = async () => {
+    setLoading(true);
+    setError(null);
+    
     try {
       const { data, error } = await supabase
         .from("notes")
@@ -71,9 +68,9 @@ export default function NotesPage() {
 
       if (error) throw error;
       setNotes(data || []);
-    } catch (error) {
-      console.error("Error fetching notes:", error);
-      toast.error("Failed to load notes");
+    } catch (err) {
+      console.error("Error fetching notes:", err);
+      setError("Failed to load notes. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -94,17 +91,22 @@ export default function NotesPage() {
 
       if (error) throw error;
 
-      toast.success("Note created!");
+      toast.success("Note created successfully!");
       setNewNote({ title: "", content: "" });
       setIsDialogOpen(false);
       fetchNotes();
-    } catch (error) {
-      console.error("Error creating note:", error);
+    } catch (err) {
+      console.error("Error creating note:", err);
       toast.error("Failed to create note");
     }
   };
 
-  const handleDeleteNote = async (noteId: string) => {
+  const handleDeleteNote = async () => {
+    if (!deleteDialog.note) return;
+    
+    const noteId = deleteDialog.note.id;
+    setDeleteDialog({ isOpen: false, note: null });
+
     try {
       const { error } = await supabase
         .from("notes")
@@ -113,10 +115,12 @@ export default function NotesPage() {
 
       if (error) throw error;
 
-      toast.success("Note deleted");
+      toast.success("Note deleted", {
+        description: "The note has been permanently removed.",
+      });
       setNotes(notes.filter((n) => n.id !== noteId));
-    } catch (error) {
-      console.error("Error deleting note:", error);
+    } catch (err) {
+      console.error("Error deleting note:", err);
       toast.error("Failed to delete note");
     }
   };
@@ -140,7 +144,6 @@ export default function NotesPage() {
 
       const summary = response.data?.response || "Summary generated successfully.";
       
-      // Update the note with the summary
       const { error } = await supabase
         .from("notes")
         .update({ summary })
@@ -148,18 +151,30 @@ export default function NotesPage() {
 
       if (error) throw error;
 
-      // Update local state
       setNotes(notes.map(n => 
         n.id === noteId ? { ...n, summary } : n
       ));
       
-      toast.success("Summary generated!");
-    } catch (error) {
-      console.error("Error summarizing:", error);
-      toast.error("Failed to generate summary");
+      toast.success("Summary generated!", {
+        description: "AI has analyzed and summarized your note.",
+      });
+    } catch (err) {
+      console.error("Error summarizing:", err);
+      toast.error("Failed to generate summary", {
+        description: "Please try again later.",
+      });
     } finally {
       setSummarizing(null);
     }
+  };
+
+  const handleCopyNote = (note: Note) => {
+    const textToCopy = note.summary 
+      ? `${note.title}\n\n${note.content}\n\n--- AI Summary ---\n${note.summary}`
+      : `${note.title}\n\n${note.content}`;
+    
+    navigator.clipboard.writeText(textToCopy);
+    toast.success("Copied to clipboard!");
   };
 
   const handleVoiceTranscript = (text: string) => {
@@ -183,22 +198,25 @@ export default function NotesPage() {
       note.content?.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  const isSearching = searchQuery.length > 0;
+
   return (
     <AppLayout>
       <div className="space-y-6 animate-fade-in">
         {/* Header */}
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div>
-            <h1 className="text-2xl font-display font-bold md:text-3xl">
+            <h1 className="text-xl font-display font-bold md:text-2xl flex items-center gap-2">
+              <FileText className="h-6 w-6 text-primary" aria-hidden="true" />
               <span className="gradient-text">Notes</span> & Summaries
             </h1>
-            <p className="text-muted-foreground mt-1">
-              Organize and summarize your study material
+            <p className="text-muted-foreground text-sm mt-1">
+              Organize, summarize, and review your study material
             </p>
           </div>
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
-              <GradientButton>
+              <GradientButton className="w-full md:w-auto">
                 <Plus className="mr-2 h-4 w-4" />
                 New Note
               </GradientButton>
@@ -212,7 +230,7 @@ export default function NotesPage() {
                   </Badge>
                 </DialogTitle>
               </DialogHeader>
-              <Tabs value={createTab} onValueChange={(v) => setCreateTab(v as any)} className="mt-4">
+              <Tabs value={createTab} onValueChange={(v) => setCreateTab(v as "write" | "upload")} className="mt-4">
                 <TabsList className="grid w-full grid-cols-2">
                   <TabsTrigger value="write">Write</TabsTrigger>
                   <TabsTrigger value="upload">Upload PDF</TabsTrigger>
@@ -221,22 +239,24 @@ export default function NotesPage() {
                   <Input
                     placeholder="Note title"
                     value={newNote.title}
-                    onChange={(e) =>
-                      setNewNote({ ...newNote, title: e.target.value })
-                    }
+                    onChange={(e) => setNewNote({ ...newNote, title: e.target.value })}
+                    aria-label="Note title"
                   />
                   <div className="relative">
                     <Textarea
                       placeholder="Write your notes here... or use voice input"
                       value={newNote.content}
-                      onChange={(e) =>
-                        setNewNote({ ...newNote, content: e.target.value })
-                      }
+                      onChange={(e) => setNewNote({ ...newNote, content: e.target.value })}
                       rows={8}
+                      aria-label="Note content"
                     />
                     <div className="absolute bottom-2 right-2">
                       <VoiceInput onTranscript={handleVoiceTranscript} />
                     </div>
+                  </div>
+                  <div className="flex items-center justify-between text-xs text-muted-foreground">
+                    <span>Auto-saved as draft</span>
+                    <span>{newNote.content.split(/\s+/).filter(Boolean).length} words</span>
                   </div>
                   <GradientButton onClick={handleCreateNote} className="w-full">
                     Create Note
@@ -249,9 +269,7 @@ export default function NotesPage() {
                       <Input
                         placeholder="Note title"
                         value={newNote.title}
-                        onChange={(e) =>
-                          setNewNote({ ...newNote, title: e.target.value })
-                        }
+                        onChange={(e) => setNewNote({ ...newNote, title: e.target.value })}
                       />
                       <p className="text-xs text-muted-foreground">
                         Content extracted! Click "Create Note" to save.
@@ -268,92 +286,49 @@ export default function NotesPage() {
         </div>
 
         {/* Search */}
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input
-            placeholder="Search notes..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10"
-          />
-        </div>
+        <NotesSearch
+          value={searchQuery}
+          onChange={setSearchQuery}
+          resultCount={filteredNotes.length}
+          totalCount={notes.length}
+        />
 
-        {/* Notes Grid */}
+        {/* Content */}
         {loading ? (
-          <div className="flex items-center justify-center py-12">
-            <Loader2 className="h-8 w-8 animate-spin text-primary" />
-          </div>
-        ) : filteredNotes.length === 0 ? (
-          <GlassCard className="py-12 text-center">
-            <FileText className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
-            <h3 className="text-lg font-semibold mb-2">No notes yet</h3>
-            <p className="text-muted-foreground mb-4">
-              Create your first note to get started
-            </p>
-            <GradientButton onClick={() => setIsDialogOpen(true)}>
-              <Plus className="mr-2 h-4 w-4" />
-              Create Note
-            </GradientButton>
-          </GlassCard>
+          <NoteSkeletonGrid />
+        ) : error ? (
+          <ErrorState error={error} onRetry={fetchNotes} />
+        ) : notes.length === 0 || (isSearching && filteredNotes.length === 0) ? (
+          <EmptyNotesState
+            isSearching={isSearching}
+            searchQuery={searchQuery}
+            onCreateNote={() => setIsDialogOpen(true)}
+            onClearSearch={() => setSearchQuery("")}
+          />
         ) : (
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {filteredNotes.map((note) => (
-              <GlassCard key={note.id} hover className="relative group">
-                <div className="flex items-start justify-between mb-3">
-                  <div className="flex items-center gap-2">
-                    <div className="rounded-lg gradient-primary p-1.5">
-                      <BookOpen className="h-4 w-4 text-primary-foreground" />
-                    </div>
-                    <h3 className="font-semibold line-clamp-1">{note.title}</h3>
-                  </div>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <button className="opacity-0 group-hover:opacity-100 transition-opacity p-1 hover:bg-muted rounded">
-                        <MoreVertical className="h-4 w-4" />
-                      </button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuItem 
-                        onClick={() => handleSummarize(note.id, note.content)}
-                        disabled={summarizing === note.id}
-                      >
-                        {summarizing === note.id ? (
-                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        ) : (
-                          <Sparkles className="mr-2 h-4 w-4" />
-                        )}
-                        AI Summarize
-                      </DropdownMenuItem>
-                      <DropdownMenuItem
-                        onClick={() => handleDeleteNote(note.id)}
-                        className="text-destructive"
-                      >
-                        <Trash2 className="mr-2 h-4 w-4" />
-                        Delete
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </div>
-                <p className="text-sm text-muted-foreground line-clamp-3 mb-3">
-                  {note.content || "No content"}
-                </p>
-                {note.summary && (
-                  <div className="bg-primary/10 rounded-lg p-2 mb-3">
-                    <p className="text-xs font-medium text-primary mb-1">
-                      AI Summary
-                    </p>
-                    <p className="text-xs text-muted-foreground line-clamp-2">
-                      {note.summary}
-                    </p>
-                  </div>
-                )}
-                <p className="text-xs text-muted-foreground">
-                  {format(new Date(note.created_at), "MMM d, yyyy")}
-                </p>
-              </GlassCard>
-            ))}
+            <AnimatePresence mode="popLayout">
+              {filteredNotes.map((note) => (
+                <NoteCard
+                  key={note.id}
+                  note={note}
+                  isSummarizing={summarizing === note.id}
+                  onSummarize={() => handleSummarize(note.id, note.content)}
+                  onDelete={() => setDeleteDialog({ isOpen: true, note })}
+                  onCopy={() => handleCopyNote(note)}
+                />
+              ))}
+            </AnimatePresence>
           </div>
         )}
+
+        {/* Delete Confirmation Dialog */}
+        <DeleteNoteDialog
+          isOpen={deleteDialog.isOpen}
+          onClose={() => setDeleteDialog({ isOpen: false, note: null })}
+          onConfirm={handleDeleteNote}
+          noteTitle={deleteDialog.note?.title || ""}
+        />
       </div>
     </AppLayout>
   );
