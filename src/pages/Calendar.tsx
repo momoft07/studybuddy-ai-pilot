@@ -74,6 +74,28 @@ export default function CalendarPage() {
   useEffect(() => {
     if (user) {
       fetchTasks();
+      
+      // Subscribe to realtime changes for instant sync across devices
+      const channel = supabase
+        .channel('calendar-tasks-realtime')
+        .on(
+          'postgres_changes',
+          {
+            event: '*',
+            schema: 'public',
+            table: 'tasks',
+            filter: `user_id=eq.${user.id}`,
+          },
+          (payload) => {
+            console.log('Realtime update:', payload);
+            fetchTasks();
+          }
+        )
+        .subscribe();
+
+      return () => {
+        supabase.removeChannel(channel);
+      };
     }
   }, [user]);
 

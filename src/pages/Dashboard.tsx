@@ -4,6 +4,7 @@ import { GlassCard } from "@/components/ui/glass-card";
 import { StatCard } from "@/components/ui/stat-card";
 import { ProgressRing } from "@/components/ui/progress-ring";
 import { GradientButton } from "@/components/ui/gradient-button";
+import { CalendarWidget } from "@/components/dashboard/CalendarWidget";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import {
@@ -248,6 +249,13 @@ export default function Dashboard() {
                 : "Let's get started! 🚀"}
             </p>
           </GlassCard>
+        </div>
+
+        {/* Calendar Widget Row */}
+        <div className="grid gap-6 lg:grid-cols-3">
+          <div className="lg:col-span-2">
+            <CalendarWidget />
+          </div>
         </div>
 
         {/* Quick Actions */}
