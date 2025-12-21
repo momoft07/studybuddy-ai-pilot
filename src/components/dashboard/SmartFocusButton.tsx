@@ -4,6 +4,7 @@ import { GlassCard } from "@/components/ui/glass-card";
 import { GradientButton } from "@/components/ui/gradient-button";
 import { Clock, Play, ChevronDown } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,14 +16,19 @@ interface SmartFocusButtonProps {
   topTask?: { title: string } | null;
 }
 
-const DURATIONS = [
-  { label: "25 min", value: 25, description: "Classic Pomodoro" },
-  { label: "50 min", value: 50, description: "Deep work" },
-  { label: "90 min", value: 90, description: "Extended session" },
-];
-
 export function SmartFocusButton({ topTask }: SmartFocusButtonProps) {
-  const [selectedDuration, setSelectedDuration] = useState(DURATIONS[0]);
+  const { t } = useTranslation();
+  const [selectedDuration, setSelectedDuration] = useState({
+    label: "25 min",
+    value: 25,
+    description: t("dashboard.classicPomodoro"),
+  });
+
+  const DURATIONS = [
+    { label: "25 min", value: 25, description: t("dashboard.classicPomodoro") },
+    { label: "50 min", value: 50, description: t("dashboard.deepWork") },
+    { label: "90 min", value: 90, description: t("dashboard.extendedSession") },
+  ];
 
   return (
     <Link to={`/focus?duration=${selectedDuration.value}`} className="block">
@@ -31,11 +37,11 @@ export function SmartFocusButton({ topTask }: SmartFocusButtonProps) {
           <Clock className="h-6 w-6 text-success-foreground" />
         </div>
         <div className="flex-1">
-          <h3 className="font-semibold">Start Focus Session</h3>
+          <h3 className="font-semibold">{t("dashboard.startFocusSession")}</h3>
           <p className="text-sm text-muted-foreground">
             {topTask
-              ? `Work on "${topTask.title.slice(0, 20)}${topTask.title.length > 20 ? "..." : ""}"`
-              : "Start a Pomodoro session"}
+              ? `${t("dashboard.workOn")} "${topTask.title.slice(0, 20)}${topTask.title.length > 20 ? "..." : ""}"`
+              : t("dashboard.startPomodoro")}
           </p>
         </div>
         <DropdownMenu>

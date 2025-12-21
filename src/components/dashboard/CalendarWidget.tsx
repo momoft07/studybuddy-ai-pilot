@@ -8,6 +8,7 @@ import { CalendarDays, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { format, isSameDay, startOfDay } from "date-fns";
 import { motion, AnimatePresence } from "framer-motion";
+import { useTranslation } from "react-i18next";
 
 interface Task {
   id: string;
@@ -17,6 +18,7 @@ interface Task {
 
 export function CalendarWidget() {
   const { user } = useAuth();
+  const { t } = useTranslation();
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [tasks, setTasks] = useState<Task[]>([]);
 
@@ -81,11 +83,11 @@ export function CalendarWidget() {
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
           <CalendarDays className="h-5 w-5 text-primary" />
-          <h2 className="text-lg font-semibold">Calendar</h2>
+          <h2 className="text-lg font-semibold">{t("nav.calendar")}</h2>
         </div>
         <Link to="/calendar">
           <GradientButton variant="ghost" size="sm">
-            View Full
+            {t("common.viewFull")}
             <ArrowRight className="ml-1 h-4 w-4" />
           </GradientButton>
         </Link>
@@ -117,7 +119,7 @@ export function CalendarWidget() {
             className="space-y-1.5 max-h-24 overflow-y-auto"
           >
             {selectedDateEvents.length === 0 ? (
-              <p className="text-xs text-muted-foreground">No events</p>
+              <p className="text-xs text-muted-foreground">{t("common.noEvents")}</p>
             ) : (
               selectedDateEvents.slice(0, 3).map((event) => (
                 <div
@@ -131,7 +133,7 @@ export function CalendarWidget() {
             )}
             {selectedDateEvents.length > 3 && (
               <p className="text-xs text-muted-foreground">
-                +{selectedDateEvents.length - 3} more
+                +{selectedDateEvents.length - 3} {t("common.more")}
               </p>
             )}
           </motion.div>

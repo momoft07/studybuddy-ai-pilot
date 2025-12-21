@@ -4,6 +4,7 @@ import { GlassCard } from "@/components/ui/glass-card";
 import { GradientButton } from "@/components/ui/gradient-button";
 import { ChevronDown, ChevronUp, Clock, Target, Brain, Flame, Share2 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import { useTranslation } from "react-i18next";
 
 interface WeeklyRecapProps {
   hoursStudied: number;
@@ -22,6 +23,7 @@ export function WeeklyRecap({
   streakDays,
   previousWeekHours,
 }: WeeklyRecapProps) {
+  const { t } = useTranslation();
   const [isExpanded, setIsExpanded] = useState(false);
 
   const weeklyChange = previousWeekHours > 0
@@ -29,15 +31,15 @@ export function WeeklyRecap({
     : 0;
 
   const handleShare = () => {
-    const text = `📚 My StudyPilot Weekly Recap:\n⏱️ ${hoursStudied} hours studied\n✅ ${tasksCompleted} tasks completed\n🔥 ${streakDays} day streak\n\nStudy smarter with StudyPilot!`;
+    const text = `📚 My StudyPilot ${t("dashboard.weeklyRecap")}:\n⏱️ ${hoursStudied} ${t("dashboard.hoursStudied").toLowerCase()}\n✅ ${tasksCompleted} ${t("dashboard.tasksDone").toLowerCase()}\n🔥 ${streakDays} ${t("dashboard.streak").toLowerCase()}\n\nStudy smarter with StudyPilot!`;
     
     if (navigator.share) {
       navigator.share({ text });
     } else {
       navigator.clipboard.writeText(text);
       toast({
-        title: "Copied to clipboard!",
-        description: "Share your progress with friends",
+        title: t("common.copiedToClipboard"),
+        description: t("common.shareProgress"),
       });
     }
   };
@@ -50,7 +52,7 @@ export function WeeklyRecap({
       >
         <div className="flex items-center gap-2">
           <Target className="h-5 w-5 text-primary" />
-          <h2 className="text-lg font-semibold">Weekly Recap</h2>
+          <h2 className="text-lg font-semibold">{t("dashboard.weeklyRecap")}</h2>
         </div>
         <motion.div
           animate={{ rotate: isExpanded ? 180 : 0 }}
@@ -75,34 +77,34 @@ export function WeeklyRecap({
                 <div className="bg-muted/30 rounded-lg p-3 text-center">
                   <Clock className="h-5 w-5 mx-auto mb-1 text-primary" />
                   <p className="text-2xl font-bold">{hoursStudied}h</p>
-                  <p className="text-xs text-muted-foreground">Hours Studied</p>
+                  <p className="text-xs text-muted-foreground">{t("dashboard.hoursStudied")}</p>
                   {weeklyChange !== 0 && (
                     <p className={`text-xs mt-1 ${weeklyChange > 0 ? "text-success" : "text-destructive"}`}>
-                      {weeklyChange > 0 ? "↑" : "↓"} {Math.abs(weeklyChange).toFixed(0)}% vs last week
+                      {weeklyChange > 0 ? "↑" : "↓"} {Math.abs(weeklyChange).toFixed(0)}% {t("dashboard.vsLastWeek")}
                     </p>
                   )}
                 </div>
                 <div className="bg-muted/30 rounded-lg p-3 text-center">
                   <Target className="h-5 w-5 mx-auto mb-1 text-success" />
                   <p className="text-2xl font-bold">{tasksCompleted}</p>
-                  <p className="text-xs text-muted-foreground">Tasks Done</p>
+                  <p className="text-xs text-muted-foreground">{t("dashboard.tasksDone")}</p>
                 </div>
                 <div className="bg-muted/30 rounded-lg p-3 text-center">
                   <Brain className="h-5 w-5 mx-auto mb-1 text-accent" />
                   <p className="text-2xl font-bold">{flashcardsReviewed}</p>
-                  <p className="text-xs text-muted-foreground">Cards Reviewed</p>
+                  <p className="text-xs text-muted-foreground">{t("dashboard.cardsReviewed")}</p>
                 </div>
                 <div className="bg-muted/30 rounded-lg p-3 text-center">
                   <Flame className="h-5 w-5 mx-auto mb-1 text-warning" />
                   <p className="text-2xl font-bold">{streakDays}</p>
-                  <p className="text-xs text-muted-foreground">Day Streak</p>
+                  <p className="text-xs text-muted-foreground">{t("dashboard.streak")}</p>
                 </div>
               </div>
 
               {/* Goal Progress */}
               <div className="bg-muted/30 rounded-lg p-3">
                 <div className="flex justify-between text-sm mb-2">
-                  <span>Weekly Goal Progress</span>
+                  <span>{t("dashboard.weeklyGoalProgress")}</span>
                   <span className="font-semibold">{hoursStudied}/{targetHours}h</span>
                 </div>
                 <div className="h-2 bg-muted rounded-full overflow-hidden">
@@ -123,7 +125,7 @@ export function WeeklyRecap({
                 className="w-full"
               >
                 <Share2 className="mr-2 h-4 w-4" />
-                Share My Progress
+                {t("dashboard.shareMyProgress")}
               </GradientButton>
             </div>
           </motion.div>
