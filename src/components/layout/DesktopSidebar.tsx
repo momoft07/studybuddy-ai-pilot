@@ -1,5 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "react-i18next";
 import {
   LayoutDashboard,
   BookOpen,
@@ -18,29 +19,30 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
 const mainNavItems = [
-  { href: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
-  { href: "/study-plan", icon: BookOpen, label: "Study Plans" },
-  { href: "/notes", icon: FileText, label: "Notes" },
-  { href: "/flashcards", icon: Brain, label: "Flashcards" },
-  { href: "/tasks", icon: CheckSquare, label: "Tasks" },
-  { href: "/focus", icon: Timer, label: "Focus Mode" },
-  { href: "/calendar", icon: Calendar, label: "Calendar" },
+  { href: "/dashboard", icon: LayoutDashboard, labelKey: "nav.dashboard" },
+  { href: "/study-plan", icon: BookOpen, labelKey: "nav.studyPlans" },
+  { href: "/notes", icon: FileText, labelKey: "nav.notes" },
+  { href: "/flashcards", icon: Brain, labelKey: "nav.flashcards" },
+  { href: "/tasks", icon: CheckSquare, labelKey: "nav.tasks" },
+  { href: "/focus", icon: Timer, labelKey: "nav.focusMode" },
+  { href: "/calendar", icon: Calendar, labelKey: "nav.calendar" },
 ];
 
 const secondaryNavItems = [
-  { href: "/ai-tutor", icon: Sparkles, label: "AI Tutor", premium: true },
-  { href: "/premium", icon: Crown, label: "Premium" },
-  { href: "/settings", icon: Settings, label: "Settings" },
+  { href: "/ai-tutor", icon: Sparkles, labelKey: "nav.aiTutor", premium: true },
+  { href: "/premium", icon: Crown, labelKey: "nav.premium" },
+  { href: "/settings", icon: Settings, labelKey: "nav.settings" },
 ];
 
 export function DesktopSidebar() {
   const location = useLocation();
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const handleSignOut = async () => {
     const { error } = await supabase.auth.signOut();
     if (error) {
-      toast.error("Error signing out");
+      toast.error(t("common.error"));
     } else {
       navigate("/");
     }
@@ -73,7 +75,7 @@ export function DesktopSidebar() {
                 )}
               >
                 <item.icon className="h-5 w-5" />
-                <span>{item.label}</span>
+                <span>{t(item.labelKey)}</span>
               </Link>
             );
           })}
@@ -96,10 +98,10 @@ export function DesktopSidebar() {
                 )}
               >
                 <item.icon className="h-5 w-5" />
-                <span>{item.label}</span>
+                <span>{t(item.labelKey)}</span>
                 {item.premium && (
                   <span className="ml-auto rounded-full bg-accent/20 px-2 py-0.5 text-xs text-accent">
-                    PRO
+                    {t("common.pro")}
                   </span>
                 )}
               </Link>
@@ -115,7 +117,7 @@ export function DesktopSidebar() {
           className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-muted-foreground transition-all duration-200 hover:text-foreground hover:bg-muted/50"
         >
           <LogOut className="h-5 w-5" />
-          <span>Sign Out</span>
+          <span>{t("common.signOut")}</span>
         </button>
       </div>
     </aside>
