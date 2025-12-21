@@ -229,6 +229,8 @@ export default function Dashboard() {
             weeklyHoursTarget={profile?.weekly_study_hours || 20}
             weeklyHoursCompleted={weeklyStats.hours}
             topTask={topTask}
+            completedTasksToday={completedTasks}
+            totalTasksToday={totalTasks}
           />
           <Link to="/study-plan">
             <GradientButton>
