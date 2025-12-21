@@ -166,7 +166,42 @@
     "resume": "Resume",
     "reset": "Reset",
     "workTime": "Work Time",
-    "breakTime": "Break Time"
+    "breakTime": "Break Time",
+    "mode": "Mode",
+    "focusTime": "Focus Time",
+    "sessionsToday": "Sessions today",
+    "minutesFocused": "Minutes focused",
+    "dayStreak": "Day streak",
+    "focusSessionComplete": "Focus session complete! Time for a break 🎉",
+    "breakOver": "Break over! Ready for another focus session? 💪",
+    "focusTip": "Stay focused! Minimize distractions and concentrate on your task.",
+    "breakTip": "Take a short break. Stretch, drink water, and rest your eyes.",
+    "timerSettings": "Timer Settings",
+    "customDuration": "Custom Duration",
+    "focusDuration": "Focus Duration",
+    "breakDurationLabel": "Break Duration",
+    "presetApplied": "{{preset}} preset applied",
+    "presets": {
+      "title": "Presets",
+      "classic": "Classic",
+      "deepWork": "Deep Work",
+      "quickReview": "Quick Review",
+      "examMode": "Exam Mode"
+    },
+    "focusShield": "Focus Shield",
+    "focusShieldDesc": "Block distracting sites during sessions",
+    "shieldEnabled": "Focus Shield enabled",
+    "shieldDisabled": "Focus Shield disabled",
+    "autoStartNext": "Auto-Start Next",
+    "autoStartNextDesc": "Automatically start the next session",
+    "ambientSounds": "Ambient Sounds",
+    "ambientSoundsDesc": "Background audio during focus",
+    "sounds": {
+      "silence": "Silence",
+      "rain": "Rain",
+      "cafe": "Café",
+      "lofi": "Lo-fi"
+    }
   },
   "calendar": {
     "title": "Calendar",

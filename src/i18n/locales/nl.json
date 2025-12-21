@@ -235,10 +235,37 @@
     "focusTime": "Focustijd",
     "sessionsToday": "Sessies vandaag",
     "minutesFocused": "Minuten gefocust",
+    "dayStreak": "Dagen reeks",
     "focusSessionComplete": "Focussessie voltooid! Tijd voor een pauze 🎉",
     "breakOver": "Pauze voorbij! Klaar voor nog een focussessie? 💪",
     "focusTip": "Blijf gefocust! Minimaliseer afleidingen en concentreer je op je taak.",
-    "breakTip": "Neem een korte pauze. Strek je uit, drink water en rust je ogen uit."
+    "breakTip": "Neem een korte pauze. Strek je uit, drink water en rust je ogen uit.",
+    "timerSettings": "Timer Instellingen",
+    "customDuration": "Aangepaste Duur",
+    "focusDuration": "Focus Duur",
+    "breakDurationLabel": "Pauze Duur",
+    "presetApplied": "{{preset}} preset toegepast",
+    "presets": {
+      "title": "Presets",
+      "classic": "Klassiek",
+      "deepWork": "Deep Work",
+      "quickReview": "Snelle Review",
+      "examMode": "Examenmodus"
+    },
+    "focusShield": "Focus Schild",
+    "focusShieldDesc": "Blokkeer afleidende sites tijdens sessies",
+    "shieldEnabled": "Focus Schild ingeschakeld",
+    "shieldDisabled": "Focus Schild uitgeschakeld",
+    "autoStartNext": "Auto-Start Volgende",
+    "autoStartNextDesc": "Start automatisch de volgende sessie",
+    "ambientSounds": "Omgevingsgeluiden",
+    "ambientSoundsDesc": "Achtergrondgeluid tijdens focus",
+    "sounds": {
+      "silence": "Stilte",
+      "rain": "Regen",
+      "cafe": "Café",
+      "lofi": "Lo-fi"
+    }
   },
   "calendar": {
     "title": "Kalender",
