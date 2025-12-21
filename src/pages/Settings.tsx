@@ -8,7 +8,9 @@ import { ProfileSection } from "@/components/settings/ProfileSection";
 import { AppearanceSection } from "@/components/settings/AppearanceSection";
 import { NotificationsSection } from "@/components/settings/NotificationsSection";
 import { SecuritySection } from "@/components/settings/SecuritySection";
+import { StudyPreferencesSection } from "@/components/settings/StudyPreferencesSection";
 import { PremiumCard } from "@/components/settings/PremiumCard";
+import { DangerZoneSection } from "@/components/settings/DangerZoneSection";
 import { SignOutButton } from "@/components/settings/SignOutButton";
 import { motion } from "framer-motion";
 
@@ -16,6 +18,8 @@ interface Profile {
   full_name: string | null;
   avatar_url: string | null;
   is_premium: boolean | null;
+  weekly_study_hours: number | null;
+  study_preference: string | null;
 }
 
 export default function SettingsPage() {
@@ -29,7 +33,7 @@ export default function SettingsPage() {
     try {
       const { data, error } = await supabase
         .from("profiles")
-        .select("full_name, avatar_url, is_premium")
+        .select("full_name, avatar_url, is_premium, weekly_study_hours, study_preference")
         .eq("user_id", user.id)
         .single();
 
@@ -53,7 +57,7 @@ export default function SettingsPage() {
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.1,
+        staggerChildren: 0.08,
       },
     },
   };
@@ -66,7 +70,7 @@ export default function SettingsPage() {
   return (
     <AppLayout>
       <motion.div
-        className="max-w-2xl mx-auto space-y-8 pb-8"
+        className="max-w-2xl mx-auto space-y-6 pb-8"
         variants={containerVariants}
         initial="hidden"
         animate="visible"
@@ -109,6 +113,26 @@ export default function SettingsPage() {
 
         <Separator className="bg-border/50" />
 
+        {/* Study Preferences Section */}
+        <motion.div variants={itemVariants}>
+          {isLoading ? (
+            <div className="glass rounded-2xl p-6 space-y-4">
+              <Skeleton className="h-10 w-48" />
+              <Skeleton className="h-8 w-full" />
+              <Skeleton className="h-24 w-full" />
+            </div>
+          ) : user ? (
+            <StudyPreferencesSection
+              userId={user.id}
+              initialWeeklyHours={profile?.weekly_study_hours}
+              initialStudyPreference={profile?.study_preference}
+              onUpdate={fetchProfile}
+            />
+          ) : null}
+        </motion.div>
+
+        <Separator className="bg-border/50" />
+
         {/* Appearance Section */}
         <motion.div variants={itemVariants}>
           <AppearanceSection />
@@ -138,6 +162,13 @@ export default function SettingsPage() {
         {/* Sign Out */}
         <motion.div variants={itemVariants}>
           <SignOutButton onSignOut={signOut} />
+        </motion.div>
+
+        <Separator className="bg-border/50" />
+
+        {/* Danger Zone */}
+        <motion.div variants={itemVariants}>
+          {user?.email && <DangerZoneSection userEmail={user.email} />}
         </motion.div>
 
         {/* Footer Links */}

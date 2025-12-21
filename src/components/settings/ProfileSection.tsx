@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { User, Camera, Check, X, Loader2 } from "lucide-react";
+import { useState, useRef } from "react";
+import { User, Camera, Check, X, Loader2, Upload } from "lucide-react";
 import { GlassCard } from "@/components/ui/glass-card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
@@ -25,6 +25,8 @@ export function ProfileSection({ user, profile, onProfileUpdate }: ProfileSectio
   const [isEditing, setIsEditing] = useState(false);
   const [displayName, setDisplayName] = useState(profile?.full_name || "");
   const [isSaving, setIsSaving] = useState(false);
+  const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
   const userInitials = profile?.full_name
@@ -69,6 +71,82 @@ export function ProfileSection({ user, profile, onProfileUpdate }: ProfileSectio
     setIsEditing(false);
   };
 
+  const handleAvatarClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !user) return;
+
+    // Validate file type
+    if (!file.type.startsWith("image/")) {
+      toast({
+        title: "Invalid file type",
+        description: "Please upload an image file (JPEG, PNG, WebP, or GIF).",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Validate file size (2MB limit)
+    if (file.size > 2 * 1024 * 1024) {
+      toast({
+        title: "File too large",
+        description: "Please upload an image smaller than 2MB.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsUploadingAvatar(true);
+
+    try {
+      const fileExt = file.name.split(".").pop();
+      const filePath = `${user.id}/avatar.${fileExt}`;
+
+      // Upload to storage
+      const { error: uploadError } = await supabase.storage
+        .from("avatars")
+        .upload(filePath, file, { upsert: true });
+
+      if (uploadError) throw uploadError;
+
+      // Get public URL
+      const { data: urlData } = supabase.storage
+        .from("avatars")
+        .getPublicUrl(filePath);
+
+      // Update profile with new avatar URL (add timestamp to bust cache)
+      const avatarUrl = `${urlData.publicUrl}?t=${Date.now()}`;
+      const { error: updateError } = await supabase
+        .from("profiles")
+        .update({ avatar_url: avatarUrl })
+        .eq("user_id", user.id);
+
+      if (updateError) throw updateError;
+
+      toast({
+        title: "Avatar updated",
+        description: "Your profile picture has been changed.",
+      });
+      onProfileUpdate();
+    } catch (error: any) {
+      console.error("Avatar upload error:", error);
+      toast({
+        title: "Upload failed",
+        description: error.message || "Failed to upload avatar. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsUploadingAvatar(false);
+      // Reset file input
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+    }
+  };
+
   return (
     <GlassCard className="p-6">
       <div className="flex items-center gap-3 mb-6">
@@ -88,11 +166,23 @@ export function ProfileSection({ user, profile, onProfileUpdate }: ProfileSectio
             </AvatarFallback>
           </Avatar>
           <button
-            className="absolute inset-0 flex items-center justify-center bg-background/80 rounded-full opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
-            onClick={() => toast({ title: "Coming soon", description: "Avatar upload will be available soon." })}
+            className="absolute inset-0 flex items-center justify-center bg-background/80 rounded-full opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer disabled:cursor-not-allowed"
+            onClick={handleAvatarClick}
+            disabled={isUploadingAvatar}
           >
-            <Camera className="h-5 w-5 text-muted-foreground" />
+            {isUploadingAvatar ? (
+              <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+            ) : (
+              <Camera className="h-5 w-5 text-muted-foreground" />
+            )}
           </button>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/jpeg,image/png,image/webp,image/gif"
+            className="hidden"
+            onChange={handleFileChange}
+          />
         </div>
 
         {/* Info */}
