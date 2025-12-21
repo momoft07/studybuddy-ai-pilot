@@ -152,11 +152,26 @@
   },
   "tasks": {
     "title": "Tasks",
+    "habits": "& Habits",
+    "stayOrganized": "Stay organized and track your study progress",
     "subtitle": "Manage your study tasks and deadlines",
     "newTask": "New Task",
+    "createTask": "Create Task",
+    "taskTitle": "Task title",
+    "taskCreated": "Task created successfully",
+    "taskDeleted": "Task deleted",
     "searchTasks": "Search tasks...",
     "noTasks": "No tasks yet",
-    "createFirst": "Create your first task to stay organized"
+    "noTasksFilter": "No {{filter}} tasks",
+    "createFirst": "Create your first task to stay organized",
+    "completeToSee": "Complete tasks to see them here",
+    "allCompleted": "All tasks are completed!",
+    "all": "All",
+    "pending": "Pending",
+    "completed": "Completed",
+    "lowPriority": "Low",
+    "mediumPriority": "Medium",
+    "highPriority": "High"
   },
   "focus": {
     "title": "Focus Mode",
@@ -257,6 +272,7 @@
   },
   "studyPlan": {
     "title": "Study Plan",
+    "creator": "Creator",
     "subtitle": "AI-powered personalized study schedules",
     "generate": "Generate Plan",
     "noPlan": "No active study plan",
