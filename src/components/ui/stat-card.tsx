@@ -12,21 +12,29 @@ interface StatCardProps {
     value: number;
     isPositive: boolean;
   };
+  variant?: "default" | "primary" | "accent" | "teal";
   className?: string;
 }
 
 const StatCard = React.forwardRef<HTMLDivElement, StatCardProps>(
-  ({ title, value, subtitle, icon: Icon, trend, className }, ref) => {
+  ({ title, value, subtitle, icon: Icon, trend, variant = "default", className }, ref) => {
+    const iconVariants = {
+      default: "gradient-primary shadow-[0_0_15px_hsl(220_100%_60%/0.3)]",
+      primary: "gradient-primary shadow-[0_0_20px_hsl(220_100%_60%/0.5)]",
+      accent: "gradient-accent shadow-[0_0_20px_hsl(270_100%_65%/0.5)]",
+      teal: "gradient-teal shadow-[0_0_20px_hsl(180_100%_50%/0.5)]",
+    };
+
     return (
-      <GlassCard ref={ref} hover className={cn("relative overflow-hidden", className)}>
-        <div className="flex items-start justify-between">
+      <GlassCard ref={ref} hover className={cn("relative overflow-hidden group", className)}>
+        <div className="flex items-start justify-between relative z-10">
           <div className="space-y-1">
-            <p className="text-sm text-muted-foreground">{title}</p>
-            <p className="text-2xl font-bold gradient-text">{value}</p>
+            <p className="text-sm font-medium text-muted-foreground">{title}</p>
+            <p className="text-3xl font-display font-bold tracking-tight">{value}</p>
             {subtitle && <p className="text-xs text-muted-foreground">{subtitle}</p>}
             {trend && (
               <div className={cn(
-                "flex items-center gap-1 text-xs font-medium",
+                "flex items-center gap-1 text-xs font-semibold",
                 trend.isPositive ? "text-success" : "text-destructive"
               )}>
                 <span>{trend.isPositive ? "↑" : "↓"}</span>
@@ -35,13 +43,16 @@ const StatCard = React.forwardRef<HTMLDivElement, StatCardProps>(
             )}
           </div>
           {Icon && (
-            <div className="rounded-lg gradient-primary p-2">
-              <Icon className="h-5 w-5 text-primary-foreground" />
+            <div className={cn(
+              "rounded-xl p-3 transition-all duration-300 group-hover:scale-110",
+              iconVariants[variant]
+            )}>
+              <Icon className="h-6 w-6 text-white" />
             </div>
           )}
         </div>
-        {/* Decorative gradient blob */}
-        <div className="absolute -bottom-4 -right-4 h-24 w-24 rounded-full bg-gradient-to-br from-primary/20 to-secondary/20 blur-2xl" />
+        {/* Enhanced decorative gradient blob */}
+        <div className="absolute -bottom-6 -right-6 h-32 w-32 rounded-full bg-gradient-to-br from-primary/20 via-accent/15 to-secondary/20 blur-3xl opacity-60 group-hover:opacity-80 transition-opacity" />
       </GlassCard>
     );
   }

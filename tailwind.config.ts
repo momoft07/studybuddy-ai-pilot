@@ -24,7 +24,7 @@ export default {
     extend: {
       fontFamily: {
         sans: ["Inter", "system-ui", "sans-serif"],
-        display: ["Space Grotesk", "system-ui", "sans-serif"],
+        display: ["Outfit", "system-ui", "sans-serif"],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -78,15 +78,19 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
-        // Gradient color stops for use in components
+        // Gradient color stops
         "gradient-start": "hsl(var(--gradient-start))",
+        "gradient-mid": "hsl(var(--gradient-mid))",
         "gradient-end": "hsl(var(--gradient-end))",
+        "gradient-teal-start": "hsl(var(--gradient-teal-start))",
+        "gradient-teal-end": "hsl(var(--gradient-teal-end))",
         "gradient-accent-start": "hsl(var(--gradient-accent-start))",
         "gradient-accent-end": "hsl(var(--gradient-accent-end))",
         // Glow colors
         "glow-primary": "hsl(var(--glow-primary))",
         "glow-secondary": "hsl(var(--glow-secondary))",
         "glow-accent": "hsl(var(--glow-accent))",
+        "glow-pink": "hsl(var(--glow-pink))",
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -94,11 +98,15 @@ export default {
         sm: "calc(var(--radius) - 4px)",
         xl: "calc(var(--radius) + 4px)",
         "2xl": "calc(var(--radius) + 8px)",
+        "3xl": "calc(var(--radius) + 16px)",
       },
       boxShadow: {
         glow: "0 0 20px hsl(var(--glow-primary) / 0.4)",
         "glow-lg": "0 0 40px hsl(var(--glow-primary) / 0.3)",
-        glass: "0 8px 32px 0 rgba(0, 0, 0, 0.1)",
+        "glow-xl": "0 0 60px hsl(var(--glow-primary) / 0.4), 0 0 100px hsl(var(--glow-primary) / 0.2)",
+        glass: "0 8px 32px 0 rgba(0, 0, 0, 0.4)",
+        "neon-primary": "0 0 20px hsl(var(--glow-primary) / 0.5), 0 0 40px hsl(var(--glow-primary) / 0.3)",
+        "neon-accent": "0 0 20px hsl(var(--glow-accent) / 0.5), 0 0 40px hsl(var(--glow-accent) / 0.3)",
       },
       keyframes: {
         "accordion-down": {
@@ -110,28 +118,28 @@ export default {
           to: { height: "0" },
         },
         "fade-in": {
-          from: { opacity: "0", transform: "translateY(10px)" },
+          from: { opacity: "0", transform: "translateY(16px)" },
           to: { opacity: "1", transform: "translateY(0)" },
         },
         "fade-out": {
           from: { opacity: "1", transform: "translateY(0)" },
-          to: { opacity: "0", transform: "translateY(10px)" },
+          to: { opacity: "0", transform: "translateY(16px)" },
         },
         "scale-in": {
           from: { opacity: "0", transform: "scale(0.95)" },
           to: { opacity: "1", transform: "scale(1)" },
         },
         "slide-in-right": {
-          from: { transform: "translateX(100%)" },
-          to: { transform: "translateX(0)" },
+          from: { transform: "translateX(100%)", opacity: "0" },
+          to: { transform: "translateX(0)", opacity: "1" },
         },
         "slide-in-left": {
-          from: { transform: "translateX(-100%)" },
-          to: { transform: "translateX(0)" },
+          from: { transform: "translateX(-100%)", opacity: "0" },
+          to: { transform: "translateX(0)", opacity: "1" },
         },
         "slide-in-up": {
-          from: { transform: "translateY(100%)" },
-          to: { transform: "translateY(0)" },
+          from: { transform: "translateY(100%)", opacity: "0" },
+          to: { transform: "translateY(0)", opacity: "1" },
         },
         "pulse-soft": {
           "0%, 100%": { opacity: "1" },
@@ -143,26 +151,40 @@ export default {
         },
         float: {
           "0%, 100%": { transform: "translateY(0)" },
-          "50%": { transform: "translateY(-10px)" },
+          "50%": { transform: "translateY(-15px)" },
         },
         "spin-slow": {
           from: { transform: "rotate(0deg)" },
           to: { transform: "rotate(360deg)" },
         },
+        "glow-pulse": {
+          "0%, 100%": { 
+            boxShadow: "0 0 20px hsl(var(--glow-primary) / 0.4), 0 0 40px hsl(var(--glow-primary) / 0.2)" 
+          },
+          "50%": { 
+            boxShadow: "0 0 30px hsl(var(--glow-primary) / 0.6), 0 0 60px hsl(var(--glow-primary) / 0.4)" 
+          },
+        },
+        "gradient-x": {
+          "0%, 100%": { backgroundPosition: "0% 50%" },
+          "50%": { backgroundPosition: "100% 50%" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
-        "fade-in": "fade-in 0.3s ease-out",
-        "fade-out": "fade-out 0.3s ease-out",
-        "scale-in": "scale-in 0.2s ease-out",
-        "slide-in-right": "slide-in-right 0.3s ease-out",
-        "slide-in-left": "slide-in-left 0.3s ease-out",
-        "slide-in-up": "slide-in-up 0.3s ease-out",
+        "fade-in": "fade-in 0.4s ease-out",
+        "fade-out": "fade-out 0.4s ease-out",
+        "scale-in": "scale-in 0.3s ease-out",
+        "slide-in-right": "slide-in-right 0.4s ease-out",
+        "slide-in-left": "slide-in-left 0.4s ease-out",
+        "slide-in-up": "slide-in-up 0.4s ease-out",
         "pulse-soft": "pulse-soft 2s ease-in-out infinite",
-        shimmer: "shimmer 2s infinite",
-        float: "float 3s ease-in-out infinite",
-        "spin-slow": "spin-slow 8s linear infinite",
+        shimmer: "shimmer 2.5s infinite",
+        float: "float 4s ease-in-out infinite",
+        "spin-slow": "spin-slow 10s linear infinite",
+        "glow-pulse": "glow-pulse 2.5s ease-in-out infinite",
+        "gradient-x": "gradient-x 6s ease infinite",
       },
       backdropBlur: {
         xs: "2px",
