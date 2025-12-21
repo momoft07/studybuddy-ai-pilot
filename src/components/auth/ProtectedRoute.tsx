@@ -8,10 +8,6 @@ interface ProtectedRouteProps {
 }
 
 export function ProtectedRoute({ children }: ProtectedRouteProps) {
-  // TEMPORARY: Auth disabled for preview - remove this line to re-enable
-  return <>{children}</>;
-
-  /* Re-enable auth by uncommenting this block:
   const { user, loading } = useAuth();
   const location = useLocation();
 
@@ -34,5 +30,4 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
   }
 
   return <>{children}</>;
-  */
 }
