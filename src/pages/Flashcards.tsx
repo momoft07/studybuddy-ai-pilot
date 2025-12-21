@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { GlassCard } from "@/components/ui/glass-card";
 import { GradientButton } from "@/components/ui/gradient-button";
@@ -10,12 +10,9 @@ import { toast } from "sonner";
 import {
   Brain,
   Plus,
-  Play,
-  Loader2,
   RotateCcw,
   Check,
   X,
-  Sparkles,
 } from "lucide-react";
 import {
   Dialog,
@@ -24,24 +21,45 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { AnimatePresence } from "framer-motion";
+import { DeckCard } from "@/components/flashcards/DeckCard";
+import { DeckSkeletonGrid } from "@/components/flashcards/DeckSkeleton";
+import { EmptyDecksState } from "@/components/flashcards/EmptyDecksState";
+import { FlashcardsErrorState } from "@/components/flashcards/FlashcardsErrorState";
+import { DecksSearch, SortOption } from "@/components/flashcards/DecksSearch";
+import { DeleteDeckDialog } from "@/components/flashcards/DeleteDeckDialog";
+import { StudyModeDialog, StudyMode } from "@/components/flashcards/StudyModeDialog";
 
 interface FlashcardDeck {
   id: string;
   name: string;
   description: string | null;
   card_count: number;
+  created_at: string;
+  updated_at: string;
 }
 
 interface Flashcard {
   id: string;
   question: string;
   answer: string;
+  correct_count: number | null;
+  review_count: number | null;
+  next_review_date: string | null;
+}
+
+interface DeckStats {
+  dueToday: number;
+  mastered: number;
+  learning: number;
+  masteryPercent: number;
 }
 
 export default function FlashcardsPage() {
   const { user } = useAuth();
   const [decks, setDecks] = useState<FlashcardDeck[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [isCreateDeckOpen, setIsCreateDeckOpen] = useState(false);
   const [isStudyMode, setIsStudyMode] = useState(false);
   const [selectedDeck, setSelectedDeck] = useState<FlashcardDeck | null>(null);
@@ -51,6 +69,17 @@ export default function FlashcardsPage() {
   const [newDeck, setNewDeck] = useState({ name: "", description: "" });
   const [isAddCardOpen, setIsAddCardOpen] = useState(false);
   const [newCard, setNewCard] = useState({ question: "", answer: "" });
+  const [searchQuery, setSearchQuery] = useState("");
+  const [sortBy, setSortBy] = useState<SortOption>("created");
+  const [deleteDialog, setDeleteDialog] = useState<{ isOpen: boolean; deck: FlashcardDeck | null }>({
+    isOpen: false,
+    deck: null,
+  });
+  const [studyModeDialog, setStudyModeDialog] = useState<{ isOpen: boolean; deck: FlashcardDeck | null }>({
+    isOpen: false,
+    deck: null,
+  });
+  const [deckStats, setDeckStats] = useState<Record<string, DeckStats>>({});
 
   useEffect(() => {
     if (user) {
@@ -59,22 +88,88 @@ export default function FlashcardsPage() {
   }, [user]);
 
   const fetchDecks = async () => {
+    setLoading(true);
+    setError(null);
+    
     try {
       const { data, error } = await supabase
         .from("flashcard_decks")
-        .select("id, name, description, card_count")
+        .select("id, name, description, card_count, created_at, updated_at")
         .eq("user_id", user?.id)
         .order("created_at", { ascending: false });
 
       if (error) throw error;
       setDecks(data || []);
-    } catch (error) {
-      console.error("Error fetching decks:", error);
-      toast.error("Failed to load flashcard decks");
+      
+      // Fetch stats for each deck
+      if (data && data.length > 0) {
+        fetchDeckStats(data.map(d => d.id));
+      }
+    } catch (err) {
+      console.error("Error fetching decks:", err);
+      setError("Failed to load flashcard decks. Please try again.");
     } finally {
       setLoading(false);
     }
   };
+
+  const fetchDeckStats = async (deckIds: string[]) => {
+    try {
+      const { data: cards, error } = await supabase
+        .from("flashcards")
+        .select("deck_id, correct_count, review_count, next_review_date")
+        .in("deck_id", deckIds);
+
+      if (error) throw error;
+
+      const stats: Record<string, DeckStats> = {};
+      const today = new Date();
+      today.setHours(23, 59, 59, 999);
+
+      deckIds.forEach(deckId => {
+        const deckCards = cards?.filter(c => c.deck_id === deckId) || [];
+        const mastered = deckCards.filter(c => (c.correct_count || 0) >= 3).length;
+        const dueToday = deckCards.filter(c => {
+          if (!c.next_review_date) return true;
+          return new Date(c.next_review_date) <= today;
+        }).length;
+        
+        stats[deckId] = {
+          dueToday,
+          mastered,
+          learning: deckCards.length - mastered,
+          masteryPercent: deckCards.length > 0 ? Math.round((mastered / deckCards.length) * 100) : 0,
+        };
+      });
+
+      setDeckStats(stats);
+    } catch (err) {
+      console.error("Error fetching deck stats:", err);
+    }
+  };
+
+  const filteredAndSortedDecks = useMemo(() => {
+    let result = decks.filter(deck =>
+      deck.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      deck.description?.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
+    result.sort((a, b) => {
+      switch (sortBy) {
+        case "name":
+          return a.name.localeCompare(b.name);
+        case "cards":
+          return b.card_count - a.card_count;
+        case "studied":
+          return new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime();
+        case "created":
+        default:
+          return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+      }
+    });
+
+    return result;
+  }, [decks, searchQuery, sortBy]);
 
   const handleCreateDeck = async () => {
     if (!newDeck.name.trim()) {
@@ -91,13 +186,84 @@ export default function FlashcardsPage() {
 
       if (error) throw error;
 
-      toast.success("Deck created!");
+      toast.success("Deck created successfully!");
       setNewDeck({ name: "", description: "" });
       setIsCreateDeckOpen(false);
       fetchDecks();
-    } catch (error) {
-      console.error("Error creating deck:", error);
+    } catch (err) {
+      console.error("Error creating deck:", err);
       toast.error("Failed to create deck");
+    }
+  };
+
+  const handleDeleteDeck = async () => {
+    if (!deleteDialog.deck) return;
+    
+    const deckId = deleteDialog.deck.id;
+    setDeleteDialog({ isOpen: false, deck: null });
+
+    try {
+      // Delete all cards first
+      await supabase.from("flashcards").delete().eq("deck_id", deckId);
+      
+      // Then delete the deck
+      const { error } = await supabase.from("flashcard_decks").delete().eq("id", deckId);
+
+      if (error) throw error;
+
+      toast.success("Deck deleted", {
+        description: "The deck and all its cards have been removed.",
+      });
+      setDecks(decks.filter(d => d.id !== deckId));
+    } catch (err) {
+      console.error("Error deleting deck:", err);
+      toast.error("Failed to delete deck");
+    }
+  };
+
+  const handleDuplicateDeck = async (deck: FlashcardDeck) => {
+    try {
+      // Create new deck
+      const { data: newDeckData, error: deckError } = await supabase
+        .from("flashcard_decks")
+        .insert({
+          user_id: user?.id,
+          name: `${deck.name} (Copy)`,
+          description: deck.description,
+        })
+        .select()
+        .single();
+
+      if (deckError) throw deckError;
+
+      // Copy all cards
+      const { data: cards, error: cardsError } = await supabase
+        .from("flashcards")
+        .select("question, answer")
+        .eq("deck_id", deck.id);
+
+      if (cardsError) throw cardsError;
+
+      if (cards && cards.length > 0) {
+        const newCards = cards.map(card => ({
+          user_id: user?.id,
+          deck_id: newDeckData.id,
+          question: card.question,
+          answer: card.answer,
+        }));
+
+        await supabase.from("flashcards").insert(newCards);
+        await supabase
+          .from("flashcard_decks")
+          .update({ card_count: cards.length })
+          .eq("id", newDeckData.id);
+      }
+
+      toast.success("Deck duplicated!");
+      fetchDecks();
+    } catch (err) {
+      console.error("Error duplicating deck:", err);
+      toast.error("Failed to duplicate deck");
     }
   };
 
@@ -119,7 +285,6 @@ export default function FlashcardsPage() {
 
       if (error) throw error;
 
-      // Update card count
       await supabase
         .from("flashcard_decks")
         .update({ card_count: selectedDeck.card_count + 1 })
@@ -129,13 +294,12 @@ export default function FlashcardsPage() {
       setNewCard({ question: "", answer: "" });
       setIsAddCardOpen(false);
       
-      // Refresh the current cards if in study mode
       if (isStudyMode) {
         fetchCardsForDeck(selectedDeck.id);
       }
       fetchDecks();
-    } catch (error) {
-      console.error("Error adding card:", error);
+    } catch (err) {
+      console.error("Error adding card:", err);
       toast.error("Failed to add card");
     }
   };
@@ -144,19 +308,23 @@ export default function FlashcardsPage() {
     try {
       const { data, error } = await supabase
         .from("flashcards")
-        .select("id, question, answer")
+        .select("id, question, answer, correct_count, review_count, next_review_date")
         .eq("deck_id", deckId)
         .order("next_review_date", { ascending: true });
 
       if (error) throw error;
       setCurrentCards(data || []);
-    } catch (error) {
-      console.error("Error fetching cards:", error);
+    } catch (err) {
+      console.error("Error fetching cards:", err);
       toast.error("Failed to load cards");
     }
   };
 
-  const startStudySession = async (deck: FlashcardDeck) => {
+  const handleSelectStudyMode = async (mode: StudyMode) => {
+    if (!studyModeDialog.deck) return;
+    
+    const deck = studyModeDialog.deck;
+    setStudyModeDialog({ isOpen: false, deck: null });
     setSelectedDeck(deck);
     await fetchCardsForDeck(deck.id);
     setCurrentCardIndex(0);
@@ -164,18 +332,45 @@ export default function FlashcardsPage() {
     setIsStudyMode(true);
   };
 
-  const handleCardResponse = (correct: boolean) => {
-    // TODO: Implement spaced repetition algorithm
+  const handleCardResponse = async (correct: boolean) => {
+    const currentCard = currentCards[currentCardIndex];
+    
+    // Update card stats
+    try {
+      const newReviewCount = (currentCard.review_count || 0) + 1;
+      const newCorrectCount = correct ? (currentCard.correct_count || 0) + 1 : (currentCard.correct_count || 0);
+      
+      // Simple SRS: if correct, schedule further out
+      const daysUntilNext = correct ? Math.min(newCorrectCount * 2, 30) : 1;
+      const nextReview = new Date();
+      nextReview.setDate(nextReview.getDate() + daysUntilNext);
+
+      await supabase
+        .from("flashcards")
+        .update({
+          review_count: newReviewCount,
+          correct_count: newCorrectCount,
+          next_review_date: nextReview.toISOString(),
+        })
+        .eq("id", currentCard.id);
+    } catch (err) {
+      console.error("Error updating card:", err);
+    }
+
     if (currentCardIndex < currentCards.length - 1) {
       setCurrentCardIndex(currentCardIndex + 1);
       setIsFlipped(false);
     } else {
-      toast.success("Session complete! 🎉");
+      toast.success("Session complete! 🎉", {
+        description: `You reviewed ${currentCards.length} cards.`,
+      });
       setIsStudyMode(false);
       setSelectedDeck(null);
+      fetchDecks(); // Refresh stats
     }
   };
 
+  // Study mode view
   if (isStudyMode && selectedDeck) {
     const currentCard = currentCards[currentCardIndex];
 
@@ -189,7 +384,7 @@ export default function FlashcardsPage() {
               <p className="text-muted-foreground mb-4">
                 Add some flashcards to start studying
               </p>
-              <div className="flex gap-2">
+              <div className="flex gap-2 justify-center">
                 <GradientButton
                   variant="outline"
                   onClick={() => {
@@ -206,7 +401,6 @@ export default function FlashcardsPage() {
               </div>
             </GlassCard>
 
-            {/* Add Card Dialog */}
             <Dialog open={isAddCardOpen} onOpenChange={setIsAddCardOpen}>
               <DialogContent className="glass-strong">
                 <DialogHeader>
@@ -216,17 +410,13 @@ export default function FlashcardsPage() {
                   <Textarea
                     placeholder="Question"
                     value={newCard.question}
-                    onChange={(e) =>
-                      setNewCard({ ...newCard, question: e.target.value })
-                    }
+                    onChange={(e) => setNewCard({ ...newCard, question: e.target.value })}
                     rows={3}
                   />
                   <Textarea
                     placeholder="Answer"
                     value={newCard.answer}
-                    onChange={(e) =>
-                      setNewCard({ ...newCard, answer: e.target.value })
-                    }
+                    onChange={(e) => setNewCard({ ...newCard, answer: e.target.value })}
                     rows={3}
                   />
                   <GradientButton onClick={handleAddCard} className="w-full">
@@ -245,9 +435,7 @@ export default function FlashcardsPage() {
         <div className="min-h-[60vh] flex flex-col items-center justify-center">
           {/* Progress */}
           <div className="mb-6 text-center">
-            <p className="text-sm text-muted-foreground mb-2">
-              {selectedDeck.name}
-            </p>
+            <p className="text-sm text-muted-foreground mb-2">{selectedDeck.name}</p>
             <p className="text-lg font-semibold">
               Card {currentCardIndex + 1} of {currentCards.length}
             </p>
@@ -255,13 +443,15 @@ export default function FlashcardsPage() {
 
           {/* Flashcard */}
           <div
-            className={`relative w-full max-w-lg h-64 cursor-pointer perspective-1000`}
+            className="relative w-full max-w-lg h-64 cursor-pointer"
             onClick={() => setIsFlipped(!isFlipped)}
+            role="button"
+            aria-label={isFlipped ? "Click to see question" : "Click to reveal answer"}
+            tabIndex={0}
+            onKeyDown={(e) => e.key === "Enter" && setIsFlipped(!isFlipped)}
           >
             <div
-              className={`w-full h-full transition-transform duration-500 transform-style-preserve-3d ${
-                isFlipped ? "rotate-y-180" : ""
-              }`}
+              className="w-full h-full transition-transform duration-500"
               style={{
                 transformStyle: "preserve-3d",
                 transform: isFlipped ? "rotateY(180deg)" : "rotateY(0deg)",
@@ -270,7 +460,7 @@ export default function FlashcardsPage() {
               {/* Front */}
               <GlassCard
                 variant="neon"
-                className="absolute inset-0 flex items-center justify-center p-6 backface-hidden"
+                className="absolute inset-0 flex items-center justify-center p-6"
                 style={{ backfaceVisibility: "hidden" }}
               >
                 <p className="text-xl text-center">{currentCard?.question}</p>
@@ -331,22 +521,24 @@ export default function FlashcardsPage() {
     );
   }
 
+  // Main deck list view
   return (
     <AppLayout>
       <div className="space-y-6 animate-fade-in">
         {/* Header */}
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div>
-            <h1 className="text-2xl font-display font-bold md:text-3xl">
+            <h1 className="text-xl font-display font-bold md:text-2xl flex items-center gap-2">
+              <Brain className="h-6 w-6 text-accent" aria-hidden="true" />
               <span className="gradient-text">Flashcards</span>
             </h1>
-            <p className="text-muted-foreground mt-1">
+            <p className="text-muted-foreground text-sm mt-1">
               Master concepts with spaced repetition
             </p>
           </div>
           <Dialog open={isCreateDeckOpen} onOpenChange={setIsCreateDeckOpen}>
             <DialogTrigger asChild>
-              <GradientButton>
+              <GradientButton className="w-full md:w-auto">
                 <Plus className="mr-2 h-4 w-4" />
                 New Deck
               </GradientButton>
@@ -359,17 +551,15 @@ export default function FlashcardsPage() {
                 <Input
                   placeholder="Deck name"
                   value={newDeck.name}
-                  onChange={(e) =>
-                    setNewDeck({ ...newDeck, name: e.target.value })
-                  }
+                  onChange={(e) => setNewDeck({ ...newDeck, name: e.target.value })}
+                  aria-label="Deck name"
                 />
                 <Textarea
                   placeholder="Description (optional)"
                   value={newDeck.description}
-                  onChange={(e) =>
-                    setNewDeck({ ...newDeck, description: e.target.value })
-                  }
+                  onChange={(e) => setNewDeck({ ...newDeck, description: e.target.value })}
                   rows={3}
+                  aria-label="Deck description"
                 />
                 <GradientButton onClick={handleCreateDeck} className="w-full">
                   Create Deck
@@ -379,65 +569,58 @@ export default function FlashcardsPage() {
           </Dialog>
         </div>
 
-        {/* Decks Grid */}
+        {/* Search & Sort */}
+        {decks.length > 0 && (
+          <DecksSearch
+            value={searchQuery}
+            onChange={setSearchQuery}
+            sortBy={sortBy}
+            onSortChange={setSortBy}
+            resultCount={filteredAndSortedDecks.length}
+            totalCount={decks.length}
+          />
+        )}
+
+        {/* Content */}
         {loading ? (
-          <div className="flex items-center justify-center py-12">
-            <Loader2 className="h-8 w-8 animate-spin text-primary" />
-          </div>
+          <DeckSkeletonGrid />
+        ) : error ? (
+          <FlashcardsErrorState error={error} onRetry={fetchDecks} />
         ) : decks.length === 0 ? (
+          <EmptyDecksState onCreateDeck={() => setIsCreateDeckOpen(true)} />
+        ) : filteredAndSortedDecks.length === 0 ? (
           <GlassCard className="py-12 text-center">
             <Brain className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
-            <h3 className="text-lg font-semibold mb-2">No flashcard decks yet</h3>
+            <h3 className="text-lg font-semibold mb-2">No decks found</h3>
             <p className="text-muted-foreground mb-4">
-              Create your first deck to start studying
+              No decks matching "{searchQuery}" were found.
             </p>
-            <GradientButton onClick={() => setIsCreateDeckOpen(true)}>
-              <Plus className="mr-2 h-4 w-4" />
-              Create Deck
-            </GradientButton>
+            <button
+              onClick={() => setSearchQuery("")}
+              className="text-primary hover:underline text-sm font-medium"
+            >
+              Clear search
+            </button>
           </GlassCard>
         ) : (
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {decks.map((deck) => (
-              <GlassCard key={deck.id} hover className="relative">
-                <div className="flex items-start justify-between mb-3">
-                  <div className="flex items-center gap-2">
-                    <div className="rounded-lg gradient-accent p-1.5">
-                      <Brain className="h-4 w-4 text-accent-foreground" />
-                    </div>
-                    <h3 className="font-semibold">{deck.name}</h3>
-                  </div>
-                </div>
-                {deck.description && (
-                  <p className="text-sm text-muted-foreground mb-3 line-clamp-2">
-                    {deck.description}
-                  </p>
-                )}
-                <p className="text-sm text-muted-foreground mb-4">
-                  {deck.card_count} cards
-                </p>
-                <div className="flex gap-2">
-                  <GradientButton
-                    size="sm"
-                    className="flex-1"
-                    onClick={() => startStudySession(deck)}
-                  >
-                    <Play className="mr-1 h-4 w-4" />
-                    Study
-                  </GradientButton>
-                  <GradientButton
-                    size="sm"
-                    variant="outline"
-                    onClick={() => {
-                      setSelectedDeck(deck);
-                      setIsAddCardOpen(true);
-                    }}
-                  >
-                    <Plus className="h-4 w-4" />
-                  </GradientButton>
-                </div>
-              </GlassCard>
-            ))}
+            <AnimatePresence mode="popLayout">
+              {filteredAndSortedDecks.map((deck) => (
+                <DeckCard
+                  key={deck.id}
+                  deck={deck}
+                  stats={deckStats[deck.id] || { dueToday: 0, mastered: 0, learning: 0, masteryPercent: 0 }}
+                  onStudy={() => setStudyModeDialog({ isOpen: true, deck })}
+                  onAddCard={() => {
+                    setSelectedDeck(deck);
+                    setIsAddCardOpen(true);
+                  }}
+                  onEdit={() => toast.info("Edit feature coming soon!")}
+                  onDuplicate={() => handleDuplicateDeck(deck)}
+                  onDelete={() => setDeleteDialog({ isOpen: true, deck })}
+                />
+              ))}
+            </AnimatePresence>
           </div>
         )}
 
@@ -445,26 +628,22 @@ export default function FlashcardsPage() {
         <Dialog open={isAddCardOpen} onOpenChange={setIsAddCardOpen}>
           <DialogContent className="glass-strong">
             <DialogHeader>
-              <DialogTitle>
-                Add Card to {selectedDeck?.name}
-              </DialogTitle>
+              <DialogTitle>Add Card to {selectedDeck?.name}</DialogTitle>
             </DialogHeader>
             <div className="space-y-4 mt-4">
               <Textarea
                 placeholder="Question"
                 value={newCard.question}
-                onChange={(e) =>
-                  setNewCard({ ...newCard, question: e.target.value })
-                }
+                onChange={(e) => setNewCard({ ...newCard, question: e.target.value })}
                 rows={3}
+                aria-label="Card question"
               />
               <Textarea
                 placeholder="Answer"
                 value={newCard.answer}
-                onChange={(e) =>
-                  setNewCard({ ...newCard, answer: e.target.value })
-                }
+                onChange={(e) => setNewCard({ ...newCard, answer: e.target.value })}
                 rows={3}
+                aria-label="Card answer"
               />
               <GradientButton onClick={handleAddCard} className="w-full">
                 Add Card
@@ -472,6 +651,25 @@ export default function FlashcardsPage() {
             </div>
           </DialogContent>
         </Dialog>
+
+        {/* Delete Confirmation Dialog */}
+        <DeleteDeckDialog
+          isOpen={deleteDialog.isOpen}
+          onClose={() => setDeleteDialog({ isOpen: false, deck: null })}
+          onConfirm={handleDeleteDeck}
+          deckName={deleteDialog.deck?.name || ""}
+          cardCount={deleteDialog.deck?.card_count || 0}
+        />
+
+        {/* Study Mode Selection Dialog */}
+        <StudyModeDialog
+          isOpen={studyModeDialog.isOpen}
+          onClose={() => setStudyModeDialog({ isOpen: false, deck: null })}
+          onSelectMode={handleSelectStudyMode}
+          deckName={studyModeDialog.deck?.name || ""}
+          dueCards={deckStats[studyModeDialog.deck?.id || ""]?.dueToday || 0}
+          totalCards={studyModeDialog.deck?.card_count || 0}
+        />
       </div>
     </AppLayout>
   );
