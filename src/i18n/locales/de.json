@@ -1,0 +1,195 @@
+{
+  "common": {
+    "save": "Speichern",
+    "cancel": "Abbrechen",
+    "delete": "Löschen",
+    "edit": "Bearbeiten",
+    "close": "Schließen",
+    "loading": "Laden...",
+    "error": "Fehler",
+    "success": "Erfolg",
+    "confirm": "Bestätigen",
+    "back": "Zurück",
+    "next": "Weiter",
+    "search": "Suchen",
+    "create": "Erstellen",
+    "update": "Aktualisieren",
+    "comingSoon": "Demnächst"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "notes": "Notizen",
+    "flashcards": "Karteikarten",
+    "tasks": "Aufgaben",
+    "focus": "Fokus",
+    "calendar": "Kalender",
+    "studyPlan": "Lernplan",
+    "aiTutor": "KI-Tutor",
+    "settings": "Einstellungen",
+    "premium": "Premium"
+  },
+  "settings": {
+    "title": "Einstellungen",
+    "subtitle": "Verwalten Sie Ihr Konto und Ihre Einstellungen",
+    "profile": {
+      "title": "Profil",
+      "displayName": "Anzeigename",
+      "email": "E-Mail",
+      "status": "Status",
+      "active": "Aktiv",
+      "memberSince": "Mitglied seit",
+      "notSet": "Nicht festgelegt",
+      "updated": "Profil aktualisiert",
+      "updatedDesc": "Ihr Anzeigename wurde gespeichert."
+    },
+    "studyPreferences": {
+      "title": "Lerneinstellungen",
+      "subtitle": "Personalisieren Sie Ihr Lernerlebnis",
+      "weeklyGoal": "Wöchentliches Lernziel",
+      "hoursPerWeek": "Std./Woche",
+      "studyStyle": "Lernstil",
+      "intensive": "Intensiv",
+      "intensiveDesc": "Lange Fokus-Sessions",
+      "balanced": "Ausgewogen",
+      "balancedDesc": "Mix aus Fokus & Pausen",
+      "relaxed": "Entspannt",
+      "relaxedDesc": "Kurze Sessions, mehr Pausen",
+      "saved": "Einstellungen gespeichert",
+      "savedDesc": "Ihre Lerneinstellungen wurden aktualisiert."
+    },
+    "appearance": {
+      "title": "Erscheinungsbild",
+      "darkMode": "Dunkelmodus",
+      "darkModeDesc": "Dunkles Design in der gesamten App verwenden",
+      "light": "Hell",
+      "dark": "Dunkel"
+    },
+    "locale": {
+      "title": "Region & Sprache",
+      "timezone": "Zeitzone",
+      "timezoneDesc": "Für Kalendertermine und Lern-Erinnerungen",
+      "language": "Sprache",
+      "languageDesc": "Sprache der App-Oberfläche"
+    },
+    "notifications": {
+      "title": "Benachrichtigungen",
+      "push": "Push-Benachrichtigungen",
+      "pushDesc": "Erinnerungen zum Lernen erhalten",
+      "emailDigest": "E-Mail-Zusammenfassung",
+      "emailDigestDesc": "Wöchentliche Zusammenfassung Ihres Fortschritts",
+      "saved": "Einstellungen gespeichert"
+    },
+    "security": {
+      "title": "Sicherheit",
+      "password": "Passwort",
+      "passwordDesc": "Ändern Sie Ihr Kontopasswort",
+      "change": "Ändern",
+      "changePassword": "Passwort ändern",
+      "newPassword": "Neues Passwort",
+      "confirmPassword": "Passwort bestätigen",
+      "passwordUpdated": "Passwort aktualisiert",
+      "passwordUpdatedDesc": "Ihr Passwort wurde erfolgreich geändert.",
+      "twoFactor": "Zwei-Faktor-Authentifizierung",
+      "twoFactorDesc": "Zusätzliche Sicherheitsebene hinzufügen",
+      "enable": "Aktivieren",
+      "disable": "Deaktivieren",
+      "activeSessions": "Aktive Sitzungen",
+      "activeSessionsDesc": "Verwalten Sie Ihre angemeldeten Geräte",
+      "currentSession": "Aktuelle Sitzung",
+      "lastActive": "Zuletzt aktiv"
+    },
+    "accessibility": {
+      "title": "Barrierefreiheit",
+      "subtitle": "Passen Sie Ihr Erlebnis an",
+      "fontSize": "Schriftgröße",
+      "small": "Klein",
+      "medium": "Mittel",
+      "large": "Groß",
+      "extraLarge": "Sehr groß",
+      "reducedMotion": "Reduzierte Bewegung",
+      "reducedMotionDesc": "Animationen minimieren für Bewegungsempfindlichkeit",
+      "highContrast": "Hoher Kontrast",
+      "highContrastDesc": "Kontrast für bessere Sichtbarkeit erhöhen"
+    },
+    "integrations": {
+      "title": "Integrationen",
+      "subtitle": "Externe Dienste verbinden",
+      "googleCalendar": "Google Kalender",
+      "googleCalendarDesc": "Lernsitzungen mit Google Kalender synchronisieren",
+      "connect": "Verbinden",
+      "disconnect": "Trennen",
+      "connected": "Verbunden",
+      "notConnected": "Nicht verbunden"
+    },
+    "dataExport": {
+      "title": "Datenexport",
+      "subtitle": "Alle Ihre Daten herunterladen (DSGVO-konform)",
+      "description": "Export enthält: Notizen, Karteikarten, Aufgaben, Lernpläne, Kurse und Sitzungsverlauf.",
+      "exportJson": "Als JSON exportieren",
+      "exportCsv": "Als CSV exportieren",
+      "complete": "Export abgeschlossen",
+      "completeDesc": "Ihre Daten wurden exportiert."
+    },
+    "shortcuts": {
+      "title": "Tastenkombinationen",
+      "subtitle": "Schnellreferenz für Power-User",
+      "navigation": "Navigation",
+      "actions": "Aktionen",
+      "focusMode": "Fokus-Modus",
+      "flashcards": "Karteikarten"
+    },
+    "premium": {
+      "title": "Auf Premium upgraden",
+      "subtitle": "Alle Funktionen & KI-Tools freischalten",
+      "price": "5€/Monat"
+    },
+    "signOut": {
+      "button": "Abmelden",
+      "title": "Von StudyPilot abmelden?",
+      "description": "Sie müssen sich erneut anmelden, um auf Ihr Konto zuzugreifen. Ungespeicherte Änderungen gehen verloren.",
+      "success": "Abgemeldet",
+      "successDesc": "Sie wurden erfolgreich abgemeldet."
+    },
+    "dangerZone": {
+      "title": "Gefahrenzone",
+      "deleteAccount": "Konto löschen",
+      "deleteAccountDesc": "Ihr Konto und alle Daten dauerhaft löschen",
+      "deleteTitle": "Konto löschen",
+      "deleteWarning": "Diese Aktion ist dauerhaft und unwiderruflich. Alle Ihre Daten werden gelöscht, einschließlich:",
+      "deleteList": {
+        "notes": "Alle Notizen und Karteikarten",
+        "plans": "Lernpläne und Fortschritt",
+        "tasks": "Aufgaben und Erinnerungen",
+        "settings": "Kontoeinstellungen und Präferenzen"
+      },
+      "accountToDelete": "Zu löschendes Konto:",
+      "typeToConfirm": "Geben Sie {{text}} ein, um zu bestätigen:",
+      "deleteButton": "Mein Konto löschen"
+    },
+    "footer": {
+      "privacy": "Datenschutzrichtlinie",
+      "terms": "Nutzungsbedingungen",
+      "help": "Hilfezentrum"
+    }
+  },
+  "dashboard": {
+    "welcome": "Willkommen zurück",
+    "todaysFocus": "Heute im Fokus",
+    "weeklyProgress": "Wöchentlicher Fortschritt",
+    "studyHours": "Lernstunden",
+    "tasksCompleted": "Aufgaben erledigt",
+    "cardsReviewed": "Karten überprüft",
+    "streak": "Tage-Serie"
+  },
+  "auth": {
+    "signIn": "Anmelden",
+    "signUp": "Registrieren",
+    "email": "E-Mail",
+    "password": "Passwort",
+    "forgotPassword": "Passwort vergessen?",
+    "noAccount": "Noch kein Konto?",
+    "hasAccount": "Bereits ein Konto?",
+    "welcomeBack": "Willkommen zurück",
+    "signInSubtitle": "Melden Sie sich an, um weiterzulernen"
+  }
+}

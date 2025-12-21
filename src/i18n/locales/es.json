@@ -1,0 +1,195 @@
+{
+  "common": {
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "close": "Cerrar",
+    "loading": "Cargando...",
+    "error": "Error",
+    "success": "Éxito",
+    "confirm": "Confirmar",
+    "back": "Atrás",
+    "next": "Siguiente",
+    "search": "Buscar",
+    "create": "Crear",
+    "update": "Actualizar",
+    "comingSoon": "Próximamente"
+  },
+  "nav": {
+    "dashboard": "Panel",
+    "notes": "Notas",
+    "flashcards": "Tarjetas",
+    "tasks": "Tareas",
+    "focus": "Enfoque",
+    "calendar": "Calendario",
+    "studyPlan": "Plan de estudio",
+    "aiTutor": "Tutor IA",
+    "settings": "Configuración",
+    "premium": "Premium"
+  },
+  "settings": {
+    "title": "Configuración",
+    "subtitle": "Gestiona tu cuenta y preferencias",
+    "profile": {
+      "title": "Perfil",
+      "displayName": "Nombre de usuario",
+      "email": "Correo electrónico",
+      "status": "Estado",
+      "active": "Activo",
+      "memberSince": "Miembro desde",
+      "notSet": "No establecido",
+      "updated": "Perfil actualizado",
+      "updatedDesc": "Tu nombre de usuario ha sido guardado."
+    },
+    "studyPreferences": {
+      "title": "Preferencias de estudio",
+      "subtitle": "Personaliza tu experiencia de aprendizaje",
+      "weeklyGoal": "Meta semanal de estudio",
+      "hoursPerWeek": "h/semana",
+      "studyStyle": "Estilo de estudio",
+      "intensive": "Intensivo",
+      "intensiveDesc": "Sesiones largas de enfoque",
+      "balanced": "Equilibrado",
+      "balancedDesc": "Mezcla de enfoque y descansos",
+      "relaxed": "Relajado",
+      "relaxedDesc": "Sesiones cortas, más descansos",
+      "saved": "Preferencias guardadas",
+      "savedDesc": "Tus preferencias de estudio han sido actualizadas."
+    },
+    "appearance": {
+      "title": "Apariencia",
+      "darkMode": "Modo oscuro",
+      "darkModeDesc": "Usar tema oscuro en toda la aplicación",
+      "light": "Claro",
+      "dark": "Oscuro"
+    },
+    "locale": {
+      "title": "Región e idioma",
+      "timezone": "Zona horaria",
+      "timezoneDesc": "Para eventos del calendario y recordatorios de estudio",
+      "language": "Idioma",
+      "languageDesc": "Idioma de la interfaz de la aplicación"
+    },
+    "notifications": {
+      "title": "Notificaciones",
+      "push": "Notificaciones push",
+      "pushDesc": "Recibir recordatorios para estudiar",
+      "emailDigest": "Resumen por correo",
+      "emailDigestDesc": "Resumen semanal de tu progreso",
+      "saved": "Configuración guardada"
+    },
+    "security": {
+      "title": "Seguridad",
+      "password": "Contraseña",
+      "passwordDesc": "Cambiar la contraseña de tu cuenta",
+      "change": "Cambiar",
+      "changePassword": "Cambiar contraseña",
+      "newPassword": "Nueva contraseña",
+      "confirmPassword": "Confirmar contraseña",
+      "passwordUpdated": "Contraseña actualizada",
+      "passwordUpdatedDesc": "Tu contraseña ha sido cambiada exitosamente.",
+      "twoFactor": "Autenticación de dos factores",
+      "twoFactorDesc": "Añadir una capa extra de seguridad",
+      "enable": "Activar",
+      "disable": "Desactivar",
+      "activeSessions": "Sesiones activas",
+      "activeSessionsDesc": "Gestionar tus dispositivos conectados",
+      "currentSession": "Sesión actual",
+      "lastActive": "Última actividad"
+    },
+    "accessibility": {
+      "title": "Accesibilidad",
+      "subtitle": "Personaliza tu experiencia",
+      "fontSize": "Tamaño de fuente",
+      "small": "Pequeño",
+      "medium": "Mediano",
+      "large": "Grande",
+      "extraLarge": "Extra grande",
+      "reducedMotion": "Movimiento reducido",
+      "reducedMotionDesc": "Minimizar animaciones para sensibilidad al movimiento",
+      "highContrast": "Alto contraste",
+      "highContrastDesc": "Aumentar contraste para mejor visibilidad"
+    },
+    "integrations": {
+      "title": "Integraciones",
+      "subtitle": "Conectar servicios externos",
+      "googleCalendar": "Google Calendar",
+      "googleCalendarDesc": "Sincronizar sesiones de estudio con Google Calendar",
+      "connect": "Conectar",
+      "disconnect": "Desconectar",
+      "connected": "Conectado",
+      "notConnected": "No conectado"
+    },
+    "dataExport": {
+      "title": "Exportación de datos",
+      "subtitle": "Descargar todos tus datos (compatible con RGPD)",
+      "description": "La exportación incluye: notas, tarjetas, tareas, planes de estudio, cursos e historial de sesiones.",
+      "exportJson": "Exportar JSON",
+      "exportCsv": "Exportar CSV",
+      "complete": "Exportación completa",
+      "completeDesc": "Tus datos han sido exportados."
+    },
+    "shortcuts": {
+      "title": "Atajos de teclado",
+      "subtitle": "Referencia rápida para usuarios avanzados",
+      "navigation": "Navegación",
+      "actions": "Acciones",
+      "focusMode": "Modo enfoque",
+      "flashcards": "Tarjetas"
+    },
+    "premium": {
+      "title": "Actualizar a Premium",
+      "subtitle": "Desbloquear todas las funciones y herramientas IA",
+      "price": "5€/mes"
+    },
+    "signOut": {
+      "button": "Cerrar sesión",
+      "title": "¿Cerrar sesión en StudyPilot?",
+      "description": "Necesitarás iniciar sesión de nuevo para acceder a tu cuenta. Los cambios no guardados se perderán.",
+      "success": "Sesión cerrada",
+      "successDesc": "Has cerrado sesión exitosamente."
+    },
+    "dangerZone": {
+      "title": "Zona de peligro",
+      "deleteAccount": "Eliminar cuenta",
+      "deleteAccountDesc": "Eliminar permanentemente tu cuenta y todos los datos",
+      "deleteTitle": "Eliminar cuenta",
+      "deleteWarning": "Esta acción es permanente e irreversible. Todos tus datos serán eliminados, incluyendo:",
+      "deleteList": {
+        "notes": "Todas las notas y tarjetas",
+        "plans": "Planes de estudio y progreso",
+        "tasks": "Tareas y recordatorios",
+        "settings": "Configuración y preferencias de la cuenta"
+      },
+      "accountToDelete": "Cuenta a eliminar:",
+      "typeToConfirm": "Escribe {{text}} para confirmar:",
+      "deleteButton": "Eliminar mi cuenta"
+    },
+    "footer": {
+      "privacy": "Política de privacidad",
+      "terms": "Términos de servicio",
+      "help": "Centro de ayuda"
+    }
+  },
+  "dashboard": {
+    "welcome": "Bienvenido de nuevo",
+    "todaysFocus": "Enfoque de hoy",
+    "weeklyProgress": "Progreso semanal",
+    "studyHours": "Horas de estudio",
+    "tasksCompleted": "Tareas completadas",
+    "cardsReviewed": "Tarjetas revisadas",
+    "streak": "Días seguidos"
+  },
+  "auth": {
+    "signIn": "Iniciar sesión",
+    "signUp": "Registrarse",
+    "email": "Correo electrónico",
+    "password": "Contraseña",
+    "forgotPassword": "¿Olvidaste tu contraseña?",
+    "noAccount": "¿No tienes cuenta?",
+    "hasAccount": "¿Ya tienes cuenta?",
+    "welcomeBack": "Bienvenido de nuevo",
+    "signInSubtitle": "Inicia sesión para continuar estudiando"
+  }
+}
