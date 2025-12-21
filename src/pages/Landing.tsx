@@ -1,6 +1,14 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { GradientButton } from "@/components/ui/gradient-button";
 import { GlassCard } from "@/components/ui/glass-card";
+import { FeatureDemoDialog } from "@/components/landing/FeatureDemoDialog";
+import { StudyPlanDemo } from "@/components/landing/demos/StudyPlanDemo";
+import { FlashcardDemo } from "@/components/landing/demos/FlashcardDemo";
+import { TaskDemo } from "@/components/landing/demos/TaskDemo";
+import { FocusDemo } from "@/components/landing/demos/FocusDemo";
+import { CalendarDemo } from "@/components/landing/demos/CalendarDemo";
+import { AnalyticsDemo } from "@/components/landing/demos/AnalyticsDemo";
 import {
   Sparkles,
   BookOpen,
@@ -11,48 +19,86 @@ import {
   TrendingUp,
   ArrowRight,
   Zap,
+  LucideIcon,
 } from "lucide-react";
 
-const features = [
+type FeatureKey = "study-plan" | "flashcards" | "tasks" | "focus" | "calendar" | "analytics";
+
+interface Feature {
+  key: FeatureKey;
+  icon: LucideIcon;
+  title: string;
+  description: string;
+  variant: "primary" | "accent" | "teal";
+  cta: string;
+}
+
+const features: Feature[] = [
   {
+    key: "study-plan",
     icon: BookOpen,
     title: "AI Study Plans",
     description: "Get personalized study schedules based on your courses and deadlines",
-    variant: "primary" as const,
+    variant: "primary",
+    cta: "Try it out →",
   },
   {
+    key: "flashcards",
     icon: Brain,
     title: "Smart Flashcards",
     description: "Spaced repetition algorithm to maximize memory retention",
-    variant: "accent" as const,
+    variant: "accent",
+    cta: "Flip a card →",
   },
   {
+    key: "tasks",
     icon: CheckSquare,
     title: "Task Tracking",
     description: "Stay organized with daily checklists and habit tracking",
-    variant: "teal" as const,
+    variant: "teal",
+    cta: "Manage tasks →",
   },
   {
+    key: "focus",
     icon: Timer,
     title: "Focus Mode",
     description: "Pomodoro timer with distraction-free study sessions",
-    variant: "primary" as const,
+    variant: "primary",
+    cta: "Start focusing →",
   },
   {
+    key: "calendar",
     icon: Calendar,
     title: "Smart Calendar",
     description: "Visual overview of deadlines and study sessions",
-    variant: "accent" as const,
+    variant: "accent",
+    cta: "View calendar →",
   },
   {
+    key: "analytics",
     icon: TrendingUp,
     title: "Progress Analytics",
     description: "Track your study streaks and improvement over time",
-    variant: "teal" as const,
+    variant: "teal",
+    cta: "See your stats →",
   },
 ];
 
+const demoComponents: Record<FeatureKey, React.ComponentType> = {
+  "study-plan": StudyPlanDemo,
+  "flashcards": FlashcardDemo,
+  "tasks": TaskDemo,
+  "focus": FocusDemo,
+  "calendar": CalendarDemo,
+  "analytics": AnalyticsDemo,
+};
+
 export default function LandingPage() {
+  const [activeDemo, setActiveDemo] = useState<FeatureKey | null>(null);
+
+  const activeFeature = features.find(f => f.key === activeDemo);
+  const DemoComponent = activeDemo ? demoComponents[activeDemo] : null;
+
   return (
     <div className="min-h-screen bg-background overflow-hidden relative">
       {/* Animated background orbs */}
@@ -145,7 +191,7 @@ export default function LandingPage() {
               Everything you need to <span className="gradient-text">succeed</span>
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Powerful AI-driven tools designed for students, by students
+              Powerful AI-driven tools designed for students, by students. <span className="text-primary">Click to try them!</span>
             </p>
           </div>
           
@@ -161,17 +207,21 @@ export default function LandingPage() {
                 <GlassCard
                   key={feature.title}
                   hover
-                  className="animate-fade-in"
+                  className="animate-fade-in cursor-pointer group"
                   style={{ animationDelay: `${index * 100}ms` }}
+                  onClick={() => setActiveDemo(feature.key)}
                 >
                   <div className="flex items-start gap-4">
-                    <div className={`rounded-xl p-3 ${iconVariants[feature.variant]}`}>
+                    <div className={`rounded-xl p-3 ${iconVariants[feature.variant]} transition-transform duration-300 group-hover:scale-110`}>
                       <feature.icon className="h-6 w-6 text-white" />
                     </div>
-                    <div>
+                    <div className="flex-1">
                       <h3 className="font-display font-semibold text-lg mb-1">{feature.title}</h3>
                       <p className="text-sm text-muted-foreground leading-relaxed">
                         {feature.description}
+                      </p>
+                      <p className="text-xs text-primary mt-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        {feature.cta}
                       </p>
                     </div>
                   </div>
@@ -214,6 +264,20 @@ export default function LandingPage() {
           <p>© 2024 StudyPilot. All rights reserved.</p>
         </div>
       </footer>
+
+      {/* Feature Demo Dialog */}
+      {activeFeature && DemoComponent && (
+        <FeatureDemoDialog
+          open={!!activeDemo}
+          onOpenChange={(open) => !open && setActiveDemo(null)}
+          title={activeFeature.title}
+          description={activeFeature.description}
+          icon={activeFeature.icon}
+          variant={activeFeature.variant}
+        >
+          <DemoComponent />
+        </FeatureDemoDialog>
+      )}
     </div>
   );
 }
