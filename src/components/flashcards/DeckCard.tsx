@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { GlassCard } from "@/components/ui/glass-card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -23,6 +22,8 @@ import {
   TrendingUp,
   Calendar,
   Sparkles,
+  Eye,
+  BarChart3,
 } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { motion } from "framer-motion";
@@ -52,6 +53,8 @@ interface DeckCardProps {
   onEdit: () => void;
   onDuplicate: () => void;
   onDelete: () => void;
+  onPreview: () => void;
+  onViewStats: () => void;
 }
 
 function getRelativeTime(dateString?: string): string {
@@ -67,7 +70,9 @@ export function DeckCard({
   onAddCard,
   onEdit,
   onDuplicate,
-  onDelete 
+  onDelete,
+  onPreview,
+  onViewStats,
 }: DeckCardProps) {
   const lastStudied = getRelativeTime(deck.updated_at);
   const hasDueCards = stats.dueToday > 0;
@@ -118,6 +123,15 @@ export function DeckCard({
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-48">
+              <DropdownMenuItem onClick={onPreview} className="gap-2">
+                <Eye className="h-4 w-4" />
+                View Cards
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={onViewStats} className="gap-2">
+                <BarChart3 className="h-4 w-4" />
+                View Stats
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
               <DropdownMenuItem onClick={onEdit} className="gap-2">
                 <Edit className="h-4 w-4" />
                 Edit Deck
