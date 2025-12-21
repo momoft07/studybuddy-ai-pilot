@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { GlassCard } from "@/components/ui/glass-card";
 import { GradientButton } from "@/components/ui/gradient-button";
@@ -60,6 +61,7 @@ const eventColors = {
 };
 
 export default function CalendarPage() {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -136,7 +138,7 @@ export default function CalendarPage() {
 
       if (error) throw error;
 
-      toast.success("Event added to calendar!");
+      toast.success(t("calendar.eventAdded"));
       setNewEvent({ title: "", description: "", type: "deadline" });
       setIsDialogOpen(false);
       fetchTasks();
@@ -152,7 +154,7 @@ export default function CalendarPage() {
 
       if (error) throw error;
 
-      toast.success("Event deleted");
+      toast.success(t("calendar.eventDeleted"));
       setTasks(tasks.filter((t) => t.id !== taskId));
     } catch (error) {
       console.error("Error deleting event:", error);
@@ -183,41 +185,41 @@ export default function CalendarPage() {
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div>
             <h1 className="text-2xl font-display font-bold md:text-3xl">
-              <span className="gradient-text">Calendar</span>
+              <span className="gradient-text">{t("calendar.title")}</span>
             </h1>
             <p className="text-muted-foreground mt-1">
-              View all your deadlines and study sessions
+              {t("calendar.viewDeadlines")}
             </p>
           </div>
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
               <GradientButton>
                 <Plus className="mr-2 h-4 w-4" />
-                Add Event
+                {t("calendar.addEvent")}
               </GradientButton>
             </DialogTrigger>
             <DialogContent className="glass-strong">
               <DialogHeader>
-                <DialogTitle>Add Calendar Event</DialogTitle>
+                <DialogTitle>{t("calendar.addEvent")}</DialogTitle>
               </DialogHeader>
               <div className="space-y-4 mt-4">
                 <div>
                   <p className="text-sm text-muted-foreground mb-2">
-                    Selected date:{" "}
+                    {t("calendar.selectedDate")}:{" "}
                     <span className="text-foreground font-medium">
                       {selectedDate ? format(selectedDate, "MMMM d, yyyy") : "None"}
                     </span>
                   </p>
                 </div>
                 <Input
-                  placeholder="Event title"
+                  placeholder={t("calendar.eventTitle")}
                   value={newEvent.title}
                   onChange={(e) =>
                     setNewEvent({ ...newEvent, title: e.target.value })
                   }
                 />
                 <Textarea
-                  placeholder="Description (optional)"
+                  placeholder={t("calendar.description")}
                   value={newEvent.description}
                   onChange={(e) =>
                     setNewEvent({ ...newEvent, description: e.target.value })
@@ -231,17 +233,17 @@ export default function CalendarPage() {
                   }
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Event type" />
+                    <SelectValue placeholder={t("calendar.eventType")} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="deadline">📅 Deadline</SelectItem>
-                    <SelectItem value="study">📚 Study Session</SelectItem>
-                    <SelectItem value="exam">📝 Exam</SelectItem>
-                    <SelectItem value="reminder">🔔 Reminder</SelectItem>
+                    <SelectItem value="deadline">📅 {t("calendar.deadline")}</SelectItem>
+                    <SelectItem value="study">📚 {t("calendar.studySession")}</SelectItem>
+                    <SelectItem value="exam">📝 {t("calendar.exam")}</SelectItem>
+                    <SelectItem value="reminder">🔔 {t("calendar.reminder")}</SelectItem>
                   </SelectContent>
                 </Select>
                 <GradientButton onClick={handleCreateEvent} className="w-full">
-                  Add Event
+                  {t("calendar.addEvent")}
                 </GradientButton>
               </div>
             </DialogContent>
@@ -266,7 +268,7 @@ export default function CalendarPage() {
             <div className="mt-4 flex flex-wrap gap-2 text-xs">
               <div className="flex items-center gap-1">
                 <div className="w-3 h-3 rounded-full bg-primary/20 border border-primary" />
-                <span className="text-muted-foreground">Has events</span>
+                <span className="text-muted-foreground">{t("calendar.hasEvents")}</span>
               </div>
             </div>
           </GlassCard>
@@ -306,7 +308,7 @@ export default function CalendarPage() {
                   >
                     {selectedDateEvents.length === 0 ? (
                       <p className="text-sm text-muted-foreground text-center py-4">
-                        No events for this day
+                        {t("calendar.noEventsDay")}
                       </p>
                     ) : (
                       selectedDateEvents.map((event) => (
@@ -351,7 +353,7 @@ export default function CalendarPage() {
                 <div className="rounded-lg gradient-accent p-2">
                   <BookOpen className="h-4 w-4 text-accent-foreground" />
                 </div>
-                <h3 className="font-semibold">Upcoming</h3>
+                <h3 className="font-semibold">{t("calendar.upcoming")}</h3>
               </div>
               <div className="space-y-2">
                 {tasks.slice(0, 5).map((task) => (
@@ -372,7 +374,7 @@ export default function CalendarPage() {
                 ))}
                 {tasks.length === 0 && (
                   <p className="text-sm text-muted-foreground">
-                    No upcoming events
+                    {t("calendar.noUpcoming")}
                   </p>
                 )}
               </div>

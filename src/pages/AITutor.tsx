@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { GlassCard } from "@/components/ui/glass-card";
 import { GradientButton } from "@/components/ui/gradient-button";
@@ -14,6 +15,7 @@ interface Message {
 const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/ai-tutor`;
 
 export default function AITutorPage() {
+  const { t } = useTranslation();
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -125,7 +127,7 @@ export default function AITutorPage() {
 
   const clearChat = () => {
     setMessages([]);
-    toast.success("Chat cleared");
+    toast.success(t("aiTutor.chatCleared"));
   };
 
   return (
@@ -135,16 +137,16 @@ export default function AITutorPage() {
         <div className="flex items-center justify-between mb-4">
           <div>
             <h1 className="text-2xl font-display font-bold">
-              <span className="gradient-text">AI Tutor</span>
+              <span className="gradient-text">{t("aiTutor.title")}</span>
             </h1>
             <p className="text-muted-foreground text-sm">
-              Your personal study assistant
+              {t("aiTutor.subtitle")}
             </p>
           </div>
           {messages.length > 0 && (
             <GradientButton variant="ghost" size="sm" onClick={clearChat}>
               <Trash2 className="h-4 w-4 mr-1" />
-              Clear
+              {t("aiTutor.clear")}
             </GradientButton>
           )}
         </div>
@@ -158,18 +160,17 @@ export default function AITutorPage() {
                   <Sparkles className="h-8 w-8 text-primary-foreground" />
                 </div>
                 <h3 className="text-lg font-semibold mb-2">
-                  Welcome to AI Tutor!
+                  {t("aiTutor.welcome")}
                 </h3>
                 <p className="text-muted-foreground max-w-sm mb-6">
-                  I can help you understand complex topics, create study plans,
-                  generate practice questions, and more.
+                  {t("aiTutor.welcomeDesc")}
                 </p>
                 <div className="grid gap-2 md:grid-cols-2 max-w-md">
                   {[
-                    "Explain photosynthesis simply",
-                    "Create 5 quiz questions on WW2",
-                    "Help me memorize the periodic table",
-                    "Summarize key points of calculus",
+                    t("aiTutor.prompt1"),
+                    t("aiTutor.prompt2"),
+                    t("aiTutor.prompt3"),
+                    t("aiTutor.prompt4"),
                   ].map((prompt) => (
                     <button
                       key={prompt}
@@ -228,7 +229,7 @@ export default function AITutorPage() {
           <div className="p-4 border-t border-border/50">
             <div className="flex gap-2">
               <Input
-                placeholder="Ask me anything about your studies..."
+                placeholder={t("aiTutor.askAnything")}
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyPress={handleKeyPress}

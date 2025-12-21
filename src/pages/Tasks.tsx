@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { GlassCard } from "@/components/ui/glass-card";
 import { GradientButton } from "@/components/ui/gradient-button";
@@ -43,6 +44,7 @@ interface Task {
 }
 
 export default function TasksPage() {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
@@ -95,7 +97,7 @@ export default function TasksPage() {
 
       if (error) throw error;
 
-      toast.success("Task created!");
+      toast.success(t("tasks.taskCreated"));
       setNewTask({ title: "", priority: "medium", dueDate: "" });
       setIsDialogOpen(false);
       fetchTasks();
@@ -136,7 +138,7 @@ export default function TasksPage() {
 
       if (error) throw error;
 
-      toast.success("Task deleted");
+      toast.success(t("tasks.taskDeleted"));
       setTasks(tasks.filter((t) => t.id !== taskId));
     } catch (error) {
       console.error("Error deleting task:", error);
@@ -168,26 +170,26 @@ export default function TasksPage() {
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div>
             <h1 className="text-2xl font-display font-bold md:text-3xl">
-              <span className="gradient-text">Tasks</span> & Habits
+              <span className="gradient-text">{t("tasks.title")}</span> {t("tasks.habits")}
             </h1>
             <p className="text-muted-foreground mt-1">
-              Stay organized and track your progress
+              {t("tasks.stayOrganized")}
             </p>
           </div>
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
               <GradientButton>
                 <Plus className="mr-2 h-4 w-4" />
-                New Task
+                {t("tasks.newTask")}
               </GradientButton>
             </DialogTrigger>
             <DialogContent className="glass-strong">
               <DialogHeader>
-                <DialogTitle>Create New Task</DialogTitle>
+                <DialogTitle>{t("tasks.createTask")}</DialogTitle>
               </DialogHeader>
               <div className="space-y-4 mt-4">
                 <Input
-                  placeholder="Task title"
+                  placeholder={t("tasks.taskTitle")}
                   value={newTask.title}
                   onChange={(e) =>
                     setNewTask({ ...newTask, title: e.target.value })
@@ -200,12 +202,12 @@ export default function TasksPage() {
                   }
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Priority" />
+                    <SelectValue placeholder={t("tasks.mediumPriority")} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="low">Low Priority</SelectItem>
-                    <SelectItem value="medium">Medium Priority</SelectItem>
-                    <SelectItem value="high">High Priority</SelectItem>
+                    <SelectItem value="low">{t("tasks.lowPriority")}</SelectItem>
+                    <SelectItem value="medium">{t("tasks.mediumPriority")}</SelectItem>
+                    <SelectItem value="high">{t("tasks.highPriority")}</SelectItem>
                   </SelectContent>
                 </Select>
                 <div className="relative">
@@ -220,7 +222,7 @@ export default function TasksPage() {
                   />
                 </div>
                 <GradientButton onClick={handleCreateTask} className="w-full">
-                  Create Task
+                  {t("tasks.createTask")}
                 </GradientButton>
               </div>
             </DialogContent>
@@ -236,7 +238,7 @@ export default function TasksPage() {
               size="sm"
               onClick={() => setFilter(f)}
             >
-              {f.charAt(0).toUpperCase() + f.slice(1)}
+              {t(`tasks.${f}`)}
             </GradientButton>
           ))}
         </div>
@@ -250,19 +252,19 @@ export default function TasksPage() {
           <GlassCard className="py-12 text-center">
             <CheckSquare className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
             <h3 className="text-lg font-semibold mb-2">
-              {filter === "all" ? "No tasks yet" : `No ${filter} tasks`}
+              {filter === "all" ? t("tasks.noTasks") : t("tasks.noTasksFilter", { filter: t(`tasks.${filter}`) })}
             </h3>
             <p className="text-muted-foreground mb-4">
               {filter === "all"
-                ? "Create your first task to get started"
+                ? t("tasks.createFirst")
                 : filter === "completed"
-                ? "Complete some tasks to see them here"
-                : "All tasks are completed! 🎉"}
+                ? t("tasks.completeToSee")
+                : t("tasks.allCompleted")}
             </p>
             {filter === "all" && (
               <GradientButton onClick={() => setIsDialogOpen(true)}>
                 <Plus className="mr-2 h-4 w-4" />
-                Create Task
+                {t("tasks.createTask")}
               </GradientButton>
             )}
           </GlassCard>
