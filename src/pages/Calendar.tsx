@@ -14,7 +14,6 @@ import {
   Plus,
   Clock,
   BookOpen,
-  Trash2,
   Loader2,
   GraduationCap,
   Coffee,
@@ -55,9 +54,11 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Label } from "@/components/ui/label";
-import { format, isSameDay, startOfDay, differenceInDays, differenceInHours, isPast, isToday, addHours } from "date-fns";
+import { format, isSameDay, startOfDay, differenceInDays, differenceInHours, isPast, isToday, startOfToday } from "date-fns";
 import { motion, AnimatePresence } from "framer-motion";
-import { Button } from "@/components/ui/button";
+import { DraggableEvent } from "@/components/calendar/DraggableEvent";
+import { ExternalCalendarSync } from "@/components/calendar/ExternalCalendarSync";
+import { ProgressOverlay } from "@/components/calendar/ProgressOverlay";
 
 interface Task {
   id: string;
@@ -77,6 +78,13 @@ interface FlashcardDeck {
 interface Note {
   id: string;
   title: string;
+}
+
+interface PomodoroSession {
+  id: string;
+  duration_minutes: number;
+  completed: boolean;
+  started_at: string;
 }
 
 type EventType = "study" | "exam" | "break" | "deadline";
@@ -119,10 +127,13 @@ export default function CalendarPage() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [flashcardDecks, setFlashcardDecks] = useState<FlashcardDeck[]>([]);
   const [notes, setNotes] = useState<Note[]>([]);
+  const [pomodoroSessions, setPomodoroSessions] = useState<PomodoroSession[]>([]);
   const [loading, setLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [suggestionsOpen, setSuggestionsOpen] = useState(false);
   const [selectedTime, setSelectedTime] = useState("09:00");
+  const [draggedEventId, setDraggedEventId] = useState<string | null>(null);
+  const [dropTargetDate, setDropTargetDate] = useState<Date | null>(null);
   const [newEvent, setNewEvent] = useState({
     title: "",
     description: "",
@@ -130,10 +141,12 @@ export default function CalendarPage() {
     duration: "60",
   });
 
+  // Daily study goal (in minutes) - could be fetched from user settings
+  const dailyStudyGoal = 180; // 3 hours
+
   useEffect(() => {
     if (user) {
-      fetchTasks();
-      fetchSuggestionSources();
+      fetchData();
       
       const channel = supabase
         .channel('calendar-tasks-realtime')
@@ -155,6 +168,11 @@ export default function CalendarPage() {
     }
   }, [user]);
 
+  const fetchData = async () => {
+    await Promise.all([fetchTasks(), fetchSuggestionSources(), fetchPomodoroSessions()]);
+    setLoading(false);
+  };
+
   const fetchTasks = async () => {
     try {
       const { data, error } = await supabase
@@ -169,8 +187,6 @@ export default function CalendarPage() {
     } catch (error) {
       console.error("Error fetching tasks:", error);
       toast.error(t("common.error"));
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -187,6 +203,30 @@ export default function CalendarPage() {
       console.error("Error fetching suggestions:", error);
     }
   };
+
+  const fetchPomodoroSessions = async () => {
+    try {
+      const today = startOfToday();
+      const { data, error } = await supabase
+        .from("pomodoro_sessions")
+        .select("id, duration_minutes, completed, started_at")
+        .eq("user_id", user?.id)
+        .gte("started_at", today.toISOString())
+        .eq("completed", true);
+
+      if (error) throw error;
+      setPomodoroSessions(data || []);
+    } catch (error) {
+      console.error("Error fetching pomodoro sessions:", error);
+    }
+  };
+
+  // Calculate today's studied minutes from pomodoro sessions
+  const todayStudiedMinutes = useMemo(() => {
+    return pomodoroSessions
+      .filter(s => s.completed && isToday(new Date(s.started_at)))
+      .reduce((acc, s) => acc + s.duration_minutes, 0);
+  }, [pomodoroSessions]);
 
   const suggestions = useMemo(() => {
     const items: { title: string; type: EventType; source: string }[] = [];
@@ -265,6 +305,55 @@ export default function CalendarPage() {
     setSuggestionsOpen(false);
   };
 
+  // Drag & Drop handlers
+  const handleDragStart = (e: React.DragEvent, eventId: string) => {
+    setDraggedEventId(eventId);
+    e.dataTransfer.effectAllowed = "move";
+    e.dataTransfer.setData("text/plain", eventId);
+  };
+
+  const handleDragOver = (e: React.DragEvent, date: Date) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "move";
+    setDropTargetDate(date);
+  };
+
+  const handleDragLeave = () => {
+    setDropTargetDate(null);
+  };
+
+  const handleDrop = async (e: React.DragEvent, targetDate: Date) => {
+    e.preventDefault();
+    setDropTargetDate(null);
+    
+    if (!draggedEventId) return;
+
+    const task = tasks.find(t => t.id === draggedEventId);
+    if (!task || !task.due_date) return;
+
+    // Keep the same time, just change the date
+    const originalDate = new Date(task.due_date);
+    const newDate = new Date(targetDate);
+    newDate.setHours(originalDate.getHours(), originalDate.getMinutes(), 0, 0);
+
+    try {
+      const { error } = await supabase
+        .from("tasks")
+        .update({ due_date: newDate.toISOString() })
+        .eq("id", draggedEventId);
+
+      if (error) throw error;
+
+      toast.success(`Event moved to ${format(newDate, "MMM d")}`);
+      fetchTasks();
+    } catch (error) {
+      console.error("Error moving event:", error);
+      toast.error("Failed to move event");
+    } finally {
+      setDraggedEventId(null);
+    }
+  };
+
   const getEventType = (task: Task): EventType => {
     const desc = task.description?.toUpperCase() || "";
     if (desc.includes("EXAM")) return "exam";
@@ -286,10 +375,6 @@ export default function CalendarPage() {
 
   const selectedDateEvents = selectedDate ? getEventsForDate(selectedDate) : [];
 
-  const eventDates = tasks
-    .filter((t) => t.due_date)
-    .map((t) => startOfDay(new Date(t.due_date!)));
-
   const getEventTypesForDate = (date: Date): EventType[] => {
     const events = getEventsForDate(date);
     const types = new Set<EventType>();
@@ -299,9 +384,8 @@ export default function CalendarPage() {
 
   // Upcoming deadlines sorted by urgency
   const upcomingDeadlines = useMemo(() => {
-    const now = new Date();
     return tasks
-      .filter(t => t.due_date && !isPast(new Date(t.due_date)) || isToday(new Date(t.due_date!)))
+      .filter(t => t.due_date && (!isPast(new Date(t.due_date)) || isToday(new Date(t.due_date!))))
       .sort((a, b) => {
         const typeA = getEventType(a);
         const typeB = getEventType(b);
@@ -519,11 +603,19 @@ export default function CalendarPage() {
                 DayContent: ({ date }) => {
                   const types = getEventTypesForDate(date);
                   const events = getEventsForDate(date);
+                  const isDropTarget = dropTargetDate && isSameDay(date, dropTargetDate);
                   
                   return (
                     <HoverCard openDelay={200} closeDelay={100}>
                       <HoverCardTrigger asChild>
-                        <div className="relative w-full h-full flex flex-col items-center justify-center">
+                        <div 
+                          className={`relative w-full h-full flex flex-col items-center justify-center transition-colors rounded-md ${
+                            isDropTarget ? "bg-primary/20 ring-2 ring-primary" : ""
+                          }`}
+                          onDragOver={(e) => handleDragOver(e, date)}
+                          onDragLeave={handleDragLeave}
+                          onDrop={(e) => handleDrop(e, date)}
+                        >
                           <span>{date.getDate()}</span>
                           {types.length > 0 && (
                             <div className="flex gap-0.5 mt-0.5">
@@ -577,10 +669,24 @@ export default function CalendarPage() {
                 </div>
               ))}
             </div>
+
+            {/* Drag hint */}
+            <p className="text-xs text-muted-foreground mt-2 text-center">
+              Drag events between days to reschedule
+            </p>
           </GlassCard>
 
           {/* Right Sidebar */}
           <div className="space-y-4">
+            {/* Progress Overlay for Today */}
+            {selectedDate && isToday(selectedDate) && (
+              <ProgressOverlay
+                studiedMinutes={todayStudiedMinutes}
+                goalMinutes={dailyStudyGoal}
+                date={selectedDate}
+              />
+            )}
+
             {/* Selected Day Events */}
             <GlassCard className="p-4">
               <div className="flex items-center gap-3 mb-4">
@@ -617,36 +723,15 @@ export default function CalendarPage() {
                     ) : (
                       selectedDateEvents.map((event) => {
                         const type = getEventType(event);
-                        const duration = getDuration(event);
                         return (
-                          <motion.div
+                          <DraggableEvent
                             key={event.id}
-                            initial={{ opacity: 0, scale: 0.95 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            className={`group flex items-start gap-3 p-3 rounded-lg border transition-colors ${eventTypeConfig[type].color}`}
-                          >
-                            <div className="mt-0.5">{eventTypeConfig[type].icon}</div>
-                            <div className="flex-1 min-w-0">
-                              <p className="font-medium text-sm truncate">{event.title}</p>
-                              <div className="flex items-center gap-2 text-xs text-muted-foreground mt-1">
-                                {event.due_date && (
-                                  <span>{format(new Date(event.due_date), "h:mm a")}</span>
-                                )}
-                                {duration && (
-                                  <>
-                                    <span>•</span>
-                                    <span>{duration}</span>
-                                  </>
-                                )}
-                              </div>
-                            </div>
-                            <button
-                              onClick={() => handleDeleteEvent(event.id)}
-                              className="opacity-0 group-hover:opacity-100 transition-opacity p-1 hover:bg-destructive/20 rounded"
-                            >
-                              <Trash2 className="h-3 w-3 text-destructive" />
-                            </button>
-                          </motion.div>
+                            event={event}
+                            type={type}
+                            typeConfig={eventTypeConfig[type]}
+                            onDelete={handleDeleteEvent}
+                            onDragStart={handleDragStart}
+                          />
                         );
                       })
                     )}
@@ -695,6 +780,9 @@ export default function CalendarPage() {
                 )}
               </div>
             </GlassCard>
+
+            {/* External Calendar Sync */}
+            <ExternalCalendarSync />
           </div>
         </div>
       </div>
