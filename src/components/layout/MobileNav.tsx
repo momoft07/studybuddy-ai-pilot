@@ -1,25 +1,25 @@
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "react-i18next";
 import {
   LayoutDashboard,
   BookOpen,
   Brain,
   CheckSquare,
   Calendar,
-  Settings,
 } from "lucide-react";
 
 const navItems = [
-  { href: "/dashboard", icon: LayoutDashboard, label: "Home" },
-  { href: "/study-plan", icon: BookOpen, label: "Plan" },
-  { href: "/flashcards", icon: Brain, label: "Cards" },
-  { href: "/tasks", icon: CheckSquare, label: "Tasks" },
-  { href: "/calendar", icon: Calendar, label: "Calendar" },
+  { href: "/dashboard", icon: LayoutDashboard, labelKey: "nav.home" },
+  { href: "/study-plan", icon: BookOpen, labelKey: "nav.plan" },
+  { href: "/flashcards", icon: Brain, labelKey: "nav.cards" },
+  { href: "/tasks", icon: CheckSquare, labelKey: "nav.tasks" },
+  { href: "/calendar", icon: Calendar, labelKey: "nav.calendar" },
 ];
 
 export function MobileNav() {
   const location = useLocation();
-
+  const { t } = useTranslation();
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 glass-strong border-t border-border/50 safe-bottom md:hidden">
       <div className="flex items-center justify-around px-2 py-2">
@@ -49,7 +49,7 @@ export function MobileNav() {
                   )}
                 />
               </div>
-              <span>{item.label}</span>
+              <span>{t(item.labelKey)}</span>
             </Link>
           );
         })}

@@ -14,19 +14,112 @@
     "search": "Search",
     "create": "Create",
     "update": "Update",
-    "comingSoon": "Coming soon"
+    "comingSoon": "Coming soon",
+    "viewAll": "View All",
+    "addTask": "Add Task",
+    "noTasksToday": "No tasks for today",
+    "pro": "PRO",
+    "signOut": "Sign Out"
   },
   "nav": {
     "dashboard": "Dashboard",
+    "home": "Home",
     "notes": "Notes",
     "flashcards": "Flashcards",
+    "cards": "Cards",
     "tasks": "Tasks",
     "focus": "Focus",
+    "focusMode": "Focus Mode",
     "calendar": "Calendar",
     "studyPlan": "Study Plan",
+    "studyPlans": "Study Plans",
+    "plan": "Plan",
     "aiTutor": "AI Tutor",
     "settings": "Settings",
     "premium": "Premium"
+  },
+  "dashboard": {
+    "welcome": "Welcome back",
+    "todaysFocus": "Today's Focus",
+    "weeklyProgress": "Weekly Progress",
+    "studyHours": "Study Hours",
+    "tasksCompleted": "Tasks Completed",
+    "cardsReviewed": "Cards Reviewed",
+    "streak": "Day Streak",
+    "generatePlan": "Generate Study Plan",
+    "studyStreak": "Study Streak",
+    "days": "days",
+    "thisWeek": "This Week",
+    "hrs": "hrs",
+    "sessions": "sessions",
+    "goalsHit": "Goals Hit",
+    "weeklyTarget": "weekly target",
+    "total": "total",
+    "todaysTasks": "Today's Tasks",
+    "addNotes": "Add Notes",
+    "summarizeMaterial": "Summarize your study material",
+    "studyFlashcards": "Study Flashcards",
+    "cardsDueReview": "cards due for review",
+    "reviewSpaced": "Review with spaced repetition"
+  },
+  "notes": {
+    "title": "Notes",
+    "subtitle": "Organize your study materials",
+    "newNote": "New Note",
+    "searchNotes": "Search notes...",
+    "noNotes": "No notes yet",
+    "createFirst": "Create your first note to get started"
+  },
+  "flashcards": {
+    "title": "Flashcards",
+    "subtitle": "Master your knowledge with spaced repetition",
+    "newDeck": "New Deck",
+    "searchDecks": "Search decks...",
+    "noDecks": "No flashcard decks yet",
+    "createFirst": "Create your first deck to start studying"
+  },
+  "tasks": {
+    "title": "Tasks",
+    "subtitle": "Manage your study tasks and deadlines",
+    "newTask": "New Task",
+    "searchTasks": "Search tasks...",
+    "noTasks": "No tasks yet",
+    "createFirst": "Create your first task to stay organized"
+  },
+  "focus": {
+    "title": "Focus Mode",
+    "subtitle": "Boost your productivity with Pomodoro",
+    "startSession": "Start Session",
+    "pause": "Pause",
+    "resume": "Resume",
+    "reset": "Reset",
+    "workTime": "Work Time",
+    "breakTime": "Break Time"
+  },
+  "calendar": {
+    "title": "Calendar",
+    "subtitle": "Plan your study schedule",
+    "today": "Today",
+    "noEvents": "No events scheduled"
+  },
+  "studyPlan": {
+    "title": "Study Plan",
+    "subtitle": "AI-powered personalized study schedules",
+    "generate": "Generate Plan",
+    "noPlan": "No active study plan",
+    "createPlan": "Create a new plan to get started"
+  },
+  "aiTutor": {
+    "title": "AI Tutor",
+    "subtitle": "Get instant help with your studies",
+    "askQuestion": "Ask a question...",
+    "thinking": "Thinking..."
+  },
+  "premium": {
+    "title": "Premium",
+    "subtitle": "Unlock all features",
+    "upgrade": "Upgrade Now",
+    "features": "Premium Features"
   },
   "settings": {
     "title": "Settings",
@@ -172,15 +265,6 @@
       "help": "Help Center"
     }
   },
-  "dashboard": {
-    "welcome": "Welcome back",
-    "todaysFocus": "Today's Focus",
-    "weeklyProgress": "Weekly Progress",
-    "studyHours": "Study Hours",
-    "tasksCompleted": "Tasks Completed",
-    "cardsReviewed": "Cards Reviewed",
-    "streak": "Day Streak"
-  },
   "auth": {
     "signIn": "Sign In",
     "signUp": "Sign Up",
@@ -191,5 +275,9 @@
     "hasAccount": "Already have an account?",
     "welcomeBack": "Welcome back",
     "signInSubtitle": "Sign in to continue your studies"
+  },
+  "notifications": {
+    "saved": "Saved",
+    "error": "Error"
   }
 }
