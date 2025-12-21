@@ -1,3 +1,4 @@
+import { forwardRef } from "react";
 import { motion } from "framer-motion";
 import { GlassCard } from "@/components/ui/glass-card";
 import { GradientButton } from "@/components/ui/gradient-button";
@@ -7,8 +8,10 @@ interface EmptyPlanStateProps {
   onScrollToForm: () => void;
 }
 
-export function EmptyPlanState({ onScrollToForm }: EmptyPlanStateProps) {
-  return (
+export const EmptyPlanState = forwardRef<HTMLDivElement, EmptyPlanStateProps>(
+  ({ onScrollToForm }, ref) => {
+    return (
+      <div ref={ref}>
     <GlassCard className="p-6">
       <h3 className="font-semibold mb-3">Your Study Plans</h3>
       <div className="py-8 text-center">
@@ -59,6 +62,9 @@ export function EmptyPlanState({ onScrollToForm }: EmptyPlanStateProps) {
           </div>
         </div>
       </div>
-    </GlassCard>
+      </GlassCard>
+    </div>
   );
-}
+});
+
+EmptyPlanState.displayName = "EmptyPlanState";
