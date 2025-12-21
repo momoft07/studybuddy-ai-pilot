@@ -54,6 +54,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
 import { format, isSameDay, startOfDay, differenceInDays, differenceInHours, isPast, isToday, startOfToday } from "date-fns";
 import { motion, AnimatePresence } from "framer-motion";
 import { DraggableEvent } from "@/components/calendar/DraggableEvent";
@@ -132,6 +133,8 @@ export default function CalendarPage() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [suggestionsOpen, setSuggestionsOpen] = useState(false);
   const [selectedTime, setSelectedTime] = useState("09:00");
+  const [eventDate, setEventDate] = useState<Date>(new Date());
+  const [datePickerOpen, setDatePickerOpen] = useState(false);
   const [draggedEventId, setDraggedEventId] = useState<string | null>(null);
   const [dropTargetDate, setDropTargetDate] = useState<Date | null>(null);
   const [newEvent, setNewEvent] = useState({
@@ -140,6 +143,13 @@ export default function CalendarPage() {
     type: "study" as EventType,
     duration: "60",
   });
+
+  // Sync event date with selected date when dialog opens
+  useEffect(() => {
+    if (isDialogOpen && selectedDate) {
+      setEventDate(selectedDate);
+    }
+  }, [isDialogOpen, selectedDate]);
 
   // Daily study goal (in minutes) - could be fetched from user settings
   const dailyStudyGoal = 180; // 3 hours
@@ -256,21 +266,21 @@ export default function CalendarPage() {
   }, [flashcardDecks, notes, t]);
 
   const handleCreateEvent = async () => {
-    if (!newEvent.title.trim() || !selectedDate) {
+    if (!newEvent.title.trim() || !eventDate) {
       toast.error(t("calendar.titleRequired"));
       return;
     }
 
     try {
       const [hours, minutes] = selectedTime.split(":").map(Number);
-      const eventDate = new Date(selectedDate);
-      eventDate.setHours(hours, minutes, 0, 0);
+      const finalEventDate = new Date(eventDate);
+      finalEventDate.setHours(hours, minutes, 0, 0);
 
       const { error } = await supabase.from("tasks").insert({
         user_id: user?.id,
         title: newEvent.title,
         description: `${newEvent.type.toUpperCase()} | ${newEvent.duration} min${newEvent.description ? ` | ${newEvent.description}` : ""}`,
-        due_date: eventDate.toISOString(),
+        due_date: finalEventDate.toISOString(),
         priority: newEvent.type === "exam" ? "high" : newEvent.type === "deadline" ? "high" : "medium",
         status: "pending",
       });
@@ -455,9 +465,31 @@ export default function CalendarPage() {
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label>{t("calendar.date")}</Label>
-                    <div className="p-2 bg-muted/50 rounded-lg text-sm font-medium">
-                      {selectedDate ? format(selectedDate, "MMM d, yyyy") : t("calendar.selectDate")}
-                    </div>
+                    <Popover open={datePickerOpen} onOpenChange={setDatePickerOpen}>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant="outline"
+                          className="w-full justify-start text-left font-normal"
+                        >
+                          <CalendarIcon className="mr-2 h-4 w-4" />
+                          {format(eventDate, "MMM d, yyyy")}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="start">
+                        <Calendar
+                          mode="single"
+                          selected={eventDate}
+                          onSelect={(date) => {
+                            if (date) {
+                              setEventDate(date);
+                              setDatePickerOpen(false);
+                            }
+                          }}
+                          initialFocus
+                          className="p-3 pointer-events-auto"
+                        />
+                      </PopoverContent>
+                    </Popover>
                   </div>
                   <div className="space-y-2">
                     <Label>{t("calendar.time")}</Label>
@@ -465,6 +497,7 @@ export default function CalendarPage() {
                       type="time"
                       value={selectedTime}
                       onChange={(e) => setSelectedTime(e.target.value)}
+                      className="w-full"
                     />
                   </div>
                 </div>
