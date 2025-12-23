@@ -1,123 +1,99 @@
-import { useState, useEffect } from "react";
-import { GlassCard } from "@/components/ui/glass-card";
-import { Star, Quote } from "lucide-react";
+import { TestimonialsColumn } from "@/components/ui/testimonials-columns";
 
-interface Testimonial {
-  name: string;
-  role: string;
-  avatar: string;
-  quote: string;
-  rating: number;
-}
-
-const testimonials: Testimonial[] = [
+const testimonials = [
   {
-    name: "Sarah M.",
+    text: "I went from a 2.8 GPA to Dean's List using StudyPilot. The AI-generated study plans actually work and adapt to my schedule!",
+    image: "https://randomuser.me/api/portraits/women/1.jpg",
+    name: "Sarah Mitchell",
     role: "Medical Student, UCLA",
-    avatar: "SM",
-    quote: "I went from a 2.8 GPA to Dean's List using StudyPilot. The AI plans actually work!",
-    rating: 5,
   },
   {
-    name: "James T.",
+    text: "Finally, an app that understands how students actually study. The spaced repetition flashcards are a game changer for exam prep.",
+    image: "https://randomuser.me/api/portraits/men/2.jpg",
+    name: "James Thompson",
     role: "Engineering Major, MIT",
-    avatar: "JT",
-    quote: "Finally, an app that understands how students actually study. Game changer for exam prep.",
-    rating: 5,
   },
   {
-    name: "Emily R.",
-    role: "Psychology Major, NYU",
-    avatar: "ER",
-    quote: "The spaced repetition flashcards helped me retain 3x more information. Worth every minute!",
-    rating: 5,
+    text: "The AI tutor helped me understand organic chemistry concepts I'd been struggling with for months. Worth every minute!",
+    image: "https://randomuser.me/api/portraits/women/3.jpg",
+    name: "Emily Rodriguez",
+    role: "Pre-Med Student, NYU",
+  },
+  {
+    text: "StudyPilot's focus timer with the Pomodoro technique improved my concentration by 3x. I actually finish my assignments now.",
+    image: "https://randomuser.me/api/portraits/men/4.jpg",
+    name: "Michael Chen",
+    role: "Computer Science, Stanford",
+  },
+  {
+    text: "The calendar integration synced all my deadlines perfectly. No more missed assignments or last-minute cramming sessions.",
+    image: "https://randomuser.me/api/portraits/women/5.jpg",
+    name: "Priya Patel",
+    role: "Law Student, Harvard",
+  },
+  {
+    text: "I used to waste hours not knowing what to study first. StudyPilot's smart recommendations saved my semester.",
+    image: "https://randomuser.me/api/portraits/women/6.jpg",
+    name: "Jessica Williams",
+    role: "Biology Major, Columbia",
+  },
+  {
+    text: "The note-taking feature with AI summaries is incredible. I can review a whole lecture in 5 minutes.",
+    image: "https://randomuser.me/api/portraits/men/7.jpg",
+    name: "David Kim",
+    role: "Physics Major, Caltech",
+  },
+  {
+    text: "My study group all switched to StudyPilot. Our collective GPA went up by 0.5 points in one semester!",
+    image: "https://randomuser.me/api/portraits/women/8.jpg",
+    name: "Aisha Johnson",
+    role: "Economics Major, Princeton",
+  },
+  {
+    text: "As a working student, I have limited time. StudyPilot helps me maximize every study session efficiently.",
+    image: "https://randomuser.me/api/portraits/men/9.jpg",
+    name: "Carlos Martinez",
+    role: "MBA Student, Wharton",
   },
 ];
 
+const firstColumn = testimonials.slice(0, 3);
+const secondColumn = testimonials.slice(3, 6);
+const thirdColumn = testimonials.slice(6, 9);
+
 export function TestimonialsSection() {
-  const [currentIndex, setCurrentIndex] = useState(0);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % testimonials.length);
-    }, 5000);
-    return () => clearInterval(interval);
-  }, []);
-
   return (
-    <section className="relative z-10 py-16 md:py-20">
+    <section className="relative z-10 py-16 md:py-24 overflow-hidden">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-10">
-          <h2 className="font-display text-2xl font-bold md:text-3xl mb-2">
-            Loved by <span className="gradient-text">10,000+ Students</span>
-          </h2>
-          <p className="text-sm text-muted-foreground">Real results from real students</p>
-        </div>
-
-        {/* Mobile: Single rotating testimonial */}
-        <div className="md:hidden">
-          <GlassCard className="p-6">
-            <Quote className="h-8 w-8 text-primary/30 mb-3" />
-            <p className="text-sm leading-relaxed mb-4">
-              "{testimonials[currentIndex].quote}"
-            </p>
-            <div className="flex items-center gap-3">
-              <div className="h-10 w-10 rounded-full gradient-primary flex items-center justify-center text-sm font-bold text-white">
-                {testimonials[currentIndex].avatar}
-              </div>
-              <div>
-                <p className="text-sm font-medium">{testimonials[currentIndex].name}</p>
-                <p className="text-xs text-muted-foreground">{testimonials[currentIndex].role}</p>
-              </div>
-            </div>
-            <div className="flex gap-1 mt-3">
-              {[...Array(testimonials[currentIndex].rating)].map((_, i) => (
-                <Star key={i} className="h-4 w-4 fill-warning text-warning" />
-              ))}
-            </div>
-          </GlassCard>
-          <div className="flex justify-center gap-2 mt-4">
-            {testimonials.map((_, index) => (
-              <button
-                key={index}
-                onClick={() => setCurrentIndex(index)}
-                className={`h-2 rounded-full transition-all ${
-                  index === currentIndex ? 'w-6 bg-primary' : 'w-2 bg-muted'
-                }`}
-              />
-            ))}
+        <div className="flex flex-col items-center justify-center gap-4 mb-12">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20">
+            <span className="text-sm font-medium text-primary">Testimonials</span>
           </div>
+
+          <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-bold text-center">
+            What our <span className="gradient-text">users say</span>
+          </h2>
+
+          <p className="text-muted-foreground text-center max-w-md">
+            See what students from top universities have to say about StudyPilot.
+          </p>
         </div>
 
-        {/* Desktop: Grid of testimonials */}
-        <div className="hidden md:grid md:grid-cols-3 gap-6">
-          {testimonials.map((testimonial, index) => (
-            <GlassCard 
-              key={testimonial.name} 
-              hover 
-              className="p-6 animate-fade-in"
-              style={{ animationDelay: `${index * 100}ms` }}
-            >
-              <Quote className="h-8 w-8 text-primary/30 mb-3" />
-              <p className="text-sm leading-relaxed mb-4">
-                "{testimonial.quote}"
-              </p>
-              <div className="flex items-center gap-3">
-                <div className="h-10 w-10 rounded-full gradient-primary flex items-center justify-center text-sm font-bold text-white">
-                  {testimonial.avatar}
-                </div>
-                <div>
-                  <p className="text-sm font-medium">{testimonial.name}</p>
-                  <p className="text-xs text-muted-foreground">{testimonial.role}</p>
-                </div>
-              </div>
-              <div className="flex gap-1 mt-3">
-                {[...Array(testimonial.rating)].map((_, i) => (
-                  <Star key={i} className="h-4 w-4 fill-warning text-warning" />
-                ))}
-              </div>
-            </GlassCard>
-          ))}
+        <div className="flex justify-center gap-6 h-[500px] md:h-[600px] [mask-image:linear-gradient(to_bottom,transparent,black_10%,black_90%,transparent)]">
+          <TestimonialsColumn
+            testimonials={firstColumn}
+            duration={15}
+            className="hidden md:block"
+          />
+          <TestimonialsColumn
+            testimonials={secondColumn}
+            duration={19}
+          />
+          <TestimonialsColumn
+            testimonials={thirdColumn}
+            duration={17}
+            className="hidden lg:block"
+          />
         </div>
       </div>
     </section>
