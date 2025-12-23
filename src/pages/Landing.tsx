@@ -14,6 +14,7 @@ import { TaskDemo } from "@/components/landing/demos/TaskDemo";
 import { FocusDemo } from "@/components/landing/demos/FocusDemo";
 import { CalendarDemo } from "@/components/landing/demos/CalendarDemo";
 import { AnalyticsDemo } from "@/components/landing/demos/AnalyticsDemo";
+import { BackgroundGradientAnimation } from "@/components/ui/background-gradient-animation";
 import {
   Sparkles,
   BookOpen,
@@ -52,14 +53,23 @@ export default function LandingPage() {
   const DemoComponent = activeDemo ? demoComponents[activeDemo] : null;
 
   return (
-    <div className="min-h-screen bg-background overflow-hidden relative">
-      {/* Animated background orbs */}
-      <div className="fixed inset-0 -z-10 overflow-hidden">
-        <div className="orb orb-primary h-[500px] w-[500px] top-[-10%] left-[-10%]" />
-        <div className="orb orb-accent h-[400px] w-[400px] bottom-[10%] right-[-5%]" style={{ animationDelay: "2s" }} />
-        <div className="orb orb-secondary h-[300px] w-[300px] top-[40%] right-[30%]" style={{ animationDelay: "4s" }} />
-        <div className="absolute inset-0 dot-pattern opacity-30" />
-      </div>
+    <div className="min-h-screen overflow-hidden relative">
+      {/* Animated gradient background */}
+      <BackgroundGradientAnimation
+        gradientBackgroundStart="rgb(25, 25, 40)"
+        gradientBackgroundEnd="rgb(10, 10, 25)"
+        firstColor="124, 58, 237"
+        secondColor="236, 72, 153"
+        thirdColor="56, 189, 248"
+        fourthColor="34, 197, 94"
+        fifthColor="251, 191, 36"
+        pointerColor="140, 100, 255"
+        size="80%"
+        blendingValue="hard-light"
+        interactive={true}
+        containerClassName="!fixed !h-screen"
+        className="absolute inset-0 z-0"
+      />
 
       {/* Navigation */}
       <header className="relative z-20 border-b border-border/30 glass-strong sticky top-0">
@@ -110,23 +120,26 @@ export default function LandingPage() {
         )}
       </header>
 
-      {/* Hero Section */}
-      <HeroSection />
+      {/* Main Content - above gradient */}
+      <main className="relative z-10">
+        {/* Hero Section */}
+        <HeroSection />
 
-      {/* Testimonials */}
-      <TestimonialsSection />
+        {/* Testimonials */}
+        <TestimonialsSection />
 
-      {/* Features Section */}
-      <FeaturesSection onFeatureClick={setActiveDemo} />
+        {/* Features Section */}
+        <FeaturesSection onFeatureClick={setActiveDemo} />
 
-      {/* FAQ Section */}
-      <FAQSection />
+        {/* FAQ Section */}
+        <FAQSection />
 
-      {/* CTA Section */}
-      <CTASection />
+        {/* CTA Section */}
+        <CTASection />
 
-      {/* Footer */}
-      <Footer />
+        {/* Footer */}
+        <Footer />
+      </main>
 
       {/* Feature Demo Dialog */}
       {activeFeature && DemoComponent && (
