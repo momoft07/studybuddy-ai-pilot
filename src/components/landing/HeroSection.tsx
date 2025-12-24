@@ -4,10 +4,10 @@ import { GradientButton } from "@/components/ui/gradient-button";
 import { ArrowRight, Zap, Shield, Users, Award } from "lucide-react";
 
 const rotatingTexts = [
-  "Stop guessing what to study next.",
-  "Never miss a deadline again.",
-  "Ace exams without burning out.",
-  "Turn chaos into clarity.",
+  "Know exactly what to study, when to study it.",
+  "Your deadlines, managed automatically.",
+  "Better grades with less stress.",
+  "From overwhelmed to in control.",
 ];
 
 export function HeroSection() {
@@ -33,20 +33,19 @@ export function HeroSection() {
           {/* Badge */}
           <div className="inline-flex items-center gap-2 rounded-full glass px-5 py-2.5 text-sm border border-primary/30">
             <Zap className="h-4 w-4 text-primary icon-glow" />
-            <span className="text-muted-foreground">AI-Powered Study Assistant</span>
-            <span className="ml-2 rounded-full gradient-primary px-2 py-0.5 text-xs font-semibold text-white">New</span>
+            <span className="text-muted-foreground">AI-Powered Study Platform</span>
           </div>
           
           {/* Main Headline */}
           <h1 className="font-display text-4xl font-bold leading-tight tracking-tight sm:text-5xl md:text-7xl lg:text-8xl">
-            Study Smarter,
+            Change the way
             <br />
-            <span className="gradient-text">Not Harder</span>
+            <span className="gradient-text">you study</span>
           </h1>
           
           {/* Pain Point Sub-headline */}
           <p className="mx-auto max-w-2xl text-base text-muted-foreground sm:text-lg md:text-xl leading-relaxed">
-            Tired of cramming? Overwhelmed by deadlines? Let AI build your perfect study schedule — so you can focus on <span className="text-primary font-medium">learning, not planning</span>.
+            Exam prep, daily planning, deep focus. Everything you need to succeed academically, in one intelligent platform.
           </p>
 
           {/* Rotating Text */}
@@ -63,29 +62,29 @@ export function HeroSection() {
           {/* CTAs */}
           <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-center pt-4">
             <Link to="/auth?signup=true">
-              <GradientButton size="lg" className="w-full sm:w-auto min-w-[240px] pulse-glow">
-                🚀 Start Free Trial — No Card Needed
+              <GradientButton size="lg" className="w-full sm:w-auto min-w-[200px] pulse-glow">
+                Get started free
                 <ArrowRight className="ml-2 h-5 w-5" />
               </GradientButton>
             </Link>
             <Link to="/auth">
-              <GradientButton variant="outline" size="lg" className="w-full sm:w-auto min-w-[200px]">
-                🔑 Sign In to Continue
+              <GradientButton variant="outline" size="lg" className="w-full sm:w-auto min-w-[160px]">
+                Sign in
               </GradientButton>
             </Link>
           </div>
 
           {/* Urgency Microcopy */}
           <p className="text-xs text-muted-foreground">
-            Free trial ends in 7 days — claim your AI study plan now!
+            No credit card required. Start studying smarter today.
           </p>
 
           {/* Stats */}
           <div className="flex flex-wrap items-center justify-center gap-6 md:gap-8 pt-6">
             {[
-              { value: "10K+", label: "Students" },
-              { value: "500K+", label: "Flashcards Created" },
-              { value: "98%", label: "Pass Rate" },
+              { value: "10,000+", label: "Active students" },
+              { value: "500,000+", label: "Study sessions" },
+              { value: "98%", label: "Success rate" },
             ].map((stat) => (
               <div key={stat.label} className="text-center">
                 <p className="text-2xl md:text-3xl font-display font-bold gradient-text">{stat.value}</p>
@@ -133,12 +132,12 @@ export function HeroSection() {
                     <p className="text-xs text-muted-foreground">Psychology 101 • Exam Dec 28</p>
                   </div>
                 </div>
-                <div className="w-full max-w-xs mx-auto">
-                  <div className="h-2 rounded-full bg-muted overflow-hidden">
-                    <div className="h-full gradient-primary animate-pulse" style={{ width: '75%' }} />
+                  <div className="w-full max-w-xs mx-auto">
+                    <div className="h-2 rounded-full bg-muted overflow-hidden">
+                      <div className="h-full gradient-primary animate-pulse" style={{ width: '75%' }} />
+                    </div>
                   </div>
-                </div>
-                <p className="text-xs text-primary">See how it works in 10 seconds ✨</p>
+                  <p className="text-xs text-primary">See how it works</p>
               </div>
             </div>
           </div>

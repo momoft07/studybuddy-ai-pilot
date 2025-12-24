@@ -24,49 +24,49 @@ const features: Feature[] = [
   {
     key: "study-plan",
     icon: BookOpen,
-    title: "AI Study Plans",
-    description: "Get personalized study schedules based on your courses and deadlines",
-    benefit: "AI generates optimal daily plans — users report 40% less stress",
+    title: "Smart Study Plans",
+    description: "Personalized schedules that adapt to your goals and deadlines",
+    benefit: "40% reduction in study-related stress",
     variant: "primary",
   },
   {
     key: "flashcards",
     icon: Brain,
-    title: "Smart Flashcards",
-    description: "Spaced repetition algorithm to maximize memory retention",
-    benefit: "Spaced repetition algorithm boosts retention by 70%",
+    title: "Intelligent Flashcards",
+    description: "Spaced repetition optimized for long-term memory",
+    benefit: "70% improvement in retention rates",
     variant: "accent",
   },
   {
     key: "tasks",
     icon: CheckSquare,
-    title: "Task Tracking",
-    description: "Stay organized with daily checklists and habit tracking",
-    benefit: "Never miss a deadline — auto-syncs with your calendar",
+    title: "Task Management",
+    description: "Organize assignments with smart prioritization",
+    benefit: "Automatic deadline synchronization",
     variant: "teal",
   },
   {
     key: "focus",
     icon: Timer,
-    title: "Focus Mode",
-    description: "Pomodoro timer with distraction-free study sessions",
-    benefit: "Proven Pomodoro technique increases productivity by 25%",
+    title: "Deep Focus Mode",
+    description: "Distraction-free sessions with proven techniques",
+    benefit: "25% increase in productivity",
     variant: "primary",
   },
   {
     key: "calendar",
     icon: Calendar,
-    title: "Smart Calendar",
-    description: "Visual overview of deadlines and study sessions",
-    benefit: "Visualize your entire semester at a glance",
+    title: "Visual Calendar",
+    description: "See your entire semester at a glance",
+    benefit: "Complete schedule visibility",
     variant: "accent",
   },
   {
     key: "analytics",
     icon: TrendingUp,
-    title: "Progress Analytics",
-    description: "Track your study streaks and improvement over time",
-    benefit: "Data-driven insights help you study smarter",
+    title: "Progress Insights",
+    description: "Track performance and identify opportunities",
+    benefit: "Data-driven study optimization",
     variant: "teal",
   },
 ];
@@ -93,7 +93,7 @@ export function FeaturesSection({ onFeatureClick }: FeaturesSectionProps) {
             Everything you need to <span className="gradient-text">succeed</span>
           </h2>
           <p className="text-base md:text-lg text-muted-foreground max-w-2xl mx-auto">
-            Powerful AI-driven tools designed for students, by students. <span className="text-primary">Click to try them!</span>
+            Powerful tools built for how students actually learn. Click any feature to explore.
           </p>
         </div>
         
