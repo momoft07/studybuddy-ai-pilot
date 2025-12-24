@@ -54,18 +54,18 @@ export default function LandingPage() {
 
   return (
     <div className="min-h-screen overflow-hidden relative">
-      {/* Animated gradient background */}
+      {/* Animated blue sky gradient background */}
       <BackgroundGradientAnimation
-        gradientBackgroundStart="rgb(25, 25, 40)"
-        gradientBackgroundEnd="rgb(10, 10, 25)"
-        firstColor="124, 58, 237"
-        secondColor="236, 72, 153"
-        thirdColor="56, 189, 248"
-        fourthColor="34, 197, 94"
-        fifthColor="251, 191, 36"
-        pointerColor="140, 100, 255"
-        size="80%"
-        blendingValue="hard-light"
+        gradientBackgroundStart="rgb(135, 206, 250)"
+        gradientBackgroundEnd="rgb(70, 130, 180)"
+        firstColor="255, 255, 255"
+        secondColor="173, 216, 230"
+        thirdColor="135, 206, 235"
+        fourthColor="176, 224, 230"
+        fifthColor="240, 248, 255"
+        pointerColor="200, 230, 255"
+        size="100%"
+        blendingValue="soft-light"
         interactive={true}
         containerClassName="!fixed !h-screen"
         className="absolute inset-0 z-0"
