@@ -41,7 +41,7 @@ export function FAQSection() {
             Frequently Asked <span className="gradient-text">Questions</span>
           </h2>
           <p className="text-sm md:text-base text-muted-foreground">
-            Got questions? We've got answers.
+            Everything you need to know about StudyPilot.
           </p>
         </div>
 

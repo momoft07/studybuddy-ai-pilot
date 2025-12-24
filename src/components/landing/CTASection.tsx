@@ -15,20 +15,20 @@ export function CTASection() {
           <div className="relative z-10">
             <div className="inline-flex items-center gap-2 mb-4">
               <Sparkles className="h-5 w-5 text-primary" />
-              <span className="text-sm text-primary font-medium">Join 10,000+ students</span>
+              <span className="text-sm text-primary font-medium">Join 10,000+ students worldwide</span>
             </div>
             
             <h2 className="font-display text-2xl font-bold sm:text-3xl md:text-4xl lg:text-5xl mb-4">
-              Ready to transform your study habits?
+              Start achieving more today
             </h2>
             <p className="text-sm md:text-lg text-muted-foreground max-w-xl mx-auto mb-6 md:mb-8">
-              Join thousands of students who are studying smarter with StudyPilot. Start your free trial today.
+              Join students at top universities who have transformed their academic performance with StudyPilot.
             </p>
             
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link to="/auth?signup=true">
-                <GradientButton size="lg" className="min-w-[240px] pulse-glow">
-                  🚀 Start Free Trial
+                <GradientButton size="lg" className="min-w-[200px] pulse-glow">
+                  Get started free
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </GradientButton>
               </Link>
@@ -43,10 +43,10 @@ export function CTASection() {
         <div className="mt-12 text-center">
           <GlassCard className="inline-block px-6 py-4 md:px-8 md:py-5">
             <p className="text-sm md:text-base font-medium mb-1">
-              🔓 <span className="gradient-text">Coming Soon: StudyPilot Pro</span>
+              <span className="gradient-text">Coming Soon: StudyPilot Pro</span>
             </p>
             <p className="text-xs md:text-sm text-muted-foreground">
-              Unlimited AI plans • Calendar sync • Priority support • Group study rooms
+              Unlimited AI plans, calendar sync, priority support, and group study rooms
             </p>
           </GlassCard>
         </div>

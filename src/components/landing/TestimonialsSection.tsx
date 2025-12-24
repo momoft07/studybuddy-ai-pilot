@@ -2,58 +2,58 @@ import { TestimonialsColumn } from "@/components/ui/testimonials-columns";
 
 const testimonials = [
   {
-    text: "I went from a 2.8 GPA to Dean's List using StudyPilot. The AI-generated study plans actually work and adapt to my schedule!",
+    text: "Went from a 2.8 GPA to making the Dean's List. The AI-generated study plans adapt perfectly to my schedule.",
     image: "https://randomuser.me/api/portraits/women/1.jpg",
     name: "Sarah Mitchell",
     role: "Medical Student, UCLA",
   },
   {
-    text: "Finally, an app that understands how students actually study. The spaced repetition flashcards are a game changer for exam prep.",
+    text: "Finally, a study platform that works the way students actually learn. The spaced repetition system is exceptional.",
     image: "https://randomuser.me/api/portraits/men/2.jpg",
     name: "James Thompson",
-    role: "Engineering Major, MIT",
+    role: "Engineering, MIT",
   },
   {
-    text: "The AI tutor helped me understand organic chemistry concepts I'd been struggling with for months. Worth every minute!",
+    text: "The AI tutor helped me master organic chemistry concepts I had struggled with for months.",
     image: "https://randomuser.me/api/portraits/women/3.jpg",
     name: "Emily Rodriguez",
-    role: "Pre-Med Student, NYU",
+    role: "Pre-Med, NYU",
   },
   {
-    text: "StudyPilot's focus timer with the Pomodoro technique improved my concentration by 3x. I actually finish my assignments now.",
+    text: "The focus timer transformed my productivity. I complete assignments in half the time now.",
     image: "https://randomuser.me/api/portraits/men/4.jpg",
     name: "Michael Chen",
     role: "Computer Science, Stanford",
   },
   {
-    text: "The calendar integration synced all my deadlines perfectly. No more missed assignments or last-minute cramming sessions.",
+    text: "Calendar integration keeps all my deadlines in sync. No more last-minute cramming sessions.",
     image: "https://randomuser.me/api/portraits/women/5.jpg",
     name: "Priya Patel",
-    role: "Law Student, Harvard",
+    role: "Law, Harvard",
   },
   {
-    text: "I used to waste hours not knowing what to study first. StudyPilot's smart recommendations saved my semester.",
+    text: "I used to waste hours deciding what to study. Now I have clarity from the moment I sit down.",
     image: "https://randomuser.me/api/portraits/women/6.jpg",
     name: "Jessica Williams",
-    role: "Biology Major, Columbia",
+    role: "Biology, Columbia",
   },
   {
-    text: "The note-taking feature with AI summaries is incredible. I can review a whole lecture in 5 minutes.",
+    text: "The AI summaries let me review an entire lecture in five minutes. Essential for exam prep.",
     image: "https://randomuser.me/api/portraits/men/7.jpg",
     name: "David Kim",
-    role: "Physics Major, Caltech",
+    role: "Physics, Caltech",
   },
   {
-    text: "My study group all switched to StudyPilot. Our collective GPA went up by 0.5 points in one semester!",
+    text: "Our entire study group switched to StudyPilot. Collective GPA increased by 0.5 in one semester.",
     image: "https://randomuser.me/api/portraits/women/8.jpg",
     name: "Aisha Johnson",
-    role: "Economics Major, Princeton",
+    role: "Economics, Princeton",
   },
   {
-    text: "As a working student, I have limited time. StudyPilot helps me maximize every study session efficiently.",
+    text: "As a working student with limited time, StudyPilot helps me maximize every session.",
     image: "https://randomuser.me/api/portraits/men/9.jpg",
     name: "Carlos Martinez",
-    role: "MBA Student, Wharton",
+    role: "MBA, Wharton",
   },
 ];
 
@@ -71,11 +71,11 @@ export function TestimonialsSection() {
           </div>
 
           <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-bold text-center">
-            What our <span className="gradient-text">users say</span>
+            Trusted by <span className="gradient-text">students worldwide</span>
           </h2>
 
           <p className="text-muted-foreground text-center max-w-md">
-            See what students from top universities have to say about StudyPilot.
+            Students at leading universities rely on StudyPilot for academic success.
           </p>
         </div>
 
