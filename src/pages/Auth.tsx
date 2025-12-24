@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { Sparkles, Mail, Lock, User, Loader2 } from "lucide-react";
 import { z } from "zod";
+import { BackgroundGradientAnimation } from "@/components/ui/background-gradient-animation";
 
 const authSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
@@ -92,14 +93,25 @@ export default function AuthPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4">
-      {/* Animated background */}
-      <div className="fixed inset-0 -z-10">
-        <div className="absolute top-1/4 left-1/4 h-96 w-96 rounded-full bg-primary/20 blur-3xl animate-float" />
-        <div className="absolute bottom-1/4 right-1/4 h-96 w-96 rounded-full bg-secondary/20 blur-3xl animate-float" style={{ animationDelay: "1s" }} />
-      </div>
+    <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
+      {/* Animated blue sky gradient background */}
+      <BackgroundGradientAnimation
+        gradientBackgroundStart="rgb(135, 206, 250)"
+        gradientBackgroundEnd="rgb(70, 130, 180)"
+        firstColor="255, 255, 255"
+        secondColor="173, 216, 230"
+        thirdColor="135, 206, 235"
+        fourthColor="176, 224, 230"
+        fifthColor="240, 248, 255"
+        pointerColor="200, 230, 255"
+        size="100%"
+        blendingValue="soft-light"
+        interactive={true}
+        containerClassName="!fixed !h-screen"
+        className="absolute inset-0 z-0"
+      />
 
-      <div className="w-full max-w-md">
+      <div className="w-full max-w-md relative z-10">
         {/* Logo */}
         <div className="flex items-center justify-center gap-3 mb-8">
           <div className="flex h-12 w-12 items-center justify-center rounded-xl gradient-primary glow-sm">
