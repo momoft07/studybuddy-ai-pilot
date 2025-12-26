@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { BookOpen, Brain, CheckSquare, Timer, Calendar, TrendingUp, Menu, Sparkles, GraduationCap, MessageSquare, HelpCircle } from "lucide-react";
+import { BookOpen, Brain, CheckSquare, Timer, Calendar, TrendingUp, Menu, Sparkles, GraduationCap, MessageSquare, HelpCircle, Sun, Moon } from "lucide-react";
+import { useTheme } from "@/hooks/useTheme";
 
 import {
   Accordion,
@@ -109,6 +110,7 @@ const mobileExtraLinks = [
 
 export function LandingNavbar() {
   const [sheetOpen, setSheetOpen] = useState(false);
+  const { theme, toggleTheme } = useTheme();
 
   return (
     <header className="sticky top-0 z-50 w-full">
@@ -136,8 +138,20 @@ export function LandingNavbar() {
             </div>
           </div>
 
-          {/* Auth buttons */}
-          <div className="flex gap-2">
+          {/* Auth buttons + Theme toggle */}
+          <div className="flex items-center gap-2">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={toggleTheme}
+              className="rounded-full"
+            >
+              {theme === 'dark' ? (
+                <Sun className="h-4 w-4" />
+              ) : (
+                <Moon className="h-4 w-4" />
+              )}
+            </Button>
             <Button asChild variant="ghost" size="sm">
               <Link to="/auth">Log in</Link>
             </Button>
@@ -193,6 +207,23 @@ export function LandingNavbar() {
                   </div>
                   <div className="border-t border-border/50 pt-4">
                     <div className="flex flex-col gap-3">
+                      <Button
+                        variant="outline"
+                        onClick={toggleTheme}
+                        className="w-full justify-start gap-2"
+                      >
+                        {theme === 'dark' ? (
+                          <>
+                            <Sun className="h-4 w-4" />
+                            Light mode
+                          </>
+                        ) : (
+                          <>
+                            <Moon className="h-4 w-4" />
+                            Dark mode
+                          </>
+                        )}
+                      </Button>
                       <Button asChild variant="outline" className="w-full">
                         <Link to="/auth" onClick={() => setSheetOpen(false)}>Log in</Link>
                       </Button>
