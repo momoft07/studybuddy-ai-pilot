@@ -8,6 +8,12 @@ import {
   LucideIcon,
 } from "lucide-react";
 import FeatureCarousel from "@/components/ui/feature-carousel";
+import { StudyPlanDemo } from "@/components/landing/demos/StudyPlanDemo";
+import { FlashcardDemo } from "@/components/landing/demos/FlashcardDemo";
+import { TaskDemo } from "@/components/landing/demos/TaskDemo";
+import { FocusDemo } from "@/components/landing/demos/FocusDemo";
+import { CalendarDemo } from "@/components/landing/demos/CalendarDemo";
+import { AnalyticsDemo } from "@/components/landing/demos/AnalyticsDemo";
 
 type FeatureKey = "study-plan" | "flashcards" | "tasks" | "focus" | "calendar" | "analytics";
 
@@ -18,6 +24,7 @@ interface Feature {
   description: string;
   benefit: string;
   variant: "primary" | "accent" | "teal";
+  DemoComponent: React.ComponentType;
 }
 
 const features: Feature[] = [
@@ -28,6 +35,7 @@ const features: Feature[] = [
     description: "Personalized schedules that adapt to your goals and deadlines",
     benefit: "40% reduction in study-related stress",
     variant: "primary",
+    DemoComponent: StudyPlanDemo,
   },
   {
     key: "flashcards",
@@ -36,6 +44,7 @@ const features: Feature[] = [
     description: "Spaced repetition optimized for long-term memory",
     benefit: "70% improvement in retention rates",
     variant: "accent",
+    DemoComponent: FlashcardDemo,
   },
   {
     key: "tasks",
@@ -44,6 +53,7 @@ const features: Feature[] = [
     description: "Organize assignments with smart prioritization",
     benefit: "Automatic deadline synchronization",
     variant: "teal",
+    DemoComponent: TaskDemo,
   },
   {
     key: "focus",
@@ -52,6 +62,7 @@ const features: Feature[] = [
     description: "Distraction-free sessions with proven techniques",
     benefit: "25% increase in productivity",
     variant: "primary",
+    DemoComponent: FocusDemo,
   },
   {
     key: "calendar",
@@ -60,6 +71,7 @@ const features: Feature[] = [
     description: "See your entire semester at a glance",
     benefit: "Complete schedule visibility",
     variant: "accent",
+    DemoComponent: CalendarDemo,
   },
   {
     key: "analytics",
@@ -68,21 +80,18 @@ const features: Feature[] = [
     description: "Track performance and identify opportunities",
     benefit: "Data-driven study optimization",
     variant: "teal",
+    DemoComponent: AnalyticsDemo,
   },
 ];
 
-interface FeaturesSectionProps {
-  onFeatureClick: (key: FeatureKey) => void;
-}
-
-export function FeaturesSection({ onFeatureClick }: FeaturesSectionProps) {
+export function FeaturesSection() {
   const carouselFeatures = features.map((feature) => ({
     title: feature.title,
     subtitle: feature.description,
     benefit: feature.benefit,
     icon: feature.icon,
     variant: feature.variant,
-    onClick: () => onFeatureClick(feature.key),
+    DemoComponent: feature.DemoComponent,
   }));
 
   return (
@@ -93,7 +102,7 @@ export function FeaturesSection({ onFeatureClick }: FeaturesSectionProps) {
             Everything you need to <span className="gradient-text">succeed</span>
           </h2>
           <p className="text-base md:text-lg text-muted-foreground max-w-2xl mx-auto">
-            Powerful tools built for how students actually learn. Click any feature to explore.
+            Powerful tools built for how students actually learn. Hover any feature to try it.
           </p>
         </div>
         
