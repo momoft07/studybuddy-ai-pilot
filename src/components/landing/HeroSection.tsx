@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { GradientButton } from "@/components/ui/gradient-button";
+import { AnimatedShaderBackground } from "@/components/ui/animated-shader-background";
 import { ArrowRight, Zap, Shield, Users, Award, BookOpen, Brain, CheckCircle2, Calendar, TrendingUp, Timer } from "lucide-react";
 
 const rotatingTexts = [
@@ -28,8 +29,13 @@ export function HeroSection() {
   }, []);
 
   return (
-    <section className="relative z-10 py-16 md:py-28 lg:py-36">
-      <div className="container mx-auto px-4 text-center">
+    <section className="relative z-10 min-h-screen">
+      {/* WebGL Shader Background */}
+      <AnimatedShaderBackground className="absolute inset-0 z-0" />
+      
+      {/* Content Overlay */}
+      <div className="relative z-10 py-16 md:py-28 lg:py-36">
+        <div className="container mx-auto px-4 text-center">
         <div className="mx-auto max-w-4xl space-y-6 md:space-y-8">
           {/* Badge */}
           <motion.div 
@@ -344,6 +350,7 @@ export function HeroSection() {
             </motion.div>
           </div>
         </motion.div>
+      </div>
       </div>
     </section>
   );
