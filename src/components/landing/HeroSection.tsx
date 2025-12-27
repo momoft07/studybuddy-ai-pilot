@@ -4,6 +4,7 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { GradientButton } from "@/components/ui/gradient-button";
 import { AnimatedShaderBackground } from "@/components/ui/animated-shader-background";
 import { ParticleField } from "@/components/ui/particle-field";
+import { ShootingStars } from "@/components/ui/shooting-stars";
 import { ArrowRight, Zap, Shield, Users, Award, BookOpen, Brain, CheckCircle2, Calendar, TrendingUp, Timer } from "lucide-react";
 
 const rotatingTexts = [
@@ -58,6 +59,13 @@ export function HeroSection() {
           color="200, 180, 255"
         />
       </motion.div>
+      
+      {/* Shooting Stars Overlay */}
+      <ShootingStars 
+        className="absolute inset-0 z-[2]" 
+        frequency={2500}
+        color="220, 200, 255"
+      />
       
       {/* Content Overlay - Fastest parallax (moves with scroll) */}
       <motion.div 
