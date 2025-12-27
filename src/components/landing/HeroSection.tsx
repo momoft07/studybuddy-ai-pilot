@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { GradientButton } from "@/components/ui/gradient-button";
 import { AnimatedShaderBackground } from "@/components/ui/animated-shader-background";
+import { ParticleField } from "@/components/ui/particle-field";
 import { ArrowRight, Zap, Shield, Users, Award, BookOpen, Brain, CheckCircle2, Calendar, TrendingUp, Timer } from "lucide-react";
 
 const rotatingTexts = [
@@ -32,6 +33,13 @@ export function HeroSection() {
     <section className="relative z-10 min-h-screen">
       {/* WebGL Shader Background */}
       <AnimatedShaderBackground className="absolute inset-0 z-0" />
+      
+      {/* Particle Field Overlay */}
+      <ParticleField 
+        className="absolute inset-0 z-[1]" 
+        particleCount={60}
+        color="200, 180, 255"
+      />
       
       {/* Content Overlay */}
       <div className="relative z-10 py-16 md:py-28 lg:py-36">
