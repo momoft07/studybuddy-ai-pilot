@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { GradientButton } from "@/components/ui/gradient-button";
 import { AnimatedShaderBackground } from "@/components/ui/animated-shader-background";
 import { ParticleField } from "@/components/ui/particle-field";
@@ -16,6 +16,14 @@ const rotatingTexts = [
 export function HeroSection() {
   const [currentTextIndex, setCurrentTextIndex] = useState(0);
   const [isVisible, setIsVisible] = useState(true);
+  const sectionRef = useRef<HTMLElement>(null);
+
+  // Parallax scroll transforms
+  const { scrollY } = useScroll();
+  const backgroundY = useTransform(scrollY, [0, 1000], [0, 300]);
+  const particlesY = useTransform(scrollY, [0, 1000], [0, 200]);
+  const contentY = useTransform(scrollY, [0, 1000], [0, 100]);
+  const backgroundOpacity = useTransform(scrollY, [0, 800], [1, 0.3]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -30,19 +38,32 @@ export function HeroSection() {
   }, []);
 
   return (
-    <section className="relative z-10 min-h-screen">
-      {/* WebGL Shader Background */}
-      <AnimatedShaderBackground className="absolute inset-0 z-0" />
+    <section ref={sectionRef} className="relative z-10 min-h-screen overflow-hidden">
+      {/* WebGL Shader Background - Slowest parallax */}
+      <motion.div 
+        className="absolute inset-0 z-0"
+        style={{ y: backgroundY, opacity: backgroundOpacity }}
+      >
+        <AnimatedShaderBackground className="absolute inset-0" />
+      </motion.div>
       
-      {/* Particle Field Overlay */}
-      <ParticleField 
-        className="absolute inset-0 z-[1]" 
-        particleCount={60}
-        color="200, 180, 255"
-      />
+      {/* Particle Field Overlay - Medium parallax */}
+      <motion.div 
+        className="absolute inset-0 z-[1]"
+        style={{ y: particlesY }}
+      >
+        <ParticleField 
+          className="absolute inset-0" 
+          particleCount={60}
+          color="200, 180, 255"
+        />
+      </motion.div>
       
-      {/* Content Overlay */}
-      <div className="relative z-10 py-16 md:py-28 lg:py-36">
+      {/* Content Overlay - Fastest parallax (moves with scroll) */}
+      <motion.div 
+        className="relative z-10 py-16 md:py-28 lg:py-36"
+        style={{ y: contentY }}
+      >
         <div className="container mx-auto px-4 text-center">
         <div className="mx-auto max-w-4xl space-y-6 md:space-y-8">
           {/* Badge */}
@@ -359,7 +380,7 @@ export function HeroSection() {
           </div>
         </motion.div>
       </div>
-      </div>
+      </motion.div>
     </section>
   );
 }
